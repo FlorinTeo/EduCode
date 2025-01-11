@@ -31,7 +31,7 @@ export class UserCode extends CoreCode {
     }
 
     async loadGraph(graphData) {
-        const response = await fetch(`https://florinteo.github.io/CodeSinaia-2024.src/GraphVisualizer/data/${graphData}`);
+        const response = await fetch(`https://florinteo.github.io/EduCode/GraphVisualizer/data/${graphData}`);
         const graphString = await response.text();
         graph.fromString(graphString);
         queue.clear();
