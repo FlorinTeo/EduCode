@@ -48,6 +48,18 @@ export class UserCode extends CoreCode {
         return true;
     }
 
+    #compareNodes(n1, n2) {
+        let val1 = n1.label;
+        let val2 = n2.label;
+        if (!isNaN(val1) && !isNaN(val2)) {
+            val1 = parseInt(n1.label);
+            val2 = parseInt(n2.label);
+        }
+        return (val1 > val2) ? 1
+             : (val1 == val2) ? 0
+             : -1;
+    }
+
     #delay() {
         return this.tracing ? Infinity : 100;
     }
@@ -177,13 +189,14 @@ export class UserCode extends CoreCode {
         return true;
     }
 
-    async avlBalanceCheck() {
+    async avlCheck() {
         if (!await this.setup("root") || !await this.isBinaryTree()) {
             return false;
         }
-        let result = false;
+        let isSearch = true;
+        let isBalanced = true;
         let root = this.#startNode;
-        graph.traverse(n => {n.state = 0;});
+        graph.traverse(n => {n.state = 0; n.min = undefined; n.max = undefined; n.error = undefined; });
         stack.clear();
         queue.clear();
         stack.push(root);
@@ -203,18 +216,24 @@ export class UserCode extends CoreCode {
                 let heightLeft = node.left ? node.left.state : 0;
                 let heightRight = node.right ? node.right.state : 0;
                 node.state = Math.max(heightLeft, heightRight) + 1;
-                if ((node.left && node.left.colorIndex != ColorIndex.Gray) || (node.right && node.right.colorIndex != ColorIndex.Gray)) {
+                node.min = node.left ? node.left.min : node;
+                node.max = node.right ? node.right.max : node;
+                if ((node.left && node.left.error) || (node.right && node.right.error)) {
                     node.colorIndex = ColorIndex.Blue;
+                    node.error = true;
                 } else if (Math.abs(heightLeft - heightRight) > 1) {
                     node.colorIndex = ColorIndex.Green;
-                    result = true;
+                    node.error = true;
+                    isBalanced = false;
+                } else if ((node.left && this.#compareNodes(node, node.left.max) < 0) || (node.right && this.#compareNodes(node, node.right.min) >= 0)) {
+                    node.colorIndex = ColorIndex.Red;
+                    isSearch = false;
                 } else {
                     node.colorIndex = ColorIndex.Gray;
                 }
             }
-            //await this.step(this.#delay()/10);
         }
-        return result;
+        return {isBalanced, isSearch};
     }
     //#endregion tree algorithms
 
@@ -435,12 +454,9 @@ export class UserCode extends CoreCode {
                 console.outln("Postfix form of expression:");
                 await this.toPostfixStr();
                 break;
-            case 'avlbalancecheck':
-                if (await this.avlBalanceCheck()) {
-                    console.outln("AVL tree needs rebalancing!");
-                } else {
-                    console.outln("AVL Tree is balanced!");
-                }
+            case 'avlcheck':
+                const {isSearch, isBalanced} = await this.avlCheck();
+                console.outln(`avlCheck: search=${isSearch}, balanced=${isBalanced}`);
                 break;
             case 'loadgraph':
                 await this.loadGraph("graph.txt");
@@ -465,10 +481,10 @@ export class UserCode extends CoreCode {
             default:
                 console.outln("Available commands:");
                 console.outln("  loadTree / loadAVLTree : loads a sample binary tree.");
-                console.outln("    toPrefixStr     : serializes the tree in prefix order.");
-                console.outln("    toInfixStr      : serializes the tree in infix order.")
-                console.outln("    toPostfixStr    : serializes the tree in postfix order.");
-                console.outln("    avlBalanceCheck : highlights nodes to rebalance in AVL tree.");
+                console.outln("    toPrefixStr  : serializes a tree in prefix order.");
+                console.outln("    toInfixStr   : serializes a tree in infix order.")
+                console.outln("    toPostfixStr : serializes a tree in postfix order.");
+                console.outln("    avlCheck     : checks AVL search and balance properties of a tree.");
                 console.outln("  --------------");
                 console.outln("  loadGraph  : loads a sample graph.");
                 console.outln("    spanningTree : runs the Spanning tree algo.");
