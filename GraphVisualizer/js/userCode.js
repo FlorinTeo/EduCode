@@ -276,6 +276,9 @@ export class UserCode extends CoreCode {
         }
     }
 
+    async avlStats() {
+        return `nodes=${graph.nodes.length}, maxSteps=${this.#startNode.state}`;
+    }
     //#endregion tree algorithms
 
     //#region graph algorithms
@@ -498,8 +501,11 @@ export class UserCode extends CoreCode {
             case 'avlcheck':
                 const {isSearch, isBalanced} = await this.avlCheck();
                 console.outln(`avlCheck: search=${isSearch}, balanced=${isBalanced}`);
-                if (!isBalanced) {
-                    console.outln(`avlCheck: ${await this.avlSetLabels()}`);
+                if (isSearch) {
+                    if (!isBalanced) {
+                        console.outln(`avlCheck: ${await this.avlSetLabels()}`);    
+                    }
+                    console.outln(`avlCheck: ${await this.avlStats()}`);
                 }
                 break;
             case 'loadgraph':
