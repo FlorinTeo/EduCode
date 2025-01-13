@@ -69,8 +69,8 @@ export class Node {
         let val1 = this.label;
         let val2 = otherNode.label;
         if (!isNaN(val1) && !isNaN(val2)) {
-            val1 = parseInt(this.label);
-            val2 = parseInt(otherNode.label);
+            val1 = parseFloat(this.label);
+            val2 = parseFloat(otherNode.label);
         }
         return (val1 > val2) ? 1
              : (val1 == val2) ? 0
