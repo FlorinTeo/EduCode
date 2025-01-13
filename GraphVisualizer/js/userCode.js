@@ -3,6 +3,7 @@ import { console, queue } from "./main.js";
 import { graph } from "./main.js";
 import { stack } from "./main.js";
 import { ColorIndex } from "./adt/graph.js";
+import { SNAP_DISTANCE, SCALE } from "./adt/graph.js";
 
 export class UserCode extends CoreCode {
 
@@ -46,18 +47,6 @@ export class UserCode extends CoreCode {
             return false;
         }
         return true;
-    }
-
-    #compareNodes(n1, n2) {
-        let val1 = n1.label;
-        let val2 = n2.label;
-        if (!isNaN(val1) && !isNaN(val2)) {
-            val1 = parseInt(n1.label);
-            val2 = parseInt(n2.label);
-        }
-        return (val1 > val2) ? 1
-             : (val1 == val2) ? 0
-             : -1;
     }
 
     #delay() {
@@ -196,10 +185,18 @@ export class UserCode extends CoreCode {
         let isSearch = true;
         let isBalanced = true;
         let root = this.#startNode;
-        graph.traverse(n => {n.state = 0; n.min = undefined; n.max = undefined; n.error = undefined; });
+        graph.traverse(n => { 
+            n.state = 0;
+            n.min = undefined;
+            n.max = undefined;
+            n.error = undefined;
+            n.bf = undefined;
+        });
         stack.clear();
         queue.clear();
         stack.push(root);
+        let varNodes = graph.varNodes.filter(vn => ["A", "B", "C", "D", "E", "F", "G"].includes(vn.label));
+        varNodes.forEach(vn => graph.removeVarNode(vn));
         while (stack.size() > 0) {
             let node = stack.pop();
             if (node.colorIndex == ColorIndex.Gray) {
@@ -215,17 +212,18 @@ export class UserCode extends CoreCode {
             } else {
                 let heightLeft = node.left ? node.left.state : 0;
                 let heightRight = node.right ? node.right.state : 0;
+                node.bf = heightRight - heightLeft;
                 node.state = Math.max(heightLeft, heightRight) + 1;
                 node.min = node.left ? node.left.min : node;
                 node.max = node.right ? node.right.max : node;
-                if ((node.left && node.left.error) || (node.right && node.right.error)) {
+                if ((node.left && node.left.error != undefined) || (node.right && node.right.error != undefined)) {
                     node.colorIndex = ColorIndex.Blue;
-                    node.error = true;
-                } else if (Math.abs(heightLeft - heightRight) > 1) {
+                    node.error = 0;
+                } else if (Math.abs(node.bf) > 1) {
                     node.colorIndex = ColorIndex.Green;
-                    node.error = true;
+                    node.error = 1;
                     isBalanced = false;
-                } else if ((node.left && this.#compareNodes(node, node.left.max) < 0) || (node.right && this.#compareNodes(node, node.right.min) >= 0)) {
+                } else if ((node.left && node.compare(node.left.max) < 0) || (node.right && node.compare(node.right.min) >= 0)) {
                     node.colorIndex = ColorIndex.Red;
                     isSearch = false;
                 } else {
@@ -235,6 +233,49 @@ export class UserCode extends CoreCode {
         }
         return {isBalanced, isSearch};
     }
+
+    #avlSetLabel(node, labels, xShift) {
+        let label = labels.shift();
+        if (node) {
+            graph.addVarNode(label, node.x + xShift, node.y - SNAP_DISTANCE[SCALE] / 2);
+        }
+    }
+
+    async avlSetLabels() {
+        let labels = ["A", "B", "C", "D", "E", "F", "G"];
+        let avlNode = graph.nodes.find(n => (n.error == 1));
+        // set variables for the root node and its children: A, B and C
+        this.#avlSetLabel(avlNode, labels, 0);
+        this.#avlSetLabel(avlNode.left, labels, -SNAP_DISTANCE[SCALE] / 4);
+        this.#avlSetLabel(avlNode.right, labels, SNAP_DISTANCE[SCALE] / 4);
+        // check left/right heavy
+        if (avlNode.bf < 0) {
+            // if left-heavy set D, E variables on the children of the left node
+            this.#avlSetLabel(avlNode.left.left, labels, -SNAP_DISTANCE[SCALE] / 4);
+            this.#avlSetLabel(avlNode.left.right, labels, SNAP_DISTANCE[SCALE] / 4);
+            // if left-right heavy, set the F, G variables on the children of the left-right node
+            if (avlNode.left.bf > 0) {
+                this.#avlSetLabel(avlNode.left.right.left, labels, -SNAP_DISTANCE[SCALE] / 4);
+                this.#avlSetLabel(avlNode.left.right.right, labels, SNAP_DISTANCE[SCALE] / 4);
+                return "LEFT-right heavy case.";
+            } else {
+                return "LEFT-left heavy case.";
+            }
+        } else {
+            // if right-heavy set D, E variables on the children of the right node
+            this.#avlSetLabel(avlNode.right.left, labels, -SNAP_DISTANCE[SCALE] / 4);
+            this.#avlSetLabel(avlNode.right.right, labels, SNAP_DISTANCE[SCALE] / 4);
+            // if right-left heavy, set the F, G variables on the children of the right-left node
+            if (avlNode.right.bf < 0) {
+                this.#avlSetLabel(avlNode.right.left.left, labels, -SNAP_DISTANCE[SCALE] / 4);
+                this.#avlSetLabel(avlNode.right.left.right, labels, SNAP_DISTANCE[SCALE] / 4);
+                return "RIGHT-left heavy case.";
+            } else {
+                return "RIGHT-right heavy case.";
+            }
+        }
+    }
+
     //#endregion tree algorithms
 
     //#region graph algorithms
@@ -457,6 +498,9 @@ export class UserCode extends CoreCode {
             case 'avlcheck':
                 const {isSearch, isBalanced} = await this.avlCheck();
                 console.outln(`avlCheck: search=${isSearch}, balanced=${isBalanced}`);
+                if (!isBalanced) {
+                    console.outln(`avlCheck: ${await this.avlSetLabels()}`);
+                }
                 break;
             case 'loadgraph':
                 await this.loadGraph("graph.txt");

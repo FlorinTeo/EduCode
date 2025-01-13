@@ -65,6 +65,18 @@ export class Node {
         return distance(this.x, this.y, otherNode.x, otherNode.y);
     }
 
+    compare(otherNode) {
+        let val1 = this.label;
+        let val2 = otherNode.label;
+        if (!isNaN(val1) && !isNaN(val2)) {
+            val1 = parseInt(this.label);
+            val2 = parseInt(otherNode.label);
+        }
+        return (val1 > val2) ? 1
+             : (val1 == val2) ? 0
+             : -1;
+    }
+
     toggleColor(deltaIndex) {
         deltaIndex = Math.sign(deltaIndex);
         this.colorIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.colorIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
