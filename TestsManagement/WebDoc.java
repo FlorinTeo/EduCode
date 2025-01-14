@@ -11,7 +11,7 @@ import java.util.Queue;
 
 public class WebDoc {
     public static final String _PRINT_BREAK = "<div style=\"break-after:page\"></div><br>";
-    public static final int _MAX_PX_PER_PAGE = 800;
+    public static final int _MAX_PX_PER_PAGE = 880;
     public static final int _FRQ_ANSWER_PAGES = 4;
 
     private static final String _TAG_STYLE = "<!--======== STYLE ========-->";
