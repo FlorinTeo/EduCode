@@ -1,3 +1,7 @@
+const GRID_SPACING = [40, 20, 10];
+const GRID_COLOR = '#EEEBDD';
+const GRID_WIDTH = [1, 0.8, 0.5];
+
 export class Graphics {
     /*
     Class members:
@@ -231,9 +235,29 @@ export class Graphics {
     }
 
     // clears the drawing canvas
-    clear() {
+    clear(grid, scale) {
         let context = this.hCanvas.getContext("2d");
         context.fillStyle = 'white';
         context.fillRect(0, 0, this.hCanvas.width, this.hCanvas.height);
+        if (grid) {
+            context.strokeStyle = GRID_COLOR;
+            context.lineWidth = GRID_WIDTH[scale];
+            
+            // Draw vertical lines
+            for (let x = GRID_SPACING[scale]; x <= this.hCanvas.width; x += GRID_SPACING[scale]) {
+                context.beginPath();
+                context.moveTo(x, 0);
+                context.lineTo(x, this.hCanvas.height);
+                context.stroke();
+            }
+            
+            // Draw horizontal lines
+            for (let y = GRID_SPACING[scale]; y <= this.hCanvas.height; y += GRID_SPACING[scale]) {
+                context.beginPath();
+                context.moveTo(0, y);
+                context.lineTo(this.hCanvas.width, y);
+                context.stroke();
+            }
+        }
     }
 }

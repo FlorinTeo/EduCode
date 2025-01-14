@@ -37,7 +37,7 @@ export let stack = new Stack(graphics);
 
 // exported functions
 export function repaint() {
-    graphics.clear();
+    graphics.clear(ctxMenuCanvas.getInput('hCtxMenuCanvas_Grid'), SCALE);
     graph.repaint();
     queue.repaint();
     stack.repaint();
@@ -402,6 +402,10 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
     stack.clear();
     repaint();
 });
+
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_Grid', () => {
+    repaint();
+})
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_XFer', () => {
     xferDialog.show(graph);
