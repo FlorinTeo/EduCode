@@ -245,7 +245,7 @@ export class UserCode extends CoreCode {
         let labels = ["A", "B", "C", "D", "E", "F", "G"];
         let avlNode = graph.nodes.find(n => (n.error == 1));
         // set variables for the root node and its children: A, B and C
-        this.#avlSetLabel(avlNode, labels, 0);
+        this.#avlSetLabel(avlNode, labels, (avlNode === this.#startNode) ? -SNAP_DISTANCE[SCALE] / 4 : 0);
         this.#avlSetLabel(avlNode.left, labels, -SNAP_DISTANCE[SCALE] / 4);
         this.#avlSetLabel(avlNode.right, labels, SNAP_DISTANCE[SCALE] / 4);
         // check left/right heavy
