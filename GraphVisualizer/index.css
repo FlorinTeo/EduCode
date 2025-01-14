@@ -187,11 +187,15 @@ body {
         label {
             flex: 0 0 0;
             margin-right: auto;
-            width: 50px;
+            width: 40px;
         }
         input[type="text"] {
             flex: 0 0 0;
-            width: 100px;
+            width: 80px;
+        }
+        input[type="checkbox"] {
+            width:50px;
+            flex: 0 0 0;
         }
     }
 
