@@ -182,22 +182,22 @@ body {
     p {
         display: flex;
         align-items:center;
-        padding: 2 1rem 0 1rem;
+        padding: 2 4 2 4;
         margin: 0;
+        label {
+            flex: 0 0 0;
+            margin-right: auto;
+            width: 50px;
+        }
+        input[type="text"] {
+            flex: 0 0 0;
+            width: 100px;
+        }
     }
 
     p:hover {
         background: rgb(116, 116, 116);
         color: ghostwhite;
-    }
-
-    label {
-        flex: 0 0 57px;
-    }
-
-    input {
-        flex: 1;
-        width: 48px;
     }
 
     .menu-separator {
