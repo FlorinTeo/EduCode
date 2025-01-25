@@ -50,6 +50,7 @@ public class Servlet extends HttpServlet{
     /**
      * Parse a "http://.../web-apis/wordle?" request
      */
+    @SuppressWarnings("null")
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, String[]> params = request.getParameterMap();
         String sid = "?";
