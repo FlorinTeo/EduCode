@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"path": "web-apis"
+		},
+		{
+			"path": "TestsManagement"
+		},
+		{
+			"path": "CodeStepByStep"
+		},
+		{
+			"path": "GraphVisualizer"
+		},
+		{
+			"path": "CompCode"
+		}
+	],
+	"settings": {
+		"liveServer.settings.port": 5501,
+		"java.project.referencedLibraries": [
+			"lib/**/*.jar"
+		],
+		"java.configuration.updateBuildConfiguration": "interactive",
+		"java.compile.nullAnalysis.mode": "automatic",
+		"liveServer.settings.multiRootWorkspaceName": "GraphVisualizer"
+	}
+}
