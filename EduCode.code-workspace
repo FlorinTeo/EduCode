@@ -1,6 +1,9 @@
 {
 	"folders": [
 		{
+			"path": "drawing-lib"
+		},
+		{
 			"path": "web-apis"
 		},
 		{
