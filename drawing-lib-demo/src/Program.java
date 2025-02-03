@@ -23,16 +23,26 @@ public class Program {
         Drawing drw = new Drawing(drwImg);
         DrawingFrame drwFrame = new DrawingFrame(drw);
         drwFrame.open();
-        drwFrame.setMouseClickedHook(_onMouseClick);
         System.out.println("Pausing");
         drwFrame.step();
         for(int i = 0; i < 10; i++) {
             System.out.println(i);
             drwFrame.step(1000);
         }
-        System.out.println("Stopping & removing hook");
-        drwFrame.setMouseClickedHook(null);
+        System.out.println("Stopping");
+
+        // enabling the mouse hook. While mouse hook enabled, stop() and step() methods are inactive (pass-through)!
+        drwFrame.setMouseClickedHook(_onMouseClick);
         drwFrame.stop();
+        System.out.println("MouseHook enabled for 10sec!");
+        Thread.sleep(10000);
+
+        // disable the mouse hook. When disabled, stop() and step() are active!
+        drwFrame.setMouseClickedHook(null);
+        System.out.println("MouseHook disabled!");
+        drwFrame.stop();
+
+        // close the frame
         drwFrame.close();
         System.out.println("Goodbye!");
     }
