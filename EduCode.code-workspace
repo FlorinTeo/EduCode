@@ -4,16 +4,16 @@
 			"path": "web-apis"
 		},
 		{
-			"path": "TestsManagement"
+			"path": "CodeStepByStep"
 		},
 		{
-			"path": "CodeStepByStep"
+			"path": "CompCode"
 		},
 		{
 			"path": "GraphVisualizer"
 		},
 		{
-			"path": "CompCode"
+			"path": "TestsManagement"
 		}
 	],
 	"settings": {
