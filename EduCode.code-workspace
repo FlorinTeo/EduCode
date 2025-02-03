@@ -4,6 +4,9 @@
 			"path": "drawing-lib"
 		},
 		{
+			"path": "drawing-lib-demo"
+		},
+		{
 			"path": "web-apis"
 		},
 		{

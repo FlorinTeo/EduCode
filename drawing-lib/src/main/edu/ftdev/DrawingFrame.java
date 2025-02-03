@@ -77,8 +77,8 @@ public class DrawingFrame implements
                         dbgKeys[i],
                         xAnchor,
                         yAnchor,
-                        String.format("DrawingLib/drawing/res/%d_up.png", i+1),
-                        String.format("DrawingLib/drawing/res/%d_down.png", i+1));
+                        String.format("edu/ftdev/res/%d_up.png", i+1),
+                        String.format("edu/ftdev/res/%d_down.png", i+1));
                 xAnchor += _dbgButtons[i].getWidth();
             } else {
                 xAnchor += 4 * _padding;
@@ -86,8 +86,8 @@ public class DrawingFrame implements
                         dbgKeys[i],
                         xAnchor,
                         yAnchor,
-                        "DrawingLib/drawing/res/ff_up.png",
-                        "DrawingLib/drawing/res/ff_down.png");
+                        "edu/ftdev/res/ff_up.png",
+                        "edu/ftdev/res/ff_down.png");
             }
             _dbgButtons[i].setState(BtnState.DISABLED);
         }
