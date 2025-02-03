@@ -161,7 +161,7 @@ public class DrawingFrame implements
         
         // layout the frame size and attributes
         _frame.setSize(
-                xAnchor + _drawing.getWidth() + _padding + insets.right,
+                xAnchor + _canvas.getWidth() + _padding + insets.right,
                 yAnchor + insets.bottom);
         _frame.setLayout(null);
         _frame.setLocationRelativeTo(null);
