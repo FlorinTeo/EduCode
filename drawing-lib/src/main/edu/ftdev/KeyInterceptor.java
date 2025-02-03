@@ -34,15 +34,15 @@ public class KeyInterceptor implements KeyListener {
         public void keyHook(KeyEvent keyEvent);
     }
     
-    // Region: [Private] Data fields
+    // #region: [Private] Data fields
     private Object _sync = new Object();
     private Integer _keyStepLevel = Integer.MIN_VALUE;
     private HashMap<Integer, KeyHook> _keyTypedHooks = new HashMap<Integer, KeyHook>();
     private HashMap<Integer, KeyHook> _keyPressedHooks = new HashMap<Integer, KeyHook>();
     private HashMap<Integer, KeyHook> _keyReleasedHooks = new HashMap<Integer, KeyHook>();
-    // EndRegion: [Private] Data fields
+    // #endregion: [Private] Data fields
     
-    // Region: [Private] Key hooking private helpers
+    // #region: [Private] Key hooking private helpers
     private void forwardKeyEvent(KeyEvent e, HashMap<Integer, KeyHook> keyHooks) {
         int hookKey = e.getKeyCode();
         if (hookKey == KeyEvent.VK_UNDEFINED) {
@@ -56,9 +56,9 @@ public class KeyInterceptor implements KeyListener {
             }
         }
     }
-    // EndRegion: [Private] Key hooking private helpers
+    // #endregion: [Private] Key hooking private helpers
     
-    // Region: [Internal] Keys hooking methods
+    // #region: [Internal] Keys hooking methods
     KeyHook getKeyTypedHook(int keyEventKey) {
         return _keyTypedHooks.get(keyEventKey);
     }
@@ -89,9 +89,9 @@ public class KeyInterceptor implements KeyListener {
                 ? _keyReleasedHooks.remove(keyEventKey)
                 : _keyReleasedHooks.put(keyEventKey, keyHook);
     }
-    // EndRegion: [Internal] Keys hooking methods
+    // #endregion: [Internal] Keys hooking methods
     
-    // Region: [Public] KeyListener overrides
+    // #region: [Public] KeyListener overrides
     @Override
     public void keyTyped(KeyEvent keyEvent) {
         synchronized (_sync) {
@@ -136,33 +136,33 @@ public class KeyInterceptor implements KeyListener {
     public void keyReleased(KeyEvent keyEvent) {
         forwardKeyEvent(keyEvent, _keyReleasedHooks);
     }
-    // EndRegion: [Public] KeyListener overrides
+    // #endregion: [Public] KeyListener overrides
     
-    // Region: [Internal] Control methods
+    // #region: [Internal] Control methods
     boolean blocksOnLevel(int level) {
-        return (level >= _keyStepLevel);
+        return (level >= _keyStepLevel) && (_keyStepLevel != Integer.MAX_VALUE);
     }
-    
-    boolean isFastFwd() {
-        return (_keyStepLevel == Integer.MAX_VALUE);
-    }
-    
+
     void step(int level) {
-        step(level, 0);
+        step(level, Long.MAX_VALUE);
     }
     
     void step(int level, long delay) {
         synchronized (_sync) {
             try {
-                // block if level is same or greater than the key-typed level.
-                // (i.e step_0 won't block if user typed 2)
+                // if the level of the step says we should block..
                 if (blocksOnLevel(level)) {
-                    _sync.wait();
-                } else if (!isFastFwd() && delay > 0) {
-                    Thread.sleep(delay);
+                    // ..if is definite pause..
+                    if (delay == Long.MAX_VALUE) {
+                        // ..wait for user action..
+                        _sync.wait();
+                    } else {
+                        // ..otherwise just delay..
+                        Thread.sleep(delay);
+                    }
                 }
             } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
+                //e.printStackTrace();
             }
         }
     }
@@ -177,5 +177,5 @@ public class KeyInterceptor implements KeyListener {
                 (char)keyEventKey);
         keyTyped(keyEvent);
     }
-    // EndRegion: [Internal] Control methods
+    // #endregion: [Internal] Control methods
 }

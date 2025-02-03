@@ -5,10 +5,7 @@ import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.TextField;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -17,6 +14,7 @@ import java.io.IOException;
 
 import edu.ftdev.DbgButton.BtnState;
 import edu.ftdev.KeyInterceptor.KeyHook;
+import edu.ftdev.MouseInterceptor.MouseHook;
 
 /**
  * Encapsulates a representation of a generic drawing image frame as a window that 
@@ -26,9 +24,9 @@ import edu.ftdev.KeyInterceptor.KeyHook;
  * in the program, in an interactive manner.
  */
 public class DrawingFrame implements 
-    Closeable, WindowListener, 
-    MouseListener, MouseMotionListener, MouseWheelListener {
+    Closeable, WindowListener {
     
+    private Thread _mainThread = null;
     private String _title = "Drawing Framework GUI";
     private int _padding = 4;
     private int _status_XY_width = 32;
@@ -43,9 +41,12 @@ public class DrawingFrame implements
     private TextField _statusX = null;
     private TextField _statusY = null;
     private TextField _statusText = null;
+
+    protected KeyInterceptor _keyInterceptor = new KeyInterceptor();
+    protected MouseInterceptor _mouseInterceptor = new MouseInterceptor();
     
-    // Region: [Private] KeyInterceptor hooks
-    private KeyInterceptor.KeyHook _onKeyInteceptorCtrl = (keyEvent) -> {
+    // #region: [Private] KeyInterceptor hooks
+    private KeyInterceptor.KeyHook _onKeyInterceptorCtrl = (keyEvent) -> {
         char ch = keyEvent.getKeyChar();
         switch (Character.toUpperCase(ch)) {
         case '1':
@@ -65,9 +66,45 @@ public class DrawingFrame implements
             break;
         }
     };
-    // EndRegion: [Private] KeyInterceptor hooks
+    // #endregion: [Private] KeyInterceptor hooks
 
-    // Region: [Private] DbgButtons management
+    // #region: [Private] MouseInterceptor hooks
+    private MouseInterceptor.MouseHook _onMouseClicked = (e) -> {
+        if (e.getSource() instanceof DbgButton) {
+            DbgButton dbgButton = (DbgButton)e.getSource();
+            if (dbgButton.getState() == BtnState.ENABLED) {
+                _keyInterceptor.simulateKeyTyped(dbgButton, dbgButton.getKey());
+            }
+        } else {
+            BufferedImage bi = _drawing.getImage();
+            int x = _canvas.xScreenToCanvas(e.getX());
+            int y = _canvas.yScreenToCanvas(e.getY());
+            Color c = new Color(bi.getRGB(x, y));
+            _statusText.setText(String.format("R:%d, G:%d, B:%d", c.getRed(), c.getGreen(), c.getBlue()));
+            _canvas.repaint();
+        }
+    };
+
+    private MouseInterceptor.MouseHook _onMouseDragged = (e) -> {
+        _canvas.pan(e.getX()-_lastMouseEvent.getX(), e.getY()-_lastMouseEvent.getY());
+        _lastMouseEvent = e;
+    };
+
+    private MouseInterceptor.MouseHook _onMouseMoved = (e) -> {
+        _lastMouseEvent = e;
+        _statusX.setText(""+_canvas.xScreenToCanvas(e.getX()));
+        _statusY.setText(""+_canvas.yScreenToCanvas(e.getY()));
+        //_statusText.setText("");
+    };
+
+    private MouseInterceptor.MouseHook _onMouseWheelMoved = (e) -> {
+        // wheel upwards (negative rotation) => zoom in => positive level value
+        int levels = -((MouseWheelEvent)e).getWheelRotation();
+        _canvas.zoom(e.getX(), e.getY(), levels);
+    };
+    // #endregion: [Private] MouseInterceptor hooks
+
+    // #region: [Private] DbgButtons management
     private void dbgButtonsSetup(int xAnchor, int yAnchor) throws IOException {
         char[] dbgKeys = {'1', '2', ' '};
         _dbgButtons = new DbgButton[3];
@@ -89,12 +126,12 @@ public class DrawingFrame implements
                         "edu/ftdev/res/ff_up.png",
                         "edu/ftdev/res/ff_down.png");
             }
-            _dbgButtons[i].setState(BtnState.DISABLED);
+            _dbgButtons[i].setState(BtnState.ENABLED);
         }
     }
-    // EndRegion: [Private] DbgButtons management
+    // #endregion: [Private] DbgButtons management
     
-    // Region: [Private] StatusBar management
+    // #region: [Private] StatusBar management
     private void statusBarSetup(int xAnchor, int yAnchor, int width) {
         int x = xAnchor;
         _statusX = new TextField();
@@ -117,7 +154,7 @@ public class DrawingFrame implements
                 w,
                 _status_height);
     }
-    // EndRegion: [Private] StatusBar management
+    // #endregion: [Private] StatusBar management
     
     /**
      * Creates an instance of a DrawingFrame object encapsulating the representation of a window displaying the pixels of the given drawing object.
@@ -126,10 +163,18 @@ public class DrawingFrame implements
      * @throws IOException
      */
     public DrawingFrame(Drawing drawing) throws IOException {
+        // keep track of the creating thread
+        _mainThread = Thread.currentThread();
+
         // setup callback methods for keyInterceptor control keys
-        _keyInterceptor.setKeyTypedHook('1', _onKeyInteceptorCtrl);
-        _keyInterceptor.setKeyTypedHook('2', _onKeyInteceptorCtrl);
-        _keyInterceptor.setKeyTypedHook(' ', _onKeyInteceptorCtrl);
+        _keyInterceptor.setKeyTypedHook('1', _onKeyInterceptorCtrl);
+        _keyInterceptor.setKeyTypedHook('2', _onKeyInterceptorCtrl);
+        _keyInterceptor.setKeyTypedHook(' ', _onKeyInterceptorCtrl);
+        // setup callback methods for mouseInterceptor events
+        _mouseInterceptor.setSysMouseHook(MouseEvent.MOUSE_CLICKED, _onMouseClicked);
+        _mouseInterceptor.setSysMouseHook(MouseEvent.MOUSE_DRAGGED, _onMouseDragged);
+        _mouseInterceptor.setSysMouseHook(MouseEvent.MOUSE_MOVED, _onMouseMoved);
+        _mouseInterceptor.setSysMouseHook(MouseEvent.MOUSE_WHEEL, _onMouseWheelMoved);
         
         _drawing = drawing;
         
@@ -150,9 +195,9 @@ public class DrawingFrame implements
         // create the map canvas
         _canvas = new DrawingCanvas(xAnchor, yAnchor, _drawing);
         _canvas.addKeyListener(_keyInterceptor);
-        _canvas.addMouseMotionListener(this);
-        _canvas.addMouseListener(this);
-        _canvas.addMouseWheelListener(this);
+        _canvas.addMouseMotionListener(_mouseInterceptor);
+        _canvas.addMouseListener(_mouseInterceptor);
+        _canvas.addMouseWheelListener(_mouseInterceptor);
         yAnchor += _canvas.getHeight() + _padding;
         
         // create the status bar indicators
@@ -169,7 +214,7 @@ public class DrawingFrame implements
         
         // add the controls
         for(DbgButton dbgButton : _dbgButtons) {
-            dbgButton.addMouseListener(this);
+            dbgButton.addMouseListener(_mouseInterceptor);
             dbgButton.addKeyListener(_keyInterceptor);
             _frame.add(dbgButton);
         }
@@ -184,9 +229,25 @@ public class DrawingFrame implements
         _frame.addWindowListener(this);
     }
     
-    // Region: [Public] Execution control methods
-    protected KeyInterceptor _keyInterceptor = new KeyInterceptor();
+    /**
+     * Gets the X canvas coordinate of a mouse click.
+     * @param mouseEvent - the mouse event as given to a mouse handler.
+     * @return X canvas coordinate.
+     */
+    public int getCanvasX(MouseEvent mouseEvent) {
+        return _canvas.xScreenToCanvas(mouseEvent.getX());
+    }
+
+    /**
+     * Gets the Y canvas coordinate of a mouse click.
+     * @param mouseEvent - the mouse event as given to a mouse handler.
+     * @return X canvas coordinate.
+     */
+    public int getCanvasY(MouseEvent mouseEvent) {
+        return _canvas.yScreenToCanvas(mouseEvent.getY());
+    }
     
+    // #region: [Public] Execution control methods
     /**
      * There are three modes in which the program can execute:
      * <br>� "step-by-step": when program starts or after execution is resumed by pressing '1'.
@@ -200,7 +261,7 @@ public class DrawingFrame implements
      * @see #stop()
      */
     public void step() throws InterruptedException {
-        step(1, 0);
+        step(1, Long.MAX_VALUE);
     }
     
     /**
@@ -242,22 +303,28 @@ public class DrawingFrame implements
             String dbgLine = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
             _statusText.setText(dbgLine);
         }
-        step(2, 0);
+        step(2, Long.MAX_VALUE);
         _statusText.setText("");
     }
     
     private void step(int level, long delay) throws InterruptedException {
-        if (_keyInterceptor.blocksOnLevel(level)) {
+        if (_keyInterceptor.blocksOnLevel(level) && delay == Long.MAX_VALUE) {
             _dbgButtons[0].setState(BtnState.ENABLED);
             _dbgButtons[1].setState(BtnState.ENABLED);
             _dbgButtons[2].setState(BtnState.ENABLED);
         }
         _canvas.repaint();
+        // step control calls are disabled if there are mouse custom hooks in effect since
+        // same step controls are expected to be in the hooks and would incorrectly trigger
+        // the ones from the main thread as well.
+        if (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) {
+            return;
+        }
         _keyInterceptor.step(level, delay);
     }
-    // EndRegion: [Public] Execution control methods
+    // #endregion: [Public] Execution control methods
     
-    // Region: [Public] Key hooking methods
+    // #region: [Public] Key hooking methods
     /**
      * Gets the key hook currently set to intercept the given key typed event.
      * @param keyEvent - the key type event being inquired.
@@ -314,10 +381,21 @@ public class DrawingFrame implements
     public KeyHook setKeyReleasedHook(int keyEvent, KeyHook keyHook) {
         return _keyInterceptor.setKeyReleasedHook(keyEvent, keyHook);
     }
-    // EndRegion: [Public] Key hooking methods
-    
-    // Region: [Public] Frame display methods
+    // #endregion: [Public] Key hooking methods
+ 
+    // #region: [Public] Mouse hooking methods
+    /**
+     * Sets a mouse hook to be called when the left mouse button is clicked.
+     * @param mouseHook - the mouse hook to be called when the button is clicked
+     * or null if the event should not be intercepted.
+     * @return - the mouse hook previously set for the given event, or null if none exist.
+     */
+    public MouseHook setMouseClickedHook(MouseHook mouseHook) {
+        return _mouseInterceptor.setCustomMouseHook(MouseEvent.MOUSE_CLICKED, _canvas, mouseHook);
+    }
+    // #endregion: [Public] Mouse hooking methods
 
+    // #region: [Public] Frame display methods
     public String getTitle() {
         return _title;
     }
@@ -357,15 +435,24 @@ public class DrawingFrame implements
      */
     @Override
     public void close() throws IOException {
+        // close is disabled on main thread if there are mouse custom hooks in effect
+        // since frame is expected to be closed via UI.
+        if (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) {
+            return;
+        }
         if (_frame != null) {
+            _mouseInterceptor.close();
+            _frame.removeKeyListener(_keyInterceptor);
+            _frame.removeMouseListener(_mouseInterceptor);
+            _frame.removeWindowListener(this);
             _frame.setVisible(false);
             _frame.dispose();
             _frame = null;
         }
     }
-    // EndRegion: [Public] Frame display methods
+    // #endregion: [Public] Frame display methods
 
-    // Region: [Public] WindowListener overrides
+    // #region: [Public] WindowListener overrides
     @Override
     public void windowOpened(WindowEvent e) {
     }
@@ -374,6 +461,7 @@ public class DrawingFrame implements
     public void windowClosing(WindowEvent e) {
         try {
             this.close();
+            System.exit(0);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -398,65 +486,5 @@ public class DrawingFrame implements
     @Override
     public void windowDeactivated(WindowEvent e) {
     }
-    // EndRegion: [Public] WindowListener overrides
-
-    // Region: [Public] MouseListener overrides
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (e.getSource() instanceof DbgButton) {
-            DbgButton dbgButton = (DbgButton)e.getSource();
-            if (dbgButton.getState() == BtnState.ENABLED) {
-                _keyInterceptor.simulateKeyTyped(dbgButton, dbgButton.getKey());
-            }
-        } else {
-            BufferedImage bi = _drawing.getImage();
-            int x = _canvas.xScreenToCanvas(e.getX());
-            int y = _canvas.yScreenToCanvas(e.getY());
-            Color c = new Color(bi.getRGB(x, y));
-            _statusText.setText(String.format("R:%d, G:%d, B:%d", c.getRed(), c.getGreen(), c.getBlue()));
-            _canvas.repaint();
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
-    // EndRegion: [Public] MouseListener overrides
-
-    // Region: [Public] MouseMotionListener overrides
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        _canvas.pan(e.getX()-_lastMouseEvent.getX(), e.getY()-_lastMouseEvent.getY());
-        _lastMouseEvent = e;
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        _lastMouseEvent = e;
-        _statusX.setText(""+_canvas.xScreenToCanvas(e.getX()));
-        _statusY.setText(""+_canvas.yScreenToCanvas(e.getY()));
-        //_statusText.setText("");
-    }
-    // EndRegion: [Public] MouseMotionListener overrides
-
-    // Region: [Public] MouseWheelListener overrides
-    @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-        // wheel upwards (negative rotation) => zoom in => positive level value
-        int levels = -e.getWheelRotation();
-        _canvas.zoom(e.getX(), e.getY(), levels);
-    }
-    // EndRegion: [Public] MouseWheelListener overrides
+    // #endregion: [Public] WindowListener overrides
 }

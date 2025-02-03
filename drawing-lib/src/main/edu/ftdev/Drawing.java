@@ -53,6 +53,44 @@ public class Drawing {
     }
     
     /**
+     * Indicates whether the pixel coordinates given as arguments fall within the bounds
+     * of the image. The top-left valid coordinate of the image is (0, 0), 
+     * the bottom-right valid coordinate is (width-1, height-1). 
+     * @param x - x coordinate value.
+     * @param y - y coordinate value.
+     * @return true if both x and y are within their respective ranges, false otherwise.
+     */
+    public boolean isValidPixel(int x, int y) {
+        return (x >= 0 && x <= _image.getWidth()-3 && y >=0 && y <= _image.getHeight()-3);
+    }
+    
+    /**
+     * Indicates whether the pixel at the given x and y coordinates is of a bright-toned color.
+     * This is defined as a color where each of the three color-components (R, G and B)
+     * have a value larger than 220.
+     * @param x - x coordinate value.
+     * @param y - y coordinate value.
+     * @return true if the pixel has a bright-toned color, false otherwise.
+     */
+    public boolean isBrightPixel(int x, int y) {
+        Color c = new Color(_image.getRGB(x, y));
+        return c.getRed() > 220 && c.getGreen() > 220 && c.getBlue() > 220;
+    }
+    
+    /**
+     * Indicates whether the pixel at the given x and y coordinates is of a dark-toned color.
+     * This is defined as a color where each of the three color-components (R, G and B)
+     * have a value lesser than 30.
+     * @param x - x coordinate value.
+     * @param y - y coordinate value.
+     * @return true if the pixel has a dark-toned color, false otherwise.
+     */
+    public boolean isDarkPixel(int x, int y) {
+        Color c = new Color(_image.getRGB(x, y));
+        return c.getRed() < 30 && c.getGreen() < 30 && c.getBlue() < 30;
+    }
+    
+    /**
      * Gets the color of the pixel at the given x and y coordinates.
      * @param x - x coordinate value.
      * @param y - y coordinate value.

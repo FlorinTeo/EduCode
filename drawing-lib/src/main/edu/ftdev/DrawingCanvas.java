@@ -35,7 +35,7 @@ class DrawingCanvas extends Canvas {
     
     public void zoom(int xAnchor, int yAnchor, int levels) {
         if (levels != 1 && levels != -1) {
-            System.out.println("hmm");
+            //System.out.println("hmm");
         }
         
         int newScale = _scale + levels;
