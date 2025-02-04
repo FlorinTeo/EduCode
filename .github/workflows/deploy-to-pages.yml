@@ -3,6 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
+  workflow_dispatch: # Add this line to enable manual triggering
 
 jobs:
   build:
@@ -31,4 +32,4 @@ jobs:
         id: deployment
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: build # Ensure this matches the name used in the build step
+          artifact_name: build
