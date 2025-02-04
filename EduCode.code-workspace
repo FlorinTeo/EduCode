@@ -1,27 +1,24 @@
 {
 	"folders": [
-		{
-			"path": "drawing-lib"
-		},
-		{
-			"path": "drawing-lib-demo"
-		},
-		{
-			"path": "web-apis"
-		},
-		{
-			"path": "CodeStepByStep"
-		},
-		{
-			"path": "CompCode"
-		},
-		{
-			"path": "GraphVisualizer"
-		},
-		{
-			"path": "TestsManagement"
-		}
-	],
+        {
+            "path": "drawing-lib"
+        },
+        {
+            "path": "web-apis"
+        },
+        {
+            "path": "CodeStepByStep"
+        },
+        {
+            "path": "CompCode"
+        },
+        {
+            "path": "GraphVisualizer"
+        },
+        {
+            "path": "TestsManagement"
+        }
+    ],
 	"settings": {
 		"liveServer.settings.port": 5501,
 		"java.project.referencedLibraries": [
