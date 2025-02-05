@@ -30,7 +30,7 @@ jobs:
       - name: List Artifacts
         run: |
           echo "Listing artifacts:"
-          ls -l ${{ runner.workspace }}/_temp/
+          ls -lR ${{ runner.workspace }}
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
