@@ -13,20 +13,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run custom build.sh
+      - name: Run GraphVisualizer build
         run: bash .github/gv-build.sh
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: gv-build
-          path: ./.gv-build/
-    
-      - name: List artifacts
+      - name: List GraphVisualizer build
         run: |
           echo "Listing artifacts:"
-          find .
+          find ./.gv-build
 
+      - name: Create and upload GraphVisualizer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gv-artifact
+          path: ./.gv-build/
+    
   deploy-to-pages:
     runs-on: ubuntu-latest
     environment:
@@ -44,13 +44,13 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
-          name: gv-build
+          name: gv-artifact
           path: ./.gv-build
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v3
 
-      - name: List Artifacts
+      - name: List artifacts
         run: |
           echo "Listing artifacts:"
           find .
@@ -60,4 +60,4 @@ jobs:
         id: deployment
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: gv-build
+          artifact_name: gv-artifact
