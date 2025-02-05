@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: gv-build-deployment
 
 on:
   push:
@@ -7,19 +7,19 @@ on:
 
 jobs:
 
-  build:
+  gv-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run GraphVisualizer build
+      - name: Run gv-Build
         run: bash .github/gv-build.sh
 
-      - name: List GraphVisualizer build
+      - name: List gv-Build
         run: find ./.gv-build
 
-      - name: Create and upload GraphVisualizer artifact
+      - name: Create and upload gv-Artifact
         uses: actions/upload-artifact@v4
         with:
           name: gv-artifact
@@ -27,12 +27,12 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
     
-  deploy-to-pages:
+  gv-deployment:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
+    needs: gv-build
     permissions:
       pages: write
       id-token: write
@@ -41,21 +41,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download Artifact
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v3
+
+      - name: Download gv-Artifact
         uses: actions/download-artifact@v4
         with:
           name: gv-artifact
           path: ./.gv-build
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v3
+      - name: List downloaded gv-Artifact
+        run: find ./.gv-build
 
-      - name: List artifacts
-        run: |
-          echo "Listing artifacts:"
-          find .
-
-      - name: Deploy to GitHub Pages
+      - name: Deploy gv-Pages
         uses: actions/deploy-pages@v2
         id: deployment
         with:
