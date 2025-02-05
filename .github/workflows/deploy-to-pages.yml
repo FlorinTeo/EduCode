@@ -21,16 +21,16 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - name: Print GitHub Token Permissions
-        run: |
-          echo "TOKEN PERMISSIONS:"
-          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/user
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v3
+
+      - name: List Artifacts
+        run: |
+          echo "Listing artifacts:"
+          ls -l ${{ runner.workspace }}/_temp/
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
@@ -38,4 +38,3 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: build
-
