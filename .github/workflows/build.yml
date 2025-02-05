@@ -11,10 +11,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: bash build.sh
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run custom build.sh
+        run: bash build.sh
+
       - if: ${{ inputs.upload-pages-artifact }}
+        name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: build
-          path: build/
+          path: ./build
+     
+      - name: List artifacts
+        run: |
+          echo "Listing artifacts:"
+          ls -lR .
