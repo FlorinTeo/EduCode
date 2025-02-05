@@ -3,13 +3,29 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # Add this line to enable manual triggering
+  workflow_dispatch:
 
 jobs:
+
   build:
-    uses: ./.github/workflows/build.yml
-    with:
-      upload-pages-artifact: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run custom build.sh
+        run: bash build.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: ./build
+    
+      - name: List artifacts
+        run: |
+          echo "Listing artifacts:"
+          find .
 
   deploy-to-pages:
     runs-on: ubuntu-latest
@@ -20,6 +36,7 @@ jobs:
     permissions:
       pages: write
       id-token: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,7 +53,7 @@ jobs:
       - name: List Artifacts
         run: |
           echo "Listing artifacts:"
-          ls -lR ${{ runner.workspace }}
+          find .
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
