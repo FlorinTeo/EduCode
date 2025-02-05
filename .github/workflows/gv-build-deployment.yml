@@ -16,6 +16,9 @@ jobs:
       - name: Run gv-Build
         run: bash .github/gv-build.sh
 
+      - name: List gv-Build
+        run: find .gv-build/
+
       - name: Create and upload gv-Artifact
         uses: actions/upload-pages-artifact@v3
         with:
