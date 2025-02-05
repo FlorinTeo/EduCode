@@ -20,7 +20,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gv-build
-          path: ./.gv-build
+          path: ./.gv-build/
     
       - name: List artifacts
         run: |
