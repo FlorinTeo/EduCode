@@ -33,3 +33,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: build
+
+      - name: Print GitHub Token Permissions
+        run: |
+          echo "TOKEN PERMISSIONS:"
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/user
