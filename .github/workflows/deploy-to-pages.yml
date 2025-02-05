@@ -17,15 +17,15 @@ jobs:
         run: bash .github/gv-build.sh
 
       - name: List GraphVisualizer build
-        run: |
-          echo "Listing artifacts:"
-          find ./.gv-build
+        run: find ./.gv-build
 
       - name: Create and upload GraphVisualizer artifact
         uses: actions/upload-artifact@v4
         with:
           name: gv-artifact
           path: ./.gv-build/
+          if-no-files-found: error
+          include-hidden-files: true
     
   deploy-to-pages:
     runs-on: ubuntu-latest
