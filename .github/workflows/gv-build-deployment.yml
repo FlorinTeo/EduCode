@@ -16,16 +16,14 @@ jobs:
       - name: Run gv-Build
         run: bash .github/gv-build.sh
 
-      - name: List gv-Build
-        run: find ./.gv-build
+      # - name: List gv-Build
+      #   run: find ./.gv-build
 
       - name: Create and upload gv-Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
           name: gv-artifact
           path: ./.gv-build/
-          if-no-files-found: error
-          include-hidden-files: true
     
   gv-deployment:
     runs-on: ubuntu-latest
@@ -44,17 +42,17 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v3
 
-      - name: Download gv-Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: gv-artifact
-          path: ./.gv-build
+      # - name: Download gv-Artifact
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: gv-artifact
+      #     path: ./.gv-build
 
-      - name: List downloaded gv-Artifact
-        run: find ./.gv-build
+      # - name: List downloaded gv-Artifact
+      #   run: find ./.gv-build
 
       - name: Deploy gv-Pages
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
         id: deployment
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
