@@ -10,6 +10,7 @@ import org.junit.Test;
 import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFrame;
 import edu.ftdev.MouseInterceptor.MouseHook;
+import edu.ftdev.CafeArt.CafeWall;
 
 public class DrawingFrame_tests {
 
@@ -49,5 +50,14 @@ public class DrawingFrame_tests {
         // close the frame
         drwFrame.close();
         System.out.println("Goodbye!");
+    }
+
+    @Test
+    public void cafeWallTest() throws IOException, InterruptedException {
+        CafeWall cafeWall = new CafeWall();
+        DrawingFrame drwFrame = new DrawingFrame(cafeWall);
+        drwFrame.open();
+        drwFrame.stop();
+        drwFrame.close();
     }
 }

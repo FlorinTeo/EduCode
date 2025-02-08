@@ -1,6 +1,7 @@
 package edu.ftdev;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,21 @@ public class Drawing {
         _image = image;
     }
     
+    /**
+     * Creates an instance of a Drawing as a rectangular image with the given width and height
+     * and filled with the given background color.
+     * @param width - width of the drawing image in pixels.
+     * @param height - height of the drawing image in pixels.
+     * @param bkgColor - the background color of the drawing image.
+     */
+    public Drawing(int width, int height, Color bkgColor) {
+        _image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = _image.createGraphics();
+        g2d.setColor(bkgColor);
+        g2d.fillRect(0, 0, width, height);
+        g2d.dispose();
+    }
+
     public BufferedImage getImage() {
         return _image;
     }
