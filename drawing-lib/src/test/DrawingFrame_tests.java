@@ -1,4 +1,5 @@
 import java.awt.image.BufferedImage;
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +11,6 @@ import org.junit.Test;
 import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFrame;
 import edu.ftdev.MouseInterceptor.MouseHook;
-import edu.ftdev.CafeArt.CafeWall;
 
 public class DrawingFrame_tests {
 
@@ -53,11 +53,17 @@ public class DrawingFrame_tests {
     }
 
     @Test
-    public void cafeWallTest() throws IOException, InterruptedException {
-        CafeWall cafeWall = new CafeWall();
-        DrawingFrame drwFrame = new DrawingFrame(cafeWall);
-        drwFrame.open();
-        drwFrame.stop();
-        drwFrame.close();
+    public void doubleFrameTest() throws IOException, InterruptedException {
+        File drwFile = new File("src/test/test_img1.jpg");
+        BufferedImage drwImg = ImageIO.read(drwFile);
+        Drawing drw1 = new Drawing(drwImg);
+        DrawingFrame drwFrame1 = new DrawingFrame(drw1);
+        drwFrame1.open();
+        Drawing drw2 = new Drawing(400, 300, Color.cyan);
+        DrawingFrame drwFrame2 = new DrawingFrame(drw2);
+        drwFrame2.open();
+        drwFrame1.stop();
+        drwFrame1.close();
+        drwFrame2.close();
     }
 }

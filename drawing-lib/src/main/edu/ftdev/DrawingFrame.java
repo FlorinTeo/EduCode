@@ -410,6 +410,8 @@ public class DrawingFrame implements
      * and the controls for interacting with it. 
      */
     public void open() {
+        // set the canvas reference in the drawing to allow subclasses to trigger repaints
+        _drawing._drwCanvas = _canvas;
         _frame.setVisible(true);
     }
     
@@ -440,6 +442,7 @@ public class DrawingFrame implements
         if (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) {
             return;
         }
+        // close the frame and the drawing - the DrawingFrame should no longer be used after this.
         if (_frame != null) {
             _mouseInterceptor.close();
             _frame.removeKeyListener(_keyInterceptor);
@@ -448,6 +451,10 @@ public class DrawingFrame implements
             _frame.setVisible(false);
             _frame.dispose();
             _frame = null;
+        }
+        if (_drawing != null) {
+            _drawing.close();
+            _drawing = null;
         }
     }
     // #endregion: [Public] Frame display methods

@@ -13,9 +13,14 @@ import javax.imageio.ImageIO;
  * can be created only by providing a valid image file as argument to its constructor. 
  * In return, the object can be used for accessing and modifying the image at pixel level.
  */
-public class Drawing {
+public class Drawing implements AutoCloseable {
     
+    // internal reference to the drawing canvas hosting this image.
+    // This is directly set by the DrawingFrame when the drawing is loaded into the canvas, is intended
+    // to be used by subclasses doing heavier graphics, in order trigger a canvas repaint.
+    protected DrawingCanvas _drwCanvas = null;
     protected BufferedImage _image = null;
+    protected Graphics2D _g2d = null;
     
     /**
      * Creates an instance of a Drawing object encapsulating the representation of 
@@ -42,10 +47,9 @@ public class Drawing {
      */
     public Drawing(int width, int height, Color bkgColor) {
         _image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = _image.createGraphics();
-        g2d.setColor(bkgColor);
-        g2d.fillRect(0, 0, width, height);
-        g2d.dispose();
+        _g2d = _image.createGraphics();
+        _g2d.setColor(bkgColor);
+        _g2d.fillRect(0, 0, width, height);
     }
 
     public BufferedImage getImage() {
@@ -124,5 +128,16 @@ public class Drawing {
      */
     public void setPixel(int x, int y, Color c) {
         _image.setRGB(x, y, c.getRGB());
+    }
+
+    @Override
+    public void close() {
+        if (_g2d != null) {
+            _g2d.dispose();
+        }
+        if (_image != null) {
+            _image.flush();
+            _image = null;
+        }
     }
 }
