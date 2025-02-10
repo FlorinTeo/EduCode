@@ -54,7 +54,7 @@ public class DrawingFrame implements
             _dbgButtons[1].setState(BtnState.ENABLED);
             _dbgButtons[2].setState(BtnState.ENABLED);
             break;
-        case '2':
+        case '3':
             _dbgButtons[0].setState(BtnState.ENABLED);
             _dbgButtons[1].setState(BtnState.DISABLED);
             _dbgButtons[2].setState(BtnState.ENABLED);
@@ -106,28 +106,31 @@ public class DrawingFrame implements
 
     // #region: [Private] DbgButtons management
     private void dbgButtonsSetup(int xAnchor, int yAnchor) throws IOException {
-        char[] dbgKeys = {'1', '2', ' '};
         _dbgButtons = new DbgButton[3];
-        for (int i = 0; i < _dbgButtons.length; i++) {
-            if (i < _dbgButtons.length - 1) {
-                _dbgButtons[i] = new DbgButton(
-                        dbgKeys[i],
-                        xAnchor,
-                        yAnchor,
-                        String.format("edu/ftdev/res/%d_up.png", i+1),
-                        String.format("edu/ftdev/res/%d_down.png", i+1));
-                xAnchor += _dbgButtons[i].getWidth();
-            } else {
-                xAnchor += 4 * _padding;
-                _dbgButtons[i] = new DbgButton(
-                        dbgKeys[i],
-                        xAnchor,
-                        yAnchor,
-                        "edu/ftdev/res/ff_up.png",
-                        "edu/ftdev/res/ff_down.png");
-            }
-            _dbgButtons[i].setState(BtnState.ENABLED);
-        }
+
+        _dbgButtons[0] = new DbgButton(
+            '1',
+            xAnchor,
+            yAnchor,
+            "edu/ftdev/res/1_up.png",
+            "edu/ftdev/res/1_down.png");
+        xAnchor += _dbgButtons[0].getWidth();
+
+        _dbgButtons[1] = new DbgButton(
+            '3',
+            xAnchor,
+            yAnchor,
+            "edu/ftdev/res/3_up.png",
+            "edu/ftdev/res/3_down.png");
+        xAnchor += _dbgButtons[1].getWidth();
+
+        _dbgButtons[2] = new DbgButton(
+            ' ',
+            xAnchor,
+            yAnchor,
+            "edu/ftdev/res/ff_up.png",
+            "edu/ftdev/res/ff_down.png");
+        xAnchor += _dbgButtons[2].getWidth();
     }
     // #endregion: [Private] DbgButtons management
     
@@ -168,7 +171,7 @@ public class DrawingFrame implements
 
         // setup callback methods for keyInterceptor control keys
         _keyInterceptor.setKeyTypedHook('1', _onKeyInterceptorCtrl);
-        _keyInterceptor.setKeyTypedHook('2', _onKeyInterceptorCtrl);
+        _keyInterceptor.setKeyTypedHook('3', _onKeyInterceptorCtrl);
         _keyInterceptor.setKeyTypedHook(' ', _onKeyInterceptorCtrl);
         // setup callback methods for mouseInterceptor events
         _mouseInterceptor.setSysMouseHook(MouseEvent.MOUSE_CLICKED, _onMouseClicked);
@@ -250,15 +253,15 @@ public class DrawingFrame implements
     // #region: [Public] Execution control methods
     /**
      * There are three modes in which the program can execute:
-     * <br>� "step-by-step": when program starts or after execution is resumed by pressing '1'.
-     * <br>� "continue": after execution is resumed by pressing '2'
-     * <br>� "fast-forward": after execution is resumed by pressing &lt;space&gt;.
-     * <p> In "step-by-step" mode this method pauses the execution. It does nothing in any other mode.
+     * <br>� "step": when program starts or after resuming execution by pressing '1'.
+     * <br>� "leap": when resuming execution by pressing '2'
+     * <br>� "fast-forward": when resuming execution by pressing &lt;space&gt;.
+     * <p> In "step" mode this method pauses the execution. It does nothing in any other modes.
      * <br>If paused, user can resume by pressing '1', '2' or &lt;space&gt; to 
      * continue the execution in the corresponding mode.
      * @throws InterruptedException
      * @see #step(long)
-     * @see #stop()
+     * @see #leap()
      */
     public void step() throws InterruptedException {
         step(1, Long.MAX_VALUE);
@@ -266,18 +269,18 @@ public class DrawingFrame implements
     
     /**
      * There are three modes in which the program can execute:
-     * <br>� "step-by-step": when program starts or after execution is resumed by pressing '1'.
-     * <br>� "continue": after execution is resumed by pressing '2'
-     * <br>� "fast-forward": after execution is resumed by pressing &lt;space&gt;.
-     * <p> In "step-by-step" mode, this method pauses the execution until resumed.
-     * In "continuous" mode, it delays execution for the given number of
+     * <br>� "step": when program starts or after resuming execution by pressing '1'.
+     * <br>� "leap": when resuming execution by pressing '2'
+     * <br>� "fast-forward": when resuming execution by pressing &lt;space&gt;.
+     * <p> In "step" mode, this method pauses the execution until resumed.
+     * In "leap" or "fast-forward" modes, it delays execution for the given number of
      * milliseconds. It does nothing in any other mode. 
      * <br>If paused, user can resume by pressing '1', '2' or &lt;space&gt; to 
      * continue the execution in the corresponding mode.
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @throws InterruptedException
      * @see #step()
-     * @see #stop()
+     * @see #leap()
      */
     public void step(long delay) throws InterruptedException {
         step(1, delay);
@@ -285,10 +288,10 @@ public class DrawingFrame implements
     
     /**
      * There are three modes in which the program can execute:
-     * <br>� "step-by-step": when program starts or after execution is resumed by pressing '1'.
-     * <br>� "continue": after execution is resumed by pressing '2'
-     * <br>� "fast-forward": after execution is resumed by pressing &lt;space&gt;.
-     * <p> In "step-by-step" or "continue" modes, this method pauses the execution until resumed.
+     * <br>� "step": when program starts or after resuming execution by pressing '1'.
+     * <br>� "leap": when resuming execution by pressing '2'
+     * <br>� "fast-forward": when resuming execution by pressing &lt;space&gt;.
+     * <p> In "step" or "fast-forward" modes, this method pauses the execution until resumed.
      * It does nothing in "fast-forward" mode. 
      * <br>If paused, user can resume by pressing '1', '2' or &lt;space&gt; to 
      * continue the execution in the corresponding mode.
@@ -304,6 +307,29 @@ public class DrawingFrame implements
             _statusText.setText(dbgLine);
         }
         step(2, Long.MAX_VALUE);
+        _statusText.setText("");
+    }
+
+     /**
+     * There are three modes in which the program can execute:
+     * <br>� "step": when program starts or after resuming execution by pressing '1'.
+     * <br>� "leap": when resuming execution by pressing '2'
+     * <br>� "fast-forward": when resuming execution by pressing &lt;space&gt;.
+     * <p> In "leap" mode, this method pauses the execution until resumed.
+     * It does nothing in "fast-forward" mode. 
+     * <br>If paused, user can resume by pressing '1', '2' or &lt;space&gt; to 
+     * continue the execution in the corresponding mode.
+     * @throws InterruptedException
+     * @see #step()
+     * @see #step(long)
+     */
+    public void leap() throws InterruptedException {
+        StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
+        if (_statusText.getText().isEmpty()) {
+            String dbgLine = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
+            _statusText.setText(dbgLine);
+        }
+        step(3, Long.MAX_VALUE);
         _statusText.setText("");
     }
     
