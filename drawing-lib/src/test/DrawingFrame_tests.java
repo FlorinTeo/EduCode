@@ -32,8 +32,9 @@ public class DrawingFrame_tests {
         drwFrame.step();
         for(int i = 0; i < 10; i++) {
             System.out.println(i);
-            drwFrame.step(1000);
+            Thread.sleep(1000);
         }
+        drwFrame.step();
         System.out.println("Stopping");
 
         // enabling the mouse hook. While mouse hook enabled, stop() and step() methods are inactive (pass-through)!

@@ -21,7 +21,9 @@ public class CafeWall_tests {
         CafeWall cafeWall = new CafeWall();
         DrawingFrame drwFrame = new DrawingFrame(cafeWall);
         drwFrame.open();
+        drwFrame.step();
         cafeWall.drawBrightSquare(75, 60, 80);
+        drwFrame.step();
         cafeWall.drawDarkSquare(180, 95, 55);
         drwFrame.stop();
         drwFrame.close();
