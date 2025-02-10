@@ -25,7 +25,7 @@ public class CafeWall_tests {
         cafeWall.drawBrightSquare(75, 60, 80);
         drwFrame.step();
         cafeWall.drawDarkSquare(180, 95, 55);
-        drwFrame.stop();
+        drwFrame.leap();
         drwFrame.close();
     }
 }
