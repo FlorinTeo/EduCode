@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.IOException;
 
+import edu.ftdev.DbgButton.BtnFace;
 import edu.ftdev.KeyInterceptor.KeyHook;
 import edu.ftdev.MouseInterceptor.MouseHook;
 
@@ -49,19 +50,19 @@ public class DrawingFrame implements
         char ch = Character.toUpperCase(keyEvent.getKeyChar());
         switch (ch) {
         case '1': // break on {step}
-            _dbgButtons[0].setFace(1);
-            _dbgButtons[1].setFace(0);
-            _dbgButtons[2].setFace(0);
+            _dbgButtons[0].setFace(BtnFace.CLICKED);
+            _dbgButtons[1].setFace(BtnFace.NORMAL);
+            _dbgButtons[2].setFace(BtnFace.NORMAL);
             break;
         case '3': // break on {..lean..}
-            _dbgButtons[0].setFace(0);
-            _dbgButtons[1].setFace(1);
-            _dbgButtons[2].setFace(0);
+            _dbgButtons[0].setFace(BtnFace.NORMAL);
+            _dbgButtons[1].setFace(BtnFace.CLICKED);
+            _dbgButtons[2].setFace(BtnFace.NORMAL);
             break;
         case ' ': // run >ffwd
-            _dbgButtons[0].setFace(0);
-            _dbgButtons[1].setFace(0);
-            _dbgButtons[2].setFace(1);
+            _dbgButtons[0].setFace(BtnFace.NORMAL);
+            _dbgButtons[1].setFace(BtnFace.NORMAL);
+            _dbgButtons[2].setFace(BtnFace.CLICKED);
             break;
         }
     };
@@ -110,6 +111,7 @@ public class DrawingFrame implements
             xAnchor,
             yAnchor,
             "edu/ftdev/res/step_0.png", "edu/ftdev/res/step_1.png", "edu/ftdev/res/step_2.png");
+        _dbgButtons[0].setFace(BtnFace.CLICKED);
         xAnchor += _dbgButtons[0].getWidth();
 
         _dbgButtons[1] = new DbgButton(
@@ -124,7 +126,6 @@ public class DrawingFrame implements
             xAnchor,
             yAnchor,
             "edu/ftdev/res/ffwd_0.png", "edu/ftdev/res/ffwd_1.png", "edu/ftdev/res/ffwd_2.png");
-        _dbgButtons[2].setFace(1);
         xAnchor += _dbgButtons[2].getWidth();
     }
     // #endregion: [Private] DbgButtons management
@@ -329,27 +330,29 @@ public class DrawingFrame implements
     }
     
     private void step(int level, long delay) throws InterruptedException {
-        if (_keyInterceptor.blocksOnLevel(level) && delay == Long.MAX_VALUE) {
-            switch(level) {
-            case 1: // step()
-                _dbgButtons[0].setFace(2);
-                _dbgButtons[1].setFace(0);
-                _dbgButtons[2].setFace(0);
-                break;
-            case 3: // leap()
-                _dbgButtons[0].setFace(0);
-                _dbgButtons[1].setFace(2);
-                _dbgButtons[2].setFace(0);
-                break;
-            }
-        }
-        _canvas.repaint();
         // step control calls are disabled if there are mouse custom hooks in effect since
         // same step controls are expected to be in the hooks and would incorrectly trigger
         // the ones from the main thread as well.
         if (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) {
             return;
         }
+
+        if (_keyInterceptor.blocksOnLevel(level) && delay == Long.MAX_VALUE) {
+            switch(level) {
+            case 1: // step()
+                _dbgButtons[0].setFace(BtnFace.STOPPED);
+                _dbgButtons[1].setFace(BtnFace.NORMAL);
+                _dbgButtons[2].setFace(BtnFace.NORMAL);
+                break;
+            case 3: // leap()
+                _dbgButtons[0].setFace(BtnFace.NORMAL);
+                _dbgButtons[1].setFace(BtnFace.STOPPED);
+                _dbgButtons[2].setFace(BtnFace.NORMAL);
+                break;
+            }
+        }
+        _canvas.repaint();
+
         _keyInterceptor.step(level, delay);
     }
     // #endregion: [Public] Execution control methods

@@ -9,11 +9,17 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 class DbgButton extends Canvas {
+
+    enum BtnFace {
+        NORMAL,
+        CLICKED,
+        STOPPED
+    };
     
     private static final long serialVersionUID = 1L;
     private char _btnKey;
     private BufferedImage[] _btnFaces;
-    private int _idxFace;
+    private BtnFace _idxFace;
     
     public DbgButton(char btnKey, int xAnchor, int yAnchor, String... btnFaceFiles) throws IOException {
         ClassLoader cldr = this.getClass().getClassLoader();
@@ -23,16 +29,16 @@ class DbgButton extends Canvas {
             URL url = cldr.getResource(btnFaceFiles[i]);
             _btnFaces[i] = ImageIO.read(url);
         }
-        _idxFace = 0;
+        _idxFace = BtnFace.NORMAL;
         this.setBounds(
                 xAnchor, yAnchor,
-                _btnFaces[_idxFace].getWidth(), _btnFaces[_idxFace].getHeight());
+                _btnFaces[_idxFace.ordinal()].getWidth(), _btnFaces[_idxFace.ordinal()].getHeight());
     }
     
     // #region: [Public] Canvas overrides
     @Override
     public void paint(Graphics g) {
-        g.drawImage(_btnFaces[_idxFace], 0, 0, null);
+        g.drawImage(_btnFaces[_idxFace.ordinal()], 0, 0, null);
     }
     // #endregion: [Public] Canvas overrides
     
@@ -41,12 +47,12 @@ class DbgButton extends Canvas {
         return _btnKey;
     }
 
-    void setFace(int idxFace) {
+    void setFace(BtnFace idxFace) {
         _idxFace = idxFace;
         repaint();
     }
 
-    int getFace() {
+    BtnFace getFace() {
         return _idxFace;
     }
     // #endregion: [Internal] Accessors and mutators

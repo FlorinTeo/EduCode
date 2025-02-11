@@ -40,11 +40,10 @@ public class DrawingFrame_tests {
         drwFrame.step();
         System.out.println("Leaping");
         drwFrame.leap();
-
+        System.out.println("MouseHook enabled for 10sec!");
         // enabling the mouse hook. While mouse hook enabled, step() and leap() methods are inactive (pass-through)!
         drwFrame.setMouseClickedHook(_onMouseClick);
         drwFrame.leap();
-        System.out.println("MouseHook enabled for 10sec!");
         Thread.sleep(10000);
 
         // disable the mouse hook. When disabled, stop() and step() are active!
