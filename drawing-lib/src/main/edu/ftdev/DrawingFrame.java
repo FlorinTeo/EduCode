@@ -297,13 +297,7 @@ public class DrawingFrame implements
      * @see #step(long)
      */
     public void stop() throws InterruptedException {
-        StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
-        if (_statusText.getText().isEmpty()) {
-            String dbgLine = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
-            _statusText.setText(dbgLine);
-        }
         step(2, Long.MAX_VALUE);
-        _statusText.setText("");
     }
 
      /**
@@ -320,13 +314,7 @@ public class DrawingFrame implements
      * @see #step(long)
      */
     public void leap() throws InterruptedException {
-        StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
-        if (_statusText.getText().isEmpty()) {
-            String dbgLine = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
-            _statusText.setText(dbgLine);
-        }
         step(3, Long.MAX_VALUE);
-        _statusText.setText("");
     }
     
     private void step(int level, long delay) throws InterruptedException {
@@ -353,7 +341,17 @@ public class DrawingFrame implements
         }
         _canvas.repaint();
 
+        // output the current stack trace
+        String crtStatusText = _statusText.getText();
+        StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
+        String dbgLine = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
+        _statusText.setText(dbgLine);
+
+        // call below may block, depending on the step level in code and the last debug action by the user
         _keyInterceptor.step(level, delay);
+
+        // restore the status text after potential blocking stop
+        _statusText.setText(crtStatusText);
     }
     // #endregion: [Public] Execution control methods
     

@@ -12,7 +12,7 @@ public class CafeWall_tests {
         CafeWall cafeWall = new CafeWall();
         DrawingFrame drwFrame = new DrawingFrame(cafeWall);
         drwFrame.open();
-        drwFrame.stop();
+        drwFrame.leap();
         drwFrame.close();
     }
 
