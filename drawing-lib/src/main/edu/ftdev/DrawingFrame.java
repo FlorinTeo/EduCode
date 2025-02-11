@@ -158,7 +158,6 @@ public class DrawingFrame implements
     /**
      * Creates an instance of a DrawingFrame object encapsulating the representation of a window displaying the pixels of the given drawing object.
      * @param drawing - the drawing to be displayed by this frame.
-     * @param floodable 
      * @throws IOException
      */
     public DrawingFrame(Drawing drawing) throws IOException {
@@ -291,7 +290,6 @@ public class DrawingFrame implements
      * It does nothing in "fast-forward" mode. 
      * <br>If paused, user can resume by pressing '1', '2' or &lt;space&gt; to 
      * continue the execution in the corresponding mode.
-     * @param delay - milliseconds to delay execution in "continuous" mode.
      * @throws InterruptedException
      * @see #step()
      * @see #step(long)

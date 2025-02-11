@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 /**
  * Generic KeyInterceptor class, to be used for customized key interaction.
- * By default, the interceptor is handling the keys '1', '2', ' ' and <Escape>
+ * By default, the interceptor is handling the keys '1', '3', ' ' and &lt;ESC&gt;
  * implementing UI level debugging on 2 levels, Fast-Fwd and Quit.
  */
 public class KeyInterceptor implements KeyListener {
