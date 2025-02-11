@@ -67,7 +67,7 @@ public class DrawingFrame_tests {
         Drawing drw2 = new Drawing(400, 300, Color.cyan);
         DrawingFrame drwFrame2 = new DrawingFrame(drw2);
         drwFrame2.open();
-        drwFrame1.stop();
+        drwFrame1.leap();
         drwFrame1.close();
         drwFrame2.close();
     }
