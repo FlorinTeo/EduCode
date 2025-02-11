@@ -12,7 +12,6 @@ import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.IOException;
 
-import edu.ftdev.DbgButton.BtnState;
 import edu.ftdev.KeyInterceptor.KeyHook;
 import edu.ftdev.MouseInterceptor.MouseHook;
 
@@ -47,22 +46,22 @@ public class DrawingFrame implements
     
     // #region: [Private] KeyInterceptor hooks
     private KeyInterceptor.KeyHook _onKeyInterceptorCtrl = (keyEvent) -> {
-        char ch = keyEvent.getKeyChar();
-        switch (Character.toUpperCase(ch)) {
-        case '1':
-            _dbgButtons[0].setState(BtnState.ENABLED);
-            _dbgButtons[1].setState(BtnState.ENABLED);
-            _dbgButtons[2].setState(BtnState.ENABLED);
+        char ch = Character.toUpperCase(keyEvent.getKeyChar());
+        switch (ch) {
+        case '1': // break on {step}
+            _dbgButtons[0].setFace(1);
+            _dbgButtons[1].setFace(0);
+            _dbgButtons[2].setFace(0);
             break;
-        case '3':
-            _dbgButtons[0].setState(BtnState.ENABLED);
-            _dbgButtons[1].setState(BtnState.DISABLED);
-            _dbgButtons[2].setState(BtnState.ENABLED);
+        case '3': // break on {..lean..}
+            _dbgButtons[0].setFace(0);
+            _dbgButtons[1].setFace(1);
+            _dbgButtons[2].setFace(0);
             break;
-        case ' ':
-            _dbgButtons[0].setState(BtnState.ENABLED);
-            _dbgButtons[1].setState(BtnState.ENABLED);
-            _dbgButtons[2].setState(BtnState.DISABLED);
+        case ' ': // run >ffwd
+            _dbgButtons[0].setFace(0);
+            _dbgButtons[1].setFace(0);
+            _dbgButtons[2].setFace(1);
             break;
         }
     };
@@ -72,9 +71,7 @@ public class DrawingFrame implements
     private MouseInterceptor.MouseHook _onMouseClicked = (e) -> {
         if (e.getSource() instanceof DbgButton) {
             DbgButton dbgButton = (DbgButton)e.getSource();
-            if (dbgButton.getState() == BtnState.ENABLED) {
-                _keyInterceptor.simulateKeyTyped(dbgButton, dbgButton.getKey());
-            }
+            _keyInterceptor.simulateKeyTyped(dbgButton, dbgButton.getKey());
         } else {
             BufferedImage bi = _drawing.getImage();
             int x = _canvas.xScreenToCanvas(e.getX());
@@ -112,24 +109,22 @@ public class DrawingFrame implements
             '1',
             xAnchor,
             yAnchor,
-            "edu/ftdev/res/1_up.png",
-            "edu/ftdev/res/1_down.png");
+            "edu/ftdev/res/step_0.png", "edu/ftdev/res/step_1.png", "edu/ftdev/res/step_2.png");
         xAnchor += _dbgButtons[0].getWidth();
 
         _dbgButtons[1] = new DbgButton(
             '3',
             xAnchor,
             yAnchor,
-            "edu/ftdev/res/3_up.png",
-            "edu/ftdev/res/3_down.png");
+            "edu/ftdev/res/leap_0.png", "edu/ftdev/res/leap_1.png", "edu/ftdev/res/leap_2.png");
         xAnchor += _dbgButtons[1].getWidth();
 
         _dbgButtons[2] = new DbgButton(
             ' ',
             xAnchor,
             yAnchor,
-            "edu/ftdev/res/ff_up.png",
-            "edu/ftdev/res/ff_down.png");
+            "edu/ftdev/res/ffwd_0.png", "edu/ftdev/res/ffwd_1.png", "edu/ftdev/res/ffwd_2.png");
+        _dbgButtons[2].setFace(1);
         xAnchor += _dbgButtons[2].getWidth();
     }
     // #endregion: [Private] DbgButtons management
@@ -335,9 +330,18 @@ public class DrawingFrame implements
     
     private void step(int level, long delay) throws InterruptedException {
         if (_keyInterceptor.blocksOnLevel(level) && delay == Long.MAX_VALUE) {
-            _dbgButtons[0].setState(BtnState.ENABLED);
-            _dbgButtons[1].setState(BtnState.ENABLED);
-            _dbgButtons[2].setState(BtnState.ENABLED);
+            switch(level) {
+            case 1: // step()
+                _dbgButtons[0].setFace(2);
+                _dbgButtons[1].setFace(0);
+                _dbgButtons[2].setFace(0);
+                break;
+            case 3: // leap()
+                _dbgButtons[0].setFace(0);
+                _dbgButtons[1].setFace(2);
+                _dbgButtons[2].setFace(0);
+                break;
+            }
         }
         _canvas.repaint();
         // step control calls are disabled if there are mouse custom hooks in effect since

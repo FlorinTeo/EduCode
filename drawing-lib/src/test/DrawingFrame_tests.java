@@ -28,11 +28,13 @@ public class DrawingFrame_tests {
         Drawing drw = new Drawing(drwImg);
         DrawingFrame drwFrame = new DrawingFrame(drw);
         drwFrame.open();
+        System.out.println("Sleeping 10sec");
+        Thread.sleep(10000);
         System.out.println("Pausing");
         drwFrame.step();
         for(int i = 0; i < 10; i++) {
             System.out.println(i);
-            Thread.sleep(1000);
+            drwFrame.step(1000);
         }
         System.out.println("Stopping");
         drwFrame.step();
