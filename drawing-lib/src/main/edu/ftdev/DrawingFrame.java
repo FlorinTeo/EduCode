@@ -339,11 +339,13 @@ public class DrawingFrame implements
         }
         _canvas.repaint();
 
-        // output the current stack trace
+        // output the current stack trace for all but step() (to give a chance for user-provided text to show in the UI)
         String crtStatusText = _statusText.getText();
-        StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
-        String dbgLine = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
-        _statusText.setText(dbgLine);
+        if (level != 1) {
+            StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
+            String dbgLine = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
+            _statusText.setText(dbgLine);
+        }
 
         // call below may block, depending on the step level in code and the last debug action by the user
         _keyInterceptor.step(level, delay);
