@@ -341,6 +341,7 @@ public class MazeCanvas extends Drawing {
         clear();
     }
     
+    // #region: public methods
     /**
      * Provides the number of rows in the grid of cells for this maze.
      * @return number of rows.
@@ -575,4 +576,5 @@ public class MazeCanvas extends Drawing {
     public boolean eraseShade(int row, int col) {
         return drawShade(row, col, Color.WHITE);
     }
+    // #endregion: public methods
 }
