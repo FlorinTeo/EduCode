@@ -20,6 +20,7 @@ public class Drawing implements AutoCloseable {
     // to be used by subclasses doing heavier graphics, in order trigger a canvas repaint.
     protected DrawingCanvas _drwCanvas = null;
     protected BufferedImage _image = null;
+    protected BufferedImage _origImage = null;
     protected Graphics2D _g2d = null;
     
     /**
@@ -36,6 +37,7 @@ public class Drawing implements AutoCloseable {
     
     public Drawing(BufferedImage image) {
         _image = image;
+        reset();
     }
     
     /**
@@ -50,10 +52,33 @@ public class Drawing implements AutoCloseable {
         _g2d = _image.createGraphics();
         _g2d.setColor(bkgColor);
         _g2d.fillRect(0, 0, width, height);
+        reset();
     }
 
     public BufferedImage getImage() {
         return _image;
+    }
+
+    /**
+     * Resets the drawing image to its original state. If the image was created from a file,
+     * this method will reload the image from the file. If the image was created as a blank canvas,
+     * this method will clear the canvas to its original state.
+     * @return true if the image was reset successfully, false otherwise.
+     */
+    public boolean reset() {
+        BufferedImage sourceImage = _origImage;
+        BufferedImage targetImage = _image;
+
+        if (sourceImage == null) {
+            _origImage = new BufferedImage(_image.getWidth(), _image.getHeight(), _image.getType());
+            sourceImage = _image;
+            targetImage = _origImage;
+        }
+
+        Graphics2D g = targetImage.createGraphics();
+        g.drawImage(sourceImage, 0, 0, null);
+        g.dispose();
+        return (targetImage == _image);
     }
 
     /**
@@ -70,6 +95,14 @@ public class Drawing implements AutoCloseable {
      */
     public int getHeight() {
         return _image.getHeight();
+    }
+
+    /**
+     * Gets the Graphics2D object associated with the drawing image.
+     * @return the Graphics2D object associated with the drawing image.
+     */
+    public Graphics2D getGraphics() {
+        return _g2d;
     }
     
     /**

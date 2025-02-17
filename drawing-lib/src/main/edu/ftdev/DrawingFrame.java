@@ -467,7 +467,7 @@ public class DrawingFrame implements
      * Closes the window.
      */
     @Override
-    public void close() throws IOException {
+    public void close() {
         // close is disabled on main thread if there are mouse custom hooks in effect
         // since frame is expected to be closed via UI.
         if (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) {
@@ -497,12 +497,8 @@ public class DrawingFrame implements
 
     @Override
     public void windowClosing(WindowEvent e) {
-        try {
-            this.close();
-            System.exit(0);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+        this.close();
+        System.exit(0);
     }
 
     @Override

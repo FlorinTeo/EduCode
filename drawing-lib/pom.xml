@@ -38,6 +38,7 @@
                 <directory>src/res</directory>
                 <includes>
                     <include>**/*.png</include>
+                    <include>**/*.jpg</include>
                 </includes>
                 <targetPath>edu/ftdev/res</targetPath>
             </resource>
