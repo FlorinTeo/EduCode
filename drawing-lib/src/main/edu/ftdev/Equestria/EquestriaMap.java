@@ -71,17 +71,22 @@ public class EquestriaMap implements DbgControls, FrameControls {
      * @see EquestriaMap#lineTo(int, int)
      * @see EquestriaMap#circle(int, int, int)
      */
-    public static EquestriaMap create() throws IOException {
+    public static EquestriaMap create() {
         if (_self != null) {
             return _self;
         }
 
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/equestria_map.jpg");
-        BufferedImage img = ImageIO.read(input);
-        _self = new EquestriaMap();
-        _self._equestriaDrawing = new Drawing(img);
-        _self._equestriaFrame = new DrawingFrame(_self._equestriaDrawing);
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/equestria_map.jpg");
+            BufferedImage img = ImageIO.read(input);
+            _self = new EquestriaMap();
+            _self._equestriaDrawing = new Drawing(img);
+            _self._equestriaFrame = new DrawingFrame(_self._equestriaDrawing);
+        } catch (IOException e) {
+            // can't happen - resource is in the JAR
+            e.printStackTrace();
+        }
 
         return _self;
     }

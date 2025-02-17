@@ -1,12 +1,10 @@
-import java.io.IOException;
-
 import org.junit.Test;
 
 import edu.ftdev.Equestria.EquestriaMap;
 
 public class Equestria_tests {
     @Test
-    public void demoTest() throws IOException, InterruptedException {
+    public void demoTest() throws InterruptedException {
         EquestriaMap map = EquestriaMap.create();
 		// open the map of Equestria window then wait for the key 'S' (step) to be pressed.
 		map.open();
