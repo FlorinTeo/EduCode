@@ -37,6 +37,7 @@ public class Drawing implements AutoCloseable {
     
     public Drawing(BufferedImage image) {
         _image = image;
+        _g2d = _image.createGraphics();
         reset();
     }
     

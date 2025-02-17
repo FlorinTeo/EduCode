@@ -9,7 +9,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
-import java.io.Closeable;
 import java.io.IOException;
 
 import edu.ftdev.DbgButton.BtnFace;
@@ -24,7 +23,7 @@ import edu.ftdev.MouseInterceptor.MouseHook;
  * in the program, in an interactive manner.
  */
 public class DrawingFrame implements 
-    Closeable, WindowListener {
+    WindowListener, DbgControls, FrameControls {
     
     private Thread _mainThread = null;
     private String _title = "Drawing Framework GUI";
@@ -245,72 +244,47 @@ public class DrawingFrame implements
         return _canvas.yScreenToCanvas(mouseEvent.getY());
     }
     
-    // #region: [Public] Execution control methods
+    // #region: [Interface] DbgControls overrides
     /**
-     * There are three modes in which the program can execute:
-     * <br>� "step": when program starts or after resuming execution by pressing '1'.
-     * <br>� "leap": when resuming execution by pressing '2'
-     * <br>� "fast-forward": when resuming execution by pressing &lt;space&gt;.
-     * <p> In "step" mode this method pauses the execution. It does nothing in any other modes.
-     * <br>If paused, user can resume by pressing '1', '2' or &lt;space&gt; to 
-     * continue the execution in the corresponding mode.
+     * In "step" mode this method pauses the execution. It does nothing in any other modes.
      * @throws InterruptedException
-     * @see #step(long)
-     * @see #leap()
+     * @see DbgControls#step()
      */
+    @Override
     public void step() throws InterruptedException {
         step(1, Long.MAX_VALUE);
     }
     
     /**
-     * There are three modes in which the program can execute:
-     * <br>� "step": when program starts or after resuming execution by pressing '1'.
-     * <br>� "leap": when resuming execution by pressing '2'
-     * <br>� "fast-forward": when resuming execution by pressing &lt;space&gt;.
-     * <p> In "step" mode, this method pauses the execution until resumed.
-     * In "leap" or "fast-forward" modes, it delays execution for the given number of
+     * In "step" mode, this method delays execution for the given number of
      * milliseconds. It does nothing in any other mode. 
-     * <br>If paused, user can resume by pressing '1', '2' or &lt;space&gt; to 
-     * continue the execution in the corresponding mode.
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @throws InterruptedException
-     * @see #step()
-     * @see #leap()
+     * @see DbgControls#step(long)
      */
+    @Override
     public void step(long delay) throws InterruptedException {
         step(1, delay);
     }
     
     /**
-     * There are three modes in which the program can execute:
-     * <br>� "step": when program starts or after resuming execution by pressing '1'.
-     * <br>� "leap": when resuming execution by pressing '2'
-     * <br>� "fast-forward": when resuming execution by pressing &lt;space&gt;.
-     * <p> In "step" or "fast-forward" modes, this method pauses the execution until resumed.
-     * It does nothing in "fast-forward" mode. 
-     * <br>If paused, user can resume by pressing '1', '2' or &lt;space&gt; to 
-     * continue the execution in the corresponding mode.
+     * In "step" or "stop" modes, this method pauses the execution until resumed.
+     * It does nothing in "leap" or "fast-forward" mode. 
      * @throws InterruptedException
-     * @see #step()
-     * @see #step(long)
+     * @see DbgControls#stop()
      */
+    @Override
     public void stop() throws InterruptedException {
         step(2, Long.MAX_VALUE);
     }
 
      /**
-     * There are three modes in which the program can execute:
-     * <br>� "step": when program starts or after resuming execution by pressing '1'.
-     * <br>� "leap": when resuming execution by pressing '2'
-     * <br>� "fast-forward": when resuming execution by pressing &lt;space&gt;.
-     * <p> In "leap" mode, this method pauses the execution until resumed.
+     * In "step", "stop" or "leap" modes, this method pauses the execution until resumed.
      * It does nothing in "fast-forward" mode. 
-     * <br>If paused, user can resume by pressing '1', '2' or &lt;space&gt; to 
-     * continue the execution in the corresponding mode.
      * @throws InterruptedException
-     * @see #step()
-     * @see #step(long)
+     * @see DbgControls#leap()
      */
+    @Override
     public void leap() throws InterruptedException {
         step(3, Long.MAX_VALUE);
     }
@@ -353,7 +327,7 @@ public class DrawingFrame implements
         // restore the status text after potential blocking stop
         _statusText.setText(crtStatusText);
     }
-    // #endregion: [Public] Execution control methods
+    // #endregion: [Interface] DbgControls overrides
     
     // #region: [Public] Key hooking methods
     /**
@@ -426,7 +400,7 @@ public class DrawingFrame implements
     }
     // #endregion: [Public] Mouse hooking methods
 
-    // #region: [Public] Frame display methods
+    // #region: [Public] FrameControls overrides
     public String getTitle() {
         return _title;
     }
@@ -440,6 +414,7 @@ public class DrawingFrame implements
      * Opens a window on the screen, displaying the associated Drawing
      * and the controls for interacting with it. 
      */
+    @Override
     public void open() {
         // set the canvas reference in the drawing to allow subclasses to trigger repaints
         _drawing._drwCanvas = _canvas;
@@ -450,6 +425,7 @@ public class DrawingFrame implements
      * Forces a refresh of the window content such that any changes that may have been
      * operated on the associated Drawing are reflected on the screen.
      */
+    @Override
     public void repaint() {
         _canvas.repaint();
     }
@@ -459,6 +435,7 @@ public class DrawingFrame implements
      * the drawing window.
      * @param message - message to be printed in the status bar area.
      */
+    @Override
     public void setStatusMessage(String message) {
         _statusText.setText(message);
     }
@@ -488,9 +465,9 @@ public class DrawingFrame implements
             _drawing = null;
         }
     }
-    // #endregion: [Public] Frame display methods
+    // #endregion: [Public] FrameControls overrides
 
-    // #region: [Public] WindowListener overrides
+    // #region: [Interface] WindowListener overrides
     @Override
     public void windowOpened(WindowEvent e) {
     }
@@ -520,5 +497,5 @@ public class DrawingFrame implements
     @Override
     public void windowDeactivated(WindowEvent e) {
     }
-    // #endregion: [Public] WindowListener overrides
+    // #endregion: [Interface] WindowListener overrides
 }
