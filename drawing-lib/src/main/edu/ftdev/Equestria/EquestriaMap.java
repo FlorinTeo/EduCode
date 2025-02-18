@@ -9,12 +9,11 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import edu.ftdev.DbgControls;
 import edu.ftdev.Drawing;
+import edu.ftdev.DrawingFactory;
 import edu.ftdev.DrawingFrame;
-import edu.ftdev.FrameControls;
 
-public class EquestriaMap implements DbgControls, FrameControls {
+public class EquestriaMap extends DrawingFactory {
 
     // #region: Class constants
     private static final int _PINSIZE = 10;
@@ -37,14 +36,6 @@ public class EquestriaMap implements DbgControls, FrameControls {
     // #endregion: Class constants
 
     // #region: Members and methods internal to the class
-
-    // singleton instance for the EquestriaMap
-    private static EquestriaMap _self = null;
-
-    // instance drawing and drawing frame used for displaying the nap
-    private Drawing _equestriaDrawing = null;
-    private DrawingFrame _equestriaFrame = null;
-
     private BasicStroke _strokePin = new BasicStroke(1);
     private BasicStroke _strokeLine = new BasicStroke(4);
     private int _lastX = 0;
@@ -71,24 +62,23 @@ public class EquestriaMap implements DbgControls, FrameControls {
      * @see EquestriaMap#lineTo(int, int)
      * @see EquestriaMap#circle(int, int, int)
      */
-    public static EquestriaMap create() {
-        if (_self != null) {
-            return _self;
+    @Override
+    public void open() {
+        if (_drawingFrame != null) {
+            throw new IllegalStateException("Drawing window already initialized.");
         }
 
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/equestria_map.jpg");
             BufferedImage img = ImageIO.read(input);
-            _self = new EquestriaMap();
-            _self._equestriaDrawing = new Drawing(img);
-            _self._equestriaFrame = new DrawingFrame(_self._equestriaDrawing);
+            _drawing = new Drawing(img);
+            _drawingFrame = new DrawingFrame(_drawing);
+            _drawingFrame.open();
         } catch (IOException e) {
             // can't happen - resource is in the JAR
             e.printStackTrace();
         }
-
-        return _self;
     }
 
     /**
@@ -100,13 +90,12 @@ public class EquestriaMap implements DbgControls, FrameControls {
      * @see EquestriaMap#open()
      * @see EquestriaMap#close()
      */
-    public boolean clear() {
-        if (_self != null) {
-            _self._equestriaDrawing.reset();
-            _self._equestriaFrame.repaint();
-            return true;
+    public void clear() {
+        if (_drawing == null || _drawingFrame == null) {
+            throw new IllegalStateException("Drawing window not initialized.");
         }
-        return false;
+        _drawing.reset();
+        _drawingFrame.repaint();
     }
 
     /**
@@ -119,18 +108,18 @@ public class EquestriaMap implements DbgControls, FrameControls {
      * @see EquestriaMap#clear()
      */
     public boolean plot(int x, int y) {
-        boolean success = (_self != null);
+        boolean success = (_drawing != null);
         if (x < 0 || x >= _XGRID.length || y < 0 || y >= _YGRID.length) {
             throw new IllegalArgumentException("Coordinates outside the map!");
         }
         if (success) {
-            Graphics2D g = _self._equestriaDrawing.getGraphics();
+            Graphics2D g = _drawing.getGraphics();
             g.setColor(Color.WHITE);
             g.setStroke(_strokePin);
             g.fillOval(transX(x) - _PINSIZE / 2, transY(y) - _PINSIZE / 2, _PINSIZE, _PINSIZE);
             _lastX = x;
             _lastY = y;
-            _self._equestriaFrame.repaint();
+            _drawingFrame.repaint();
         }
         return success;
     }
@@ -146,19 +135,19 @@ public class EquestriaMap implements DbgControls, FrameControls {
      * @see EquestriaMap#line(int, int, int, int)
      */
     public boolean lineTo(int x, int y) {
-        boolean success = (_self != null);
+        boolean success = (_drawing != null);
         if (x < 0 || x >= _XGRID.length || y < 0 || y >= _YGRID.length) {
             throw new IllegalArgumentException("Coordinates outside the map!");
         }
         if (success) {
-            Graphics2D g = _self._equestriaDrawing.getGraphics();
+            Graphics2D g = _drawing.getGraphics();
             g.setColor(Color.WHITE);
             g.setStroke(_strokeLine);
             g.drawLine(transX(_lastX), transY(_lastY), transX(x), transY(y));
             _lastX = x;
             _lastY = y;
             plot(_lastX, _lastY);
-            _self._equestriaFrame.repaint();
+            _drawingFrame.repaint();
         }
         return success;
     }
@@ -173,7 +162,7 @@ public class EquestriaMap implements DbgControls, FrameControls {
      * @see EquestriaMap#lineTo(int, int)
      */
     public boolean line(int xFrom, int yFrom, int xTo, int yTo) {
-        boolean success = (_self != null);
+        boolean success = (_drawing != null);
         if (success) {
             plot(xFrom, yFrom);
             lineTo(xTo, yTo);
@@ -197,7 +186,7 @@ public class EquestriaMap implements DbgControls, FrameControls {
         int ytl = yCenter - radius;
         int xbr = xCenter + radius;
         int ybr = yCenter + radius;
-        boolean success = (_self != null);
+        boolean success = (_drawing != null);
         if (xCenter < 0 || xCenter >= _XGRID.length || yCenter < 0 || yCenter >= _YGRID.length) {
             throw new IllegalArgumentException("Coordinates outside the map!");
         }
@@ -208,7 +197,7 @@ public class EquestriaMap implements DbgControls, FrameControls {
         ybr = (ybr >= _YGRID.length) ? transY(_YGRID.length - 1) + (ybr - _YGRID.length + 1) * 32 : transY(ybr);
 
         if (success) {
-            Graphics2D g = _self._equestriaDrawing.getGraphics();
+            Graphics2D g = _drawing.getGraphics();
             g.setColor(Color.WHITE);
             g.setStroke(_strokeLine);
             g.drawOval(xtl, ytl, xbr - xtl, ybr - ytl);
@@ -269,100 +258,4 @@ public class EquestriaMap implements DbgControls, FrameControls {
         return getHeight() - 1;
     }
     // #endregion: Public methods
-
-    // #region: DbgControls overrides
-    /**
-     * In "step" mode this method pauses the execution. It does nothing in any other modes.
-     * @throws InterruptedException
-     * @see DbgControls#step()
-     */
-    @Override
-    public void step() throws InterruptedException {
-        if (_self != null) {
-            _self._equestriaFrame.step();
-        }
-    }
-
-    /**
-     * In "step" mode, this method delays execution for the given number of
-     * milliseconds. It does nothing in any other mode. 
-     * @param delay - milliseconds to delay execution in "continuous" mode.
-     * @throws InterruptedException
-     * @see DbgControls#step(long)
-     */
-    @Override
-    public void step(long delay) throws InterruptedException {
-        if (_self != null) {
-            _self._equestriaFrame.step(delay);
-        }
-    }
-
-    /**
-     * In "step" or "stop" modes, this method pauses the execution until resumed.
-     * It does nothing in "leap" or "fast-forward" mode. 
-     * @throws InterruptedException
-     * @see DbgControls#stop()
-     */
-    @Override
-    public void stop() throws InterruptedException {
-        if (_self != null) {
-            _self._equestriaFrame.stop();
-        }
-    }
-
-     /**
-     * In "step", "stop" or "leap" modes, this method pauses the execution until resumed.
-     * It does nothing in "fast-forward" mode. 
-     * @throws InterruptedException
-     * @see DbgControls#leap()
-     */
-    @Override
-    public void leap() throws InterruptedException {
-        if (_self != null) {
-            _self._equestriaFrame.leap();
-        }
-    }
-    // #endregion: DbgControls overrides
-
-    // #region: FrameControls overrides
-    /**
-     * Opens the Equestria map frame.
-     */
-    @Override
-    public void open() {
-        if (_self != null) {
-            _self._equestriaFrame.open();
-        }
-    }
-
-    /**
-     * Repaints the Equestria map frame.
-     */
-    @Override
-    public void repaint() {
-        if (_self != null) {
-            _self._equestriaFrame.repaint();
-        }
-    }
-
-    /**
-     * Sets the status message in the Equestria map status bar.
-     */
-    @Override
-    public void setStatusMessage(String message) {
-        if (_self != null) {
-            _self._equestriaFrame.setStatusMessage(message);
-        }
-    }
-    
-    /**
-     * Closes the Equestria map frame.
-     */
-    @Override
-    public void close() {
-        if (_self != null) {
-            _self._equestriaFrame.close();
-        }
-    }
-    // #endregion: DbgControls overrides
 }

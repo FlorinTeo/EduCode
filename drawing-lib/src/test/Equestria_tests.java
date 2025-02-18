@@ -5,7 +5,9 @@ import edu.ftdev.Equestria.EquestriaMap;
 public class Equestria_tests {
     @Test
     public void demoTest() throws InterruptedException {
-        EquestriaMap map = EquestriaMap.create();
+		// create a new map of Equestria
+        EquestriaMap map = new EquestriaMap();
+
 		// open the map of Equestria window then wait for the key 'S' (step) to be pressed.
 		map.open();
 		map.step();
@@ -25,6 +27,15 @@ public class Equestria_tests {
 
 		// draw a circle with center in (19, 11) and diameter 4
 		map.circle(19, 11, 4);
+		map.leap();
+
+		// clear the map of Equestria
+		map.clear();
+		map.leap();
+
+		// draw two concentric circles
+		map.circle(10, 10, 2);
+		map.circle(10, 10, 4);
 		map.leap();
 		
 		// close the map of Equestria window.
