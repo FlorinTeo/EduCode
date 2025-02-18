@@ -68,6 +68,7 @@ public class DrawingFrame_tests {
         drwFrame2.open();
         drwFrame1.leap();
         drwFrame1.close();
+        drwFrame2.leap();
         drwFrame2.close();
     }
 }

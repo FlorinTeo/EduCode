@@ -2,10 +2,14 @@ package edu.ftdev.CafeArt;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.io.IOException;
 
 import edu.ftdev.Drawing;
+import edu.ftdev.DrawingFactory;
+import edu.ftdev.DrawingFrame;
 
-public class CafeWall extends Drawing {
+public class CafeWall extends DrawingFactory {
     private static final int _EDGE = 16;
     private static final Color _BKG_COLOR = new Color(144, 144, 144);
     private static final Color _WALL_COLOR = new Color(128, 128, 128);
@@ -16,22 +20,29 @@ public class CafeWall extends Drawing {
     private static int _HEIGHT = 432;
 
     private void rawSetup() {
-        _g2d.setStroke(new BasicStroke(1));
+        Graphics2D g = _drawing.getGraphics();
+        g.setStroke(new BasicStroke(1));
         // draw the left and upper (darker) border line
-        _g2d.setColor(_BORDER_DARK_COLOR);
-        _g2d.drawLine(_EDGE, _EDGE, _EDGE, _image.getHeight()-_EDGE);
-        _g2d.drawLine(_EDGE, _EDGE, _image.getWidth()-_EDGE, _EDGE);
+        g.setColor(_BORDER_DARK_COLOR);
+        g.drawLine(_EDGE, _EDGE, _EDGE, _drawing.getHeight()-_EDGE);
+        g.drawLine(_EDGE, _EDGE, _drawing.getWidth()-_EDGE, _EDGE);
         // draw the right and lower (lighter) border line
-        _g2d.setColor(_BORDER_LIGHT_COLOR);
-        _g2d.drawLine(_EDGE, _image.getHeight()-_EDGE, _image.getWidth()-_EDGE, _image.getHeight()-_EDGE);
-        _g2d.drawLine(_image.getWidth()-_EDGE, _EDGE, _image.getWidth()-_EDGE, _image.getHeight()-_EDGE);
+        g.setColor(_BORDER_LIGHT_COLOR);
+        g.drawLine(_EDGE, _drawing.getHeight()-_EDGE, _drawing.getWidth()-_EDGE, _drawing.getHeight()-_EDGE);
+        g.drawLine(_drawing.getWidth()-_EDGE, _EDGE, _drawing.getWidth()-_EDGE, _drawing.getHeight()-_EDGE);
         // fill the wall with the wall color
-        _g2d.setColor(_WALL_COLOR);
-        _g2d.fillRect(_EDGE+1,_EDGE+1, _image.getWidth()-2 * _EDGE-1, _image.getHeight()-2 * _EDGE-1);
+        g.setColor(_WALL_COLOR);
+        g.fillRect(_EDGE+1,_EDGE+1, _drawing.getWidth()-2 * _EDGE-1, _drawing.getHeight()-2 * _EDGE-1);
     }
 
-    public CafeWall() {
-        super(_WIDTH, _HEIGHT, _BKG_COLOR);
+    public CafeWall() throws IOException {
+        try {
+            _drawing = new Drawing(_WIDTH, _HEIGHT, _BKG_COLOR);
+            _drawingFrame = new DrawingFrame(_drawing);
+        } catch (IOException e) {
+            // can't happen - resource is in the JAR
+            e.printStackTrace();
+        }
         rawSetup();
     }
 
@@ -42,11 +53,12 @@ public class CafeWall extends Drawing {
      * @param size - size of the square side.
      */
     public void drawBrightSquare(int x, int y, int size) {
+        Graphics2D g = _drawing.getGraphics();
         int tlX = x + _EDGE;
         int tlY = y + _EDGE;
-        _g2d.setColor(Color.WHITE);
-        _g2d.fillRect(tlX, tlY, size, size);
-        _drwCanvas.repaint();
+        g.setColor(Color.WHITE);
+        g.fillRect(tlX, tlY, size, size);
+        _drawingFrame.repaint();
     }
     
     /**
@@ -56,13 +68,14 @@ public class CafeWall extends Drawing {
      * @param size - size of the square side.
      */
     public void drawDarkSquare(int x, int y, int size ) {
+        Graphics2D g = _drawing.getGraphics();
         int tlX = x + _EDGE;
         int tlY = y + _EDGE;
-        _g2d.setColor(Color.BLACK);
-        _g2d.fillRect(tlX, tlY, size, size);
-        _g2d.setColor(Color.BLUE);
-        _g2d.drawLine(tlX, tlY, tlX + size-1, tlY + size-1);
-        _g2d.drawLine(tlX, tlY + size-1, tlX + size-1, tlY);
-        _drwCanvas.repaint();
+        g.setColor(Color.BLACK);
+        g.fillRect(tlX, tlY, size, size);
+        g.setColor(Color.BLUE);
+        g.drawLine(tlX, tlY, tlX + size-1, tlY + size-1);
+        g.drawLine(tlX, tlY + size-1, tlX + size-1, tlY);
+        _drawingFrame.repaint();
     }
 }

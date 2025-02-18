@@ -15,6 +15,31 @@ import edu.ftdev.DrawingFrame;
 
 public class EquestriaMap extends DrawingFactory {
 
+    /**
+     * Creates a canvas displaying the map of Equestria overlaid with its coordinate
+     * system. Origin of the map (0, 0) is in the top-left corner, horizontal (X) range is [0-37],
+     * vertical (Y) range is [0-27].
+     * @see EquestriaMap#open()
+     * @see EquestriaMap#plot(int, int)
+     * @see EquestriaMap#line(int, int, int, int)
+     * @see EquestriaMap#lineTo(int, int)
+     * @see EquestriaMap#circle(int, int, int)
+     */
+    public EquestriaMap() {
+        super();
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/equestria_map.jpg");
+            BufferedImage img = ImageIO.read(input);
+            _drawing = new Drawing(img);
+            _drawingFrame = new DrawingFrame(_drawing);
+            _drawingFrame.open();
+        } catch (IOException e) {
+            // can't happen - resource is in the JAR
+            e.printStackTrace();
+        }
+    }
+
     // #region: Class constants
     private static final int _PINSIZE = 10;
     private static final int[] _XGRID = {
@@ -51,53 +76,6 @@ public class EquestriaMap extends DrawingFactory {
     // #endregion: Members and methods internal to the class
 
     // #region: Public methods
-    /**
-     * Creates a canvas displaying the map of Equestria overlaid with its coordinate
-     * system. Origin of the map (0, 0) is in the top-left corner, horizontal (X) range is [0-37],
-     * vertical (Y) range is [0-27].
-     * @return EquestriaMap object which can be further used for drawing.
-     * @throws IOException
-     * @see EquestriaMap#plot(int, int)
-     * @see EquestriaMap#line(int, int, int, int)
-     * @see EquestriaMap#lineTo(int, int)
-     * @see EquestriaMap#circle(int, int, int)
-     */
-    @Override
-    public void open() {
-        if (_drawingFrame != null) {
-            throw new IllegalStateException("Drawing window already initialized.");
-        }
-
-        try {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/equestria_map.jpg");
-            BufferedImage img = ImageIO.read(input);
-            _drawing = new Drawing(img);
-            _drawingFrame = new DrawingFrame(_drawing);
-            _drawingFrame.open();
-        } catch (IOException e) {
-            // can't happen - resource is in the JAR
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Clears the map of Equestria from any custom drawing, leaving only its
-     * coordinate system
-     * overlaid on the map image.
-     * @return true if successful, false otherwise (i.e. if map is displayed)
-     * @see EquestriaMap#create()
-     * @see EquestriaMap#open()
-     * @see EquestriaMap#close()
-     */
-    public void clear() {
-        if (_drawing == null || _drawingFrame == null) {
-            throw new IllegalStateException("Drawing window not initialized.");
-        }
-        _drawing.reset();
-        _drawingFrame.repaint();
-    }
-
     /**
      * Draws a point/bubble on Equestria map, at the given coordinates
      * @param x - x coordinate

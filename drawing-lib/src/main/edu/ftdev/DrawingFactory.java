@@ -2,7 +2,6 @@ package edu.ftdev;
 
 public class DrawingFactory implements DbgControls, FrameControls {
     // instance drawing and drawing frame used for displaying the nap
-    @SuppressWarnings("unused")
     protected Drawing _drawing = null; // drawing is intended to be used by subclasses doing heavier graphics.
     protected DrawingFrame _drawingFrame = null;
 
@@ -54,6 +53,18 @@ public class DrawingFactory implements DbgControls, FrameControls {
         }
         _drawingFrame.close();
         _drawingFrame = null;
+    }
+
+    
+    /**
+     * Clears the drawing to the initial state when it was created, removing any subsequent overlays, if any.
+     */
+    public void clear() {
+        if (_drawing == null || _drawingFrame == null) {
+            throw new IllegalStateException("Drawing window not initialized.");
+        }
+        _drawing.reset();
+        _drawingFrame.repaint();
     }
     // #endregion: FrameControls overrides
 

@@ -2,7 +2,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import edu.ftdev.DrawingFrame;
 import edu.ftdev.CafeArt.CafeWall;
 
 public class CafeWall_tests {
@@ -10,22 +9,20 @@ public class CafeWall_tests {
     @Test
     public void ctorTest() throws IOException, InterruptedException {
         CafeWall cafeWall = new CafeWall();
-        DrawingFrame drwFrame = new DrawingFrame(cafeWall);
-        drwFrame.open();
-        drwFrame.leap();
-        drwFrame.close();
+        cafeWall.open();
+        cafeWall.leap();
+        cafeWall.close();
     }
 
     @Test
     public void drawSquaresTest() throws IOException, InterruptedException {
         CafeWall cafeWall = new CafeWall();
-        DrawingFrame drwFrame = new DrawingFrame(cafeWall);
-        drwFrame.open();
-        drwFrame.step();
+        cafeWall.open();
+        cafeWall.step();
         cafeWall.drawBrightSquare(75, 60, 80);
-        drwFrame.step();
+        cafeWall.step();
         cafeWall.drawDarkSquare(180, 95, 55);
-        drwFrame.leap();
-        drwFrame.close();
+        cafeWall.leap();
+        cafeWall.close();
     }
 }
