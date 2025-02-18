@@ -2,15 +2,19 @@ package edu.ftdev.Maze;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import edu.ftdev.Drawing;
+import edu.ftdev.DrawingFactory;
+import edu.ftdev.DrawingFrame;
 
-public class MazeCanvas extends Drawing {
+public class MazeCanvas extends DrawingFactory {
     private static final int _PADDING = 10;
     private static final Color _BKG_COLOR = Color.LIGHT_GRAY;
 
@@ -35,6 +39,7 @@ public class MazeCanvas extends Drawing {
     private Stroke _dbgFrameStroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
     // #endregion: private fields
     
+    // #region: MazeCanvas.Side enum definition
     /**
      * Identifies a side of a maze cell. The cell is a square area having the following sides:
      * <li>{@link Side#Left }</li>
@@ -77,7 +82,9 @@ public class MazeCanvas extends Drawing {
          */
         Center
     };
+    // #endregion: MazeCanvas.Side enum definition
 
+    // #region: CellState class definition
     /**
      * Extracts the internal state of a maze cell, like the sides walled-in, the sides with paths drawn over, etc.
      */
@@ -105,8 +112,8 @@ public class MazeCanvas extends Drawing {
                 _col = col;
                 _xo = cellX(_row, _col);
                 _yo = cellY(_row, _col);
-                _shadeColor = getPixel(_xo + _pen, _yo + _pen);
-                _centerColor = getPixel(_xo + _cellWidth / 2, _yo + _cellWidth / 2);
+                _shadeColor = _drawing.getPixel(_xo + _pen, _yo + _pen);
+                _centerColor = _drawing.getPixel(_xo + _cellWidth / 2, _yo + _cellWidth / 2);
             }
         }
         
@@ -138,16 +145,16 @@ public class MazeCanvas extends Drawing {
          */
         public boolean getWallSides() {
             if (Valid) {
-                if (!getPixel(_xo + _pen,  _yo).equals(_shadeColor)) {
+                if (!_drawing.getPixel(_xo + _pen,  _yo).equals(_shadeColor)) {
                     WallSides.add(Side.Top);
                 }
-                if (!getPixel(_xo,  _yo + _pen).equals(_shadeColor)) {
+                if (!_drawing.getPixel(_xo,  _yo + _pen).equals(_shadeColor)) {
                     WallSides.add(Side.Left);
                 }
-                if (!getPixel(_xo + _cellWidth - _pen, _yo + _pen).equals(_shadeColor)) {
+                if (!_drawing.getPixel(_xo + _cellWidth - _pen, _yo + _pen).equals(_shadeColor)) {
                     WallSides.add(Side.Right);
                 } 
-                if (!getPixel(_xo + _pen, _yo + _cellWidth - _pen).equals(_shadeColor)) {
+                if (!_drawing.getPixel(_xo + _pen, _yo + _cellWidth - _pen).equals(_shadeColor)) {
                     WallSides.add(Side.Bottom);
                 }
             }
@@ -165,23 +172,23 @@ public class MazeCanvas extends Drawing {
         public boolean getPathSides() {
             if (Valid) {
                 int off = (_cellWidth - _pathWidth) / 2;
-                Color leftColor = getPixel(_xo + off - 1, _yo + off);
+                Color leftColor = _drawing.getPixel(_xo + off - 1, _yo + off);
                 if (!leftColor.equals(_shadeColor)) {
                     PathSides.put(Side.Left, leftColor);
                 }
-                Color rightColor = getPixel(_xo + off + _pathWidth, _yo + off);
+                Color rightColor = _drawing.getPixel(_xo + off + _pathWidth, _yo + off);
                 if (!rightColor.equals(_shadeColor)) {
                     PathSides.put(Side.Right, rightColor);
                 }
-                Color topColor = getPixel(_xo + off, _yo + off - 1);
+                Color topColor = _drawing.getPixel(_xo + off, _yo + off - 1);
                 if (!topColor.equals(_shadeColor)) {
                     PathSides.put(Side.Top, topColor);
                 }
-                Color bottomColor = getPixel(_xo + off, _yo + off + _pathWidth);
+                Color bottomColor = _drawing.getPixel(_xo + off, _yo + off + _pathWidth);
                 if (!bottomColor.equals(_shadeColor)) {
                     PathSides.put(Side.Bottom, bottomColor);
                 }
-                Color centerColor = getPixel(_xo + _cellWidth / 2, _yo + _cellWidth / 2);
+                Color centerColor = _drawing.getPixel(_xo + _cellWidth / 2, _yo + _cellWidth / 2);
                 if (!centerColor.equals(_shadeColor)) {
                     PathSides.put(Side.Center, centerColor);
                 }
@@ -191,42 +198,45 @@ public class MazeCanvas extends Drawing {
         }
         
         public void drawDbgFrame() {
-            _g2d.setColor(_dbgFrameColor);
-            _g2d.setStroke(_dbgFrameStroke);
-            _g2d.drawRect(
+            Graphics2D g = _drawing.getGraphics();
+            g.setColor(_dbgFrameColor);
+            g.setStroke(_dbgFrameStroke);
+            g.drawRect(
                     _xo-_dbgFrameOffset, 
                     _yo-_dbgFrameOffset, 
                     _cellWidth+2*_dbgFrameOffset, 
                     _cellWidth+2*_dbgFrameOffset);
-            _g2d.dispose();
+            g.dispose();
         }
 
         private void drawWall(Side side) {
+            Graphics2D g = _drawing.getGraphics();
             if (side == Side.Top) {
-                _g2d.setColor(_colShadeWall);
-                _g2d.fillRect(_xo, _yo, _cellWidth, _pen);
+                g.setColor(_colShadeWall);
+                g.fillRect(_xo, _yo, _cellWidth, _pen);
             } else if (side == Side.Left) {
-                _g2d.setColor(_colShadeWall);
-                _g2d.fillRect(_xo, _yo, _pen, _cellWidth);
+                g.setColor(_colShadeWall);
+                g.fillRect(_xo, _yo, _pen, _cellWidth);
             } else if (side == Side.Right) {
-                _g2d.setColor(_colLightWall);
-                _g2d.fillRect(_xo + _cellWidth - _pen, _yo, _pen, _cellWidth);
+                g.setColor(_colLightWall);
+                g.fillRect(_xo + _cellWidth - _pen, _yo, _pen, _cellWidth);
             } else if (side == Side.Bottom) {
-                _g2d.setColor(_colLightWall);
-                _g2d.fillRect(_xo,  _yo + _cellWidth - _pen, _cellWidth, _pen);
+                g.setColor(_colLightWall);
+                g.fillRect(_xo,  _yo + _cellWidth - _pen, _cellWidth, _pen);
             }
         }
         
         private void eraseWall(Side side) {
-            _g2d.setColor(_shadeColor);
+            Graphics2D g = _drawing.getGraphics();
+            g.setColor(_shadeColor);
             if (side == Side.Top) {
-                _g2d.fillRect(_xo, _yo, _cellWidth, _pen);
+                g.fillRect(_xo, _yo, _cellWidth, _pen);
             } else if (side == Side.Left) {
-                _g2d.fillRect(_xo, _yo, _pen, _cellWidth);
+                g.fillRect(_xo, _yo, _pen, _cellWidth);
             } else if (side == Side.Right) {
-                _g2d.fillRect(_xo + _cellWidth - _pen, _yo, _pen, _cellWidth);
+                g.fillRect(_xo + _cellWidth - _pen, _yo, _pen, _cellWidth);
             } else if (side == Side.Bottom) {
-                _g2d.fillRect(_xo,  _yo + _cellWidth - _pen, _cellWidth, _pen);
+                g.fillRect(_xo,  _yo + _cellWidth - _pen, _cellWidth, _pen);
             }
         }
         
@@ -237,34 +247,36 @@ public class MazeCanvas extends Drawing {
         }
 
         private void drawPath(Side side, Color color) {
+            Graphics2D g = _drawing.getGraphics();
             int off = (_cellWidth - _pathWidth) / 2;
-            _g2d.setColor(color);
+            g.setColor(color);
             if (side == Side.Left) {
-                _g2d.fillRect(_xo, _yo + off, off, _pathWidth);
+                g.fillRect(_xo, _yo + off, off, _pathWidth);
             } else if (side == Side.Right) {
-                _g2d.fillRect(_xo + off + _pathWidth, _yo + off, off, _pathWidth);
+                g.fillRect(_xo + off + _pathWidth, _yo + off, off, _pathWidth);
             } else if (side == Side.Top) { 
-                _g2d.fillRect(_xo + off, _yo, _pathWidth, off);
+                g.fillRect(_xo + off, _yo, _pathWidth, off);
             } else if (side == Side.Bottom) {
-                _g2d.fillRect(_xo + off, _yo + off + _pathWidth, _pathWidth, off);
+                g.fillRect(_xo + off, _yo + off + _pathWidth, _pathWidth, off);
             } else if (side == Side.Center) {
-                _g2d.fillRect(_xo + off, _yo + off, _pathWidth, _pathWidth);
+                g.fillRect(_xo + off, _yo + off, _pathWidth, _pathWidth);
             }
         }
         
         private void erasePath(Side side) {
+            Graphics2D g = _drawing.getGraphics();
             int off = (_cellWidth - _pathWidth) / 2;
-            _g2d.setColor(_shadeColor);
+            g.setColor(_shadeColor);
             if (side == Side.Left) {
-                _g2d.fillRect(_xo, _yo + off, off, _pathWidth);
+                g.fillRect(_xo, _yo + off, off, _pathWidth);
             } else if (side == Side.Right) {
-                _g2d.fillRect(_xo + off + _pathWidth, _yo + off, off, _pathWidth);
+                g.fillRect(_xo + off + _pathWidth, _yo + off, off, _pathWidth);
             } else if (side == Side.Top) { 
-                _g2d.fillRect(_xo + off, _yo, _pathWidth, off);
+                g.fillRect(_xo + off, _yo, _pathWidth, off);
             } else if (side == Side.Bottom) {
-                _g2d.fillRect(_xo + off, _yo + off + _pathWidth, _pathWidth, off);
+                g.fillRect(_xo + off, _yo + off + _pathWidth, _pathWidth, off);
             } else if (side == Side.Center) {
-                _g2d.fillRect(_xo + off, _yo + off, _pathWidth, _pathWidth);      
+                g.fillRect(_xo + off, _yo + off, _pathWidth, _pathWidth);      
             }
         }
 
@@ -276,14 +288,16 @@ public class MazeCanvas extends Drawing {
         }
 
         private void drawShade(Color color) {
+            Graphics2D g = _drawing.getGraphics();
             if (_centerColor.equals(_shadeColor)) {
                 _centerColor = color;
             }
             _shadeColor = color;
-            _g2d.setColor(color);
-            _g2d.fillRect(_xo, _yo, _cellWidth, _cellWidth);
+            g.setColor(color);
+            g.fillRect(_xo, _yo, _cellWidth, _cellWidth);
         }
     }
+    // #endregion: CellState class definition
     
     // #region: private methods
     /**
@@ -331,7 +345,13 @@ public class MazeCanvas extends Drawing {
      * @see MazeCanvas#open()
      */
     public MazeCanvas(int nRows, int nCols, int cellWidth) {
-        super(2 * _PADDING + nCols * cellWidth, 2 * _PADDING + nRows * cellWidth, _BKG_COLOR);
+        try {
+            _drawing = new Drawing(2 * _PADDING + nCols * cellWidth, 2 * _PADDING + nRows * cellWidth, _BKG_COLOR);
+            _drawingFrame = new DrawingFrame(_drawing);
+        } catch (IOException e) {
+            // Can't happen
+            e.printStackTrace();
+        }
         _nRows = nRows;
         _nCols = nCols;
         _cellWidth = cellWidth;
@@ -339,6 +359,31 @@ public class MazeCanvas extends Drawing {
         int gap = (_cellWidth - 2 * _pen) / 4;
         _pathWidth = Math.max(1, _cellWidth - 2 * _pen - 2 * gap);
         clear();
+    }
+
+    /**
+     * Clears the rendering canvas of this maze.<br>The window containing this canvas is brought back 
+     * to its default state as it was when it was first opened. All prior rendering for
+     * individual maze cells is lost.
+     * @return true if successful, false if the window is not opened.
+     * @see DrawingFactory#clear()
+     * @see MazeCanvas#open()
+     */
+    @Override
+    public void clear() {
+        Graphics2D g = _drawing.getGraphics();
+        int borderWidth = _pen; //2 * _pen;
+        int xo = cellX(0, 0) - borderWidth;
+        int yo = cellY(0, 0) - borderWidth;
+        int w = this._nCols * this._cellWidth + 2 * borderWidth;
+        int h = this._nRows * this._cellWidth + 2 * borderWidth;
+        g.setColor(_colLightWall);
+        g.fillRect(xo, yo, w, borderWidth);
+        g.fillRect(xo, yo, borderWidth, h);
+        g.setColor(_colShadeWall);
+        g.fillRect(xo + w - borderWidth, yo, borderWidth, h);
+        g.fillRect(xo, yo + h - borderWidth, w, borderWidth);
+        _drawingFrame.repaint();
     }
     
     // #region: public methods
@@ -348,7 +393,7 @@ public class MazeCanvas extends Drawing {
      * @see MazeCanvas#MazeCanvas(int, int, int)
      */
     public int getRows() {
-        return this._nRows;
+        return _nRows;
     }
     
     /**
@@ -357,29 +402,7 @@ public class MazeCanvas extends Drawing {
      * @see MazeCanvas#MazeCanvas(int, int, int) 
      */
     public int getCols() {
-        return this._nCols;
-    }
-    
-    /**
-     * Clears the rendering canvas of this maze.<br>The window containing this canvas is brought back 
-     * to its default state as it was when it was first opened. All prior rendering for
-     * individual maze cells is lost.
-     * @return true if successful, false if the window is not opened.
-     * @see MazeCanvas#open()
-     */
-    public boolean clear() {
-        int borderWidth = _pen; //2 * _pen;
-        int xo = cellX(0, 0) - borderWidth;
-        int yo = cellY(0, 0) - borderWidth;
-        int w = this._nCols * this._cellWidth + 2 * borderWidth;
-        int h = this._nRows * this._cellWidth + 2 * borderWidth;
-        _g2d.setColor(_colLightWall);
-        _g2d.fillRect(xo, yo, w, borderWidth);
-        _g2d.fillRect(xo, yo, borderWidth, h);
-        _g2d.setColor(_colShadeWall);
-        _g2d.fillRect(xo + w - borderWidth, yo, borderWidth, h);
-        _g2d.fillRect(xo, yo + h - borderWidth, w, borderWidth);
-        return true;
+        return _nCols;
     }
     
     /**
@@ -410,13 +433,13 @@ public class MazeCanvas extends Drawing {
      */    
     public boolean drawCell(int row, int col, Color color) {
         CellState cs = new CellState(row, col);
-        if (cs.Valid) {
+        if (cs.Valid && _drawingFrame != null) {
             cs.drawShade(color);
             cs.drawWall(Side.Top);
             cs.drawWall(Side.Left);
             cs.drawWall(Side.Right);
             cs.drawWall(Side.Bottom);
-            _drwCanvas.repaint();
+            _drawingFrame.repaint();
         }
         
         return cs.Valid;
@@ -437,13 +460,14 @@ public class MazeCanvas extends Drawing {
      */  
     public boolean drawWall(int row, int col, Side side) {
         CellState cs = new CellState(row, col);
-        if (cs.getPathSides()) {
+        if (cs.getPathSides() && _drawingFrame != null) {
             cs.drawWall(side);
             cs.redrawPath(side);
-            _drwCanvas.repaint();
+            _drawingFrame.repaint();
+            return true;
         }
         
-        return cs.Valid;
+        return false;
     }
     
     /**
@@ -461,7 +485,7 @@ public class MazeCanvas extends Drawing {
     public boolean eraseWall(int row, int col, Side side) {
         CellState cs = new CellState(row, col);
         
-        if (cs.getWallSides() && cs.getPathSides()) {
+        if (cs.getWallSides() && cs.getPathSides() && _drawingFrame != null) {
             if (side == Side.Top) {
                 cs.eraseWall(side);
                 cs.redrawWall(Side.Left);
@@ -484,10 +508,11 @@ public class MazeCanvas extends Drawing {
             	cs.redrawWall(Side.Right);
             	cs.redrawPath(Side.Bottom);
             }
-            _drwCanvas.repaint();
+            _drawingFrame.repaint();
+            return true;
         }
         
-        return cs.Valid;
+        return false;
     }
     
     /**
@@ -505,12 +530,13 @@ public class MazeCanvas extends Drawing {
      */
     public boolean drawPath(int row, int col, Side side, Color color) {
         CellState cs = new CellState(row, col);
-        if (cs.Valid) {
+        if (cs.Valid && _drawingFrame != null) {
             cs.drawPath(side, color);
-            _drwCanvas.repaint();
+            _drawingFrame.repaint();
+            return true;
         }
         
-        return cs.Valid;
+        return false;
     }
     
     /**
@@ -527,13 +553,14 @@ public class MazeCanvas extends Drawing {
      */
     public boolean erasePath(int row, int col, Side side) {
         CellState cs = new CellState(row, col);
-        if (cs.getWallSides()) {
+        if (cs.getWallSides() && _drawingFrame != null) {
             cs.erasePath(side);
             cs.redrawWall(side);
-            _drwCanvas.repaint();
+            _drawingFrame.repaint();
+            return true;
         }
         
-        return cs.Valid;
+        return false;
     }
     
     /**
@@ -548,7 +575,7 @@ public class MazeCanvas extends Drawing {
     public boolean drawShade(int row, int col, Color color) {
         CellState cs = new CellState(row, col);
         
-        if (cs.getWallSides() && cs.getPathSides()) {
+        if (cs.getWallSides() && cs.getPathSides() && _drawingFrame != null) {
             cs.drawShade(color);
             cs.redrawWall(Side.Top);
             cs.redrawWall(Side.Left);
@@ -559,10 +586,11 @@ public class MazeCanvas extends Drawing {
             cs.redrawPath(Side.Right);
             cs.redrawPath(Side.Bottom);
             cs.redrawPath(Side.Center);
-            _drwCanvas.repaint();
+            _drawingFrame.repaint();
+            return true;
         }
         
-        return cs.Valid;
+        return false;
     }
     
     /**

@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import edu.ftdev.DrawingFrame;
 import edu.ftdev.Maze.MazeCanvas;
 import edu.ftdev.Maze.MazeCanvas.Side;
 
@@ -13,37 +12,35 @@ public class MazeCanvas_tests {
     @Test
     public void basicTest() throws IOException, InterruptedException {
         MazeCanvas mazeCanvas = new MazeCanvas(16,24,32);
-        DrawingFrame mazeFrame = new DrawingFrame(mazeCanvas);
         assertEquals(16, mazeCanvas.getRows());
         assertEquals(24, mazeCanvas.getCols());
-        mazeFrame.open();
-        mazeFrame.step();
+        mazeCanvas.open();
+        mazeCanvas.step();
         mazeCanvas.drawCell(1, 1);
-        mazeFrame.step();
+        mazeCanvas.step();
         mazeCanvas.drawCell(1, 2);
         mazeCanvas.drawCell(2, 1);
         mazeCanvas.drawCell(2, 2);
-        mazeFrame.step();
+        mazeCanvas.step();
         mazeCanvas.drawShade(2, 2, Color.GRAY.brighter());
-        mazeFrame.step();
+        mazeCanvas.step();
         mazeCanvas.eraseWall(1, 1, Side.Right);
         mazeCanvas.eraseWall(1, 2, Side.Left);
-        mazeFrame.step();
+        mazeCanvas.step();
         mazeCanvas.eraseWall(1, 1, Side.Bottom);
         mazeCanvas.eraseWall(2, 1, Side.Top);
-        mazeFrame.leap();
-        mazeFrame.close();
+        mazeCanvas.leap();
+        mazeCanvas.close();
     }
 
     @Test
     public void snakeTest() throws IOException, InterruptedException {
         MazeCanvas mazeCanvas = new MazeCanvas(32, 48, 16);
-        DrawingFrame mazeFrame = new DrawingFrame(mazeCanvas);
-        mazeFrame.open();
-        mazeFrame.leap();
+        mazeCanvas.open();
+        mazeCanvas.leap();
         for(int r = 0; r < mazeCanvas.getRows(); r++) {
             if (r == 1 || r == (mazeCanvas.getRows() - 1)) {
-                mazeFrame.step();
+                mazeCanvas.step();
             }
             for(int c = 0; c < mazeCanvas.getCols(); c++) {
                 mazeCanvas.drawCell(r, c);
@@ -78,7 +75,7 @@ public class MazeCanvas_tests {
                 }
             }
         }
-        mazeFrame.leap();
-        mazeFrame.close();
+        mazeCanvas.leap();
+        mazeCanvas.close();
     }
 }
