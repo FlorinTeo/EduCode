@@ -23,7 +23,7 @@ public class DrawingFrame_tests {
     @Test
     public void basicTest() throws IOException, InterruptedException {
         System.out.println("DrawingLib testing code!");
-        File drwFile = new File("src/test/test_img1.jpg");
+        File drwFile = new File("src/test/res/test_img1.jpg");
         BufferedImage drwImg = ImageIO.read(drwFile);
         Drawing drw = new Drawing(drwImg);
         DrawingFrame drwFrame = new DrawingFrame(drw);
@@ -58,7 +58,7 @@ public class DrawingFrame_tests {
 
     @Test
     public void doubleFrameTest() throws IOException, InterruptedException {
-        File drwFile = new File("src/test/test_img1.jpg");
+        File drwFile = new File("src/test/res/test_img1.jpg");
         BufferedImage drwImg = ImageIO.read(drwFile);
         Drawing drw1 = new Drawing(drwImg);
         DrawingFrame drwFrame1 = new DrawingFrame(drw1);
