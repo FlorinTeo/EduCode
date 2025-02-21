@@ -10,7 +10,7 @@ public class Equestria_tests {
 
 		// open the map of Equestria window then wait for the key 'S' (step) to be pressed.
 		map.open();
-		map.step();
+		map.leap();
 		
 		// plot a white dot on the map at coordinates (10, 5)
 		map.plot(6, 12);
@@ -27,7 +27,7 @@ public class Equestria_tests {
 
 		// draw a circle with center in (19, 11) and diameter 4
 		map.circle(19, 11, 4);
-		map.leap();
+		map.jump();
 
 		// clear the map of Equestria
 		map.clear();
@@ -36,7 +36,7 @@ public class Equestria_tests {
 		// draw two concentric circles
 		map.circle(10, 10, 2);
 		map.circle(10, 10, 4);
-		map.leap();
+		map.jump();
 		
 		// close the map of Equestria window.
 		map.close();

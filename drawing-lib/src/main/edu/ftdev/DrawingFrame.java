@@ -52,15 +52,24 @@ public class DrawingFrame implements
             _dbgButtons[0].setFace(BtnFace.CLICKED);
             _dbgButtons[1].setFace(BtnFace.NORMAL);
             _dbgButtons[2].setFace(BtnFace.NORMAL);
+            _dbgButtons[3].setFace(BtnFace.NORMAL);
             break;
-        case '3': // break on {..lean..}
+        case '2': // break on {.leap.}
             _dbgButtons[0].setFace(BtnFace.NORMAL);
             _dbgButtons[1].setFace(BtnFace.CLICKED);
             _dbgButtons[2].setFace(BtnFace.NORMAL);
+            _dbgButtons[3].setFace(BtnFace.NORMAL);
+            break;
+        case '3': // break on {.jump.}
+            _dbgButtons[0].setFace(BtnFace.NORMAL);
+            _dbgButtons[1].setFace(BtnFace.NORMAL);
+            _dbgButtons[2].setFace(BtnFace.CLICKED);
+            _dbgButtons[3].setFace(BtnFace.NORMAL);
             break;
         case ' ': // run >ffwd
             _dbgButtons[0].setFace(BtnFace.NORMAL);
             _dbgButtons[1].setFace(BtnFace.NORMAL);
+            _dbgButtons[3].setFace(BtnFace.NORMAL);
             _dbgButtons[2].setFace(BtnFace.CLICKED);
             break;
         }
@@ -103,7 +112,7 @@ public class DrawingFrame implements
 
     // #region: [Private] DbgButtons management
     private void dbgButtonsSetup(int xAnchor, int yAnchor) throws IOException {
-        _dbgButtons = new DbgButton[3];
+        _dbgButtons = new DbgButton[4];
 
         _dbgButtons[0] = new DbgButton(
             '1',
@@ -114,17 +123,24 @@ public class DrawingFrame implements
         xAnchor += _dbgButtons[0].getWidth();
 
         _dbgButtons[1] = new DbgButton(
-            '3',
+            '2',
             xAnchor,
             yAnchor,
             "edu/ftdev/res/leap_0.png", "edu/ftdev/res/leap_1.png", "edu/ftdev/res/leap_2.png");
         xAnchor += _dbgButtons[1].getWidth();
 
         _dbgButtons[2] = new DbgButton(
+            '3',
+            xAnchor,
+            yAnchor,
+            "edu/ftdev/res/jump_0.png", "edu/ftdev/res/jump_1.png", "edu/ftdev/res/jump_2.png");
+        xAnchor += _dbgButtons[2].getWidth();
+
+        _dbgButtons[3] = new DbgButton(
             ' ',
             xAnchor,
             yAnchor,
-            "edu/ftdev/res/ffwd_0.png", "edu/ftdev/res/ffwd_1.png", "edu/ftdev/res/ffwd_2.png");
+            "edu/ftdev/res/run_0.png", "edu/ftdev/res/run_1.png", "edu/ftdev/res/run_2.png");
         xAnchor += _dbgButtons[2].getWidth();
     }
     // #endregion: [Private] DbgButtons management
@@ -165,6 +181,7 @@ public class DrawingFrame implements
 
         // setup callback methods for keyInterceptor control keys
         _keyInterceptor.setKeyTypedHook('1', _onKeyInterceptorCtrl);
+        _keyInterceptor.setKeyTypedHook('2', _onKeyInterceptorCtrl);
         _keyInterceptor.setKeyTypedHook('3', _onKeyInterceptorCtrl);
         _keyInterceptor.setKeyTypedHook(' ', _onKeyInterceptorCtrl);
         // setup callback methods for mouseInterceptor events
@@ -246,7 +263,7 @@ public class DrawingFrame implements
     
     // #region: [Interface] DbgControls overrides
     /**
-     * In "step" mode this method pauses the execution. It does nothing in any other modes.
+     * In "step" mode, this method pauses the execution. It does nothing in any other modes.
      * @throws InterruptedException
      * @see DbgControls#step()
      */
@@ -268,24 +285,24 @@ public class DrawingFrame implements
     }
     
     /**
-     * In "step" or "stop" modes, this method pauses the execution until resumed.
-     * It does nothing in "leap" or "fast-forward" mode. 
+     * In "step" or "leap" modes, this method pauses the execution until resumed.
+     * It does nothing in "jump" or "run" modes. 
      * @throws InterruptedException
      * @see DbgControls#stop()
      */
     @Override
-    public void stop() throws InterruptedException {
+    public void leap() throws InterruptedException {
         step(2, Long.MAX_VALUE);
     }
 
      /**
-     * In "step", "stop" or "leap" modes, this method pauses the execution until resumed.
-     * It does nothing in "fast-forward" mode. 
+     * In "step", "leap" or "jump" modes, this method pauses the execution until resumed.
+     * It does nothing in "run" mode. 
      * @throws InterruptedException
      * @see DbgControls#leap()
      */
     @Override
-    public void leap() throws InterruptedException {
+    public void jump() throws InterruptedException {
         step(3, Long.MAX_VALUE);
     }
     
@@ -303,11 +320,19 @@ public class DrawingFrame implements
                 _dbgButtons[0].setFace(BtnFace.STOPPED);
                 _dbgButtons[1].setFace(BtnFace.NORMAL);
                 _dbgButtons[2].setFace(BtnFace.NORMAL);
+                _dbgButtons[3].setFace(BtnFace.NORMAL);
                 break;
-            case 3: // leap()
+            case 2: // leap()
                 _dbgButtons[0].setFace(BtnFace.NORMAL);
                 _dbgButtons[1].setFace(BtnFace.STOPPED);
                 _dbgButtons[2].setFace(BtnFace.NORMAL);
+                _dbgButtons[3].setFace(BtnFace.NORMAL);
+                break;
+            case 3: // jump()
+                _dbgButtons[0].setFace(BtnFace.NORMAL);
+                _dbgButtons[1].setFace(BtnFace.NORMAL);
+                _dbgButtons[2].setFace(BtnFace.STOPPED);
+                _dbgButtons[3].setFace(BtnFace.NORMAL);
                 break;
             }
         }

@@ -37,11 +37,7 @@ public class MazeCanvas_tests {
     public void snakeTest() throws IOException, InterruptedException {
         MazeCanvas mazeCanvas = new MazeCanvas(32, 48, 16);
         mazeCanvas.open();
-        mazeCanvas.leap();
         for(int r = 0; r < mazeCanvas.getRows(); r++) {
-            if (r == 1 || r == (mazeCanvas.getRows() - 1)) {
-                mazeCanvas.step();
-            }
             for(int c = 0; c < mazeCanvas.getCols(); c++) {
                 mazeCanvas.drawCell(r, c);
                 if (r == 0) {
@@ -74,8 +70,13 @@ public class MazeCanvas_tests {
                     mazeCanvas.drawPath(r, c, Side.Center, Color.RED);
                 }
             }
+            if (r == 0 || r == (mazeCanvas.getRows() - 1)) {
+                mazeCanvas.leap();
+            } else {
+                mazeCanvas.step();
+            }
         }
-        mazeCanvas.leap();
+        mazeCanvas.jump();
         mazeCanvas.close();
     }
 }

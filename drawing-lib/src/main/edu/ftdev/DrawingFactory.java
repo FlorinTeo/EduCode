@@ -98,24 +98,10 @@ public class DrawingFactory implements DbgControls, FrameControls {
     }
 
     /**
-     * In "step" or "stop" modes, this method pauses the execution until resumed.
-     * It does nothing in "leap" or "fast-forward" mode. 
+     * In "step" or "leap" modes, this method pauses the execution until resumed.
+     * It does nothing in "jump" or "run" modes. 
      * @throws InterruptedException
      * @see DbgControls#stop()
-     */
-    @Override
-    public void stop() throws InterruptedException {
-        if (_drawingFrame == null) {
-            throw new IllegalStateException("Drawing window not initialized.");
-        }
-        _drawingFrame.stop();
-    }
-
-     /**
-     * In "step", "stop" or "leap" modes, this method pauses the execution until resumed.
-     * It does nothing in "fast-forward" mode. 
-     * @throws InterruptedException
-     * @see DbgControls#leap()
      */
     @Override
     public void leap() throws InterruptedException {
@@ -123,6 +109,20 @@ public class DrawingFactory implements DbgControls, FrameControls {
             throw new IllegalStateException("Drawing window not initialized.");
         }
         _drawingFrame.leap();
+    }
+
+     /**
+     * In "step", "leap" or "jump" modes, this method pauses the execution until resumed.
+     * It does nothing in "run" mode. 
+     * @throws InterruptedException
+     * @see DbgControls#leap()
+     */
+    @Override
+    public void jump() throws InterruptedException {
+        if (_drawingFrame == null) {
+            throw new IllegalStateException("Drawing window not initialized.");
+        }
+        _drawingFrame.jump();
     }
     // #endregion: DbgControls overrides 
 }

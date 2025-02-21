@@ -103,6 +103,12 @@ public class KeyInterceptor implements KeyListener {
                 _keyStepLevel = 1;
                 _sync.notifyAll();
                 break;
+            case '2':
+                // Continue execution. Ignore all step(1) or lesser,
+                // break on next step(2) or greater. 
+                _keyStepLevel = 2;
+                _sync.notifyAll();
+                break;
             case '3':
                 // Continue execution. Ignore all step(1) or lesser,
                 // break on next step(2) or greater. 
