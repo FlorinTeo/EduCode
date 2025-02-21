@@ -69,8 +69,8 @@ public class DrawingFrame implements
         case ' ': // run >ffwd
             _dbgButtons[0].setFace(BtnFace.NORMAL);
             _dbgButtons[1].setFace(BtnFace.NORMAL);
-            _dbgButtons[3].setFace(BtnFace.NORMAL);
-            _dbgButtons[2].setFace(BtnFace.CLICKED);
+            _dbgButtons[2].setFace(BtnFace.NORMAL);
+            _dbgButtons[3].setFace(BtnFace.CLICKED);
             break;
         }
     };
