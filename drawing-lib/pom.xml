@@ -45,6 +45,9 @@
                     <include>**/*.png</include>
                     <include>**/*.jpg</include>
                 </includes>
+                <excludes>
+                    <exclude>test/**</exclude>
+                </excludes>
                 <targetPath>edu/ftdev/res</targetPath>
             </resource>
         </resources>
