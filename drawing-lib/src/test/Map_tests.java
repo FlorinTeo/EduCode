@@ -20,7 +20,7 @@ public class Map_tests {
     @Test
     public void basicTest() throws IOException, InterruptedException {
         // loads an intersection image file and displays it in a map frame.
-        _mapImage = MapImage.load("src/test/res/Woodlawn.jpg");
+        _mapImage = MapImage.load("src/res/Map/Woodlawn.jpg");
         _mapFrame = new MapFrame(_mapImage);
         
         // registers the key T with the method _onKeyT

@@ -29,7 +29,7 @@ public class EquestriaMap extends DrawingFactory {
         super();
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/equestria_map.jpg");
+            InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/Equestria/equestria_map.jpg");
             BufferedImage img = ImageIO.read(input);
             _drawing = new Drawing(img);
             _drawingFrame = new DrawingFrame(_drawing);

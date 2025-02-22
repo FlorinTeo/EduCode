@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import com.google.gson.Gson;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,7 +27,6 @@ import java.nio.file.Paths;
 
 import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFactory;
-import javafx.scene.effect.Light.Point;
 
 public class MapCanvas extends DrawingFactory {
 
