@@ -144,6 +144,9 @@ public class MapCanvas extends DrawingFactory {
     private BufferedImage loadFromRes(String mapImageRes) throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/Map/" + mapImageRes);
+        if (input == null) {
+            throw new IOException("Resource not found: " + mapImageRes);
+        }
         byte[] rawBytes = readAllBytes(input);
         return loadFromRawBytes(rawBytes);
     }

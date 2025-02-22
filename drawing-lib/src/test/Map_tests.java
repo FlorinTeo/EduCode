@@ -23,6 +23,7 @@ public class Map_tests {
         _mapCanvas.setKeyHook('T', _onKeyT);
         // opens the GUI window
         _mapCanvas.open();
+        _mapCanvas.setStatusMessage("Press T to display the routes");
         // stops, waiting for user action
         _mapCanvas.jump();
         // close the window and terminate the program
