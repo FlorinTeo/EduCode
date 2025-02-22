@@ -3,15 +3,19 @@ package edu.ftdev.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
 
 import com.google.gson.Gson;
 
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -24,9 +28,13 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFactory;
+import edu.ftdev.DrawingFrame;
+import edu.ftdev.KeyInterceptor;
+import edu.ftdev.KeyInterceptor.KeyHook;
 
 public class MapCanvas extends DrawingFactory {
 
@@ -61,40 +69,40 @@ public class MapCanvas extends DrawingFactory {
     // Map metadata (i.e {_name, _mapOverlaysRaw, _centerTL, _centerBR})
     private MapMetadata _mapMetadata;
     // Map<overlay_name, overlay_image> (i.e. {<"AB", imageAB>, <"AC", imageAC>, ..})
-    private HashMap<String, BufferedImage> _mapOverlays;
-    // Set<route_name> - Overlays currently rendered on map (i.e. {"AB", "CD", "BA", ...})
+    private HashMap<String, BufferedImage> _mapOverlays = new HashMap<String, BufferedImage>();
+    // Set<route_name> - Set of overlay routes rendered on map (i.e. {"AB", "CD", "BA", ...})
     private Set<String> _overlays = new HashSet<String>();
     // Map<route_node, routes_from_node> (i.e. {<"A", RouteNodeInfo(["AB", "AC"])>, <"B", RouteNodeInfo(["BA", "BC"])>, ..})
     private HashMap<Character, RouteNodeInfo> _routeInfoMap = new HashMap<Character, RouteNodeInfo>();    
     // #endregion: [private] Internal fields
     
-    // #region: [private] Routes manual display
+    // #region: [private] Routes display on keyboard input
     private void buildRouteInfoMap() {
-        // Set<String> routes = _mapImage.getRoutes();
-        // for(String routeName : routes) {
-        //     char key = Character.toUpperCase(routeName.charAt(0));
-        //     RouteNodeInfo info = null;
-        //     if (_routeInfoMap.containsKey(key)) {
-        //         info = _routeInfoMap.get(key);
-        //     } else {
-        //         info = new RouteNodeInfo();
-        //         _routeInfoMap.put(key, info);
-        //     }
-        //     info._routes.add(routeName);
-        // }
+        Set<String> routes = getRoutes();
+        for(String routeName : routes) {
+            char key = Character.toUpperCase(routeName.charAt(0));
+            RouteNodeInfo info = null;
+            if (_routeInfoMap.containsKey(key)) {
+                info = _routeInfoMap.get(key);
+            } else {
+                info = new RouteNodeInfo();
+                _routeInfoMap.put(key, info);
+            }
+            info._routes.add(routeName);
+        }
     }
     
     private void showRoutes() {
-        // List<String> routes = new ArrayList<String>();
-        // for(RouteNodeInfo rni : _routeInfoMap.values()) {
-        //     if (rni._index >= 0) {
-        //         routes.add(rni._routes.get(rni._index));
-        //     }
-        // }
-        // _mapImage.setOverlays(routes);
-        // repaint();
+        List<String> routes = new ArrayList<String>();
+        for(RouteNodeInfo rni : _routeInfoMap.values()) {
+            if (rni._index >= 0) {
+                routes.add(rni._routes.get(rni._index));
+            }
+        }
+        setOverlays(routes);
+        repaint();
     }
-    // #endregion [private]: Routes manual display
+    // #endregion [private]: Routes display on keyboard input
 
     // #region: [private] Static helper methods    
     private static String imageToBase64(BufferedImage image) throws IOException {
@@ -119,12 +127,34 @@ public class MapCanvas extends DrawingFactory {
         System.arraycopy(base,0,returnArray,returnArray.length-base.length,base.length);
         return returnArray;
     }
+
+    private static byte[] readAllBytes(InputStream input) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] data = new byte[16384];
+        while ((nRead = input.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+        buffer.flush();
+        return buffer.toByteArray();
+    }
     // #endregion: [private] Static IO helper methods
 
-    // #region: [private] File IO
-    private void loadFromFile(File file) throws IOException {
+    // #region: [private] Instance helper methods
+    private BufferedImage loadFromRes(String mapImageRes) throws IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/Map/" + mapImageRes);
+        byte[] rawBytes = readAllBytes(input);
+        return loadFromRawBytes(rawBytes);
+    }
+    
+    private BufferedImage loadFromFile(File file) throws IOException {
         Path filePath = Paths.get(file.getAbsolutePath());
         byte[] rawBytes = Files.readAllBytes(filePath);
+        return loadFromRawBytes(rawBytes);
+    }
+
+    private BufferedImage loadFromRawBytes(byte[] rawBytes) throws IOException {
         byte[] rawOffset = Arrays.copyOfRange(rawBytes, rawBytes.length-4, rawBytes.length);
         BigInteger offset = new BigInteger(rawOffset);
         byte[] rawJsonBytes = Arrays.copyOfRange(rawBytes,  offset.intValue(), rawBytes.length - 4);
@@ -132,9 +162,6 @@ public class MapCanvas extends DrawingFactory {
         Gson deserializer = new Gson();
         _mapMetadata = deserializer.fromJson(rawjson, MapMetadata.class);
         byte[] rawImageBytes = Arrays.copyOfRange(rawBytes, 0, offset.intValue());
-        InputStream imageStream = new ByteArrayInputStream(rawImageBytes);
-        BufferedImage image = ImageIO.read(imageStream);
-        _drawing = new Drawing(image);
 
         for(Map.Entry<String, String> mapOverlayRaw : _mapMetadata._mapOverlaysRaw.entrySet())
         {
@@ -142,30 +169,247 @@ public class MapCanvas extends DrawingFactory {
                     mapOverlayRaw.getKey(), 
                     base64ToImage(mapOverlayRaw.getValue()));
         }
+
+        InputStream imageStream = new ByteArrayInputStream(rawImageBytes);
+        BufferedImage image = ImageIO.read(imageStream);
+        return image;
     }
     
-    private void loadFromDir(File dir) throws IOException {
+    private BufferedImage loadFromDir(File dir) throws IOException {
         // Create the map metadata object
         _mapMetadata = new MapMetadata();
         // Load the baseMap and create the mapImage
         _mapMetadata._mapName = dir.getName();
-        File mapFile = new File(dir.getName() + "/" + _mapMetadata._mapName + "_.jpg");
-        _drawing = new Drawing(ImageIO.read(mapFile));
-        
-        // Load the overlays into the mapImage
+       
+        // Load the overlays into the _mapOverlays and in the _mapMetadata._mapOverlaysRaw maps
         FilenameFilter overlayFilter = (file, name)-> { return name.matches(dir + "_.+\\.png"); };
         for (String overlayFileName : dir.list(overlayFilter)) {
             File overlayFile = new File(dir.getName() + "/" + overlayFileName);
             String overlayName = overlayFileName.split("_|\\.")[1];
-            _mapOverlays.put(
-                    overlayName,
-                    ImageIO.read(overlayFile));
+            BufferedImage overlayImage = ImageIO.read(overlayFile);
+            _mapOverlays.put(overlayName, overlayImage);
+            _mapMetadata._mapOverlaysRaw.put(overlayName, imageToBase64(overlayImage));
         }
-    }
-    // #endregion: [private] File IO
 
-    public MapCanvas() {
-        super();
+        File mapFile = new File(dir.getName() + "/" + _mapMetadata._mapName + "_.jpg");
+        return ImageIO.read(mapFile);
+    }
+
+    /**
+     * Saves the content of this MapImage object into an enhanced .jpeg file.
+     * The resulting .jpeg file is an image of the base map followed by a 
+     * JSON serialized object containing the routes overlays.
+     * @param mapImageFileName - the name of the .jpg file to be created.<br>
+     * e.g.: "Ravenna.jpg"
+     * @throws IOException - failure in writing to the disk.
+     * @see #load(String)
+     */
+    @SuppressWarnings("unused") // To be used only by future internal tooling for genrating map images.
+    private void save(String mapImageFileName) throws IOException {
+        Gson serializer = new Gson();
+        String jsonMapRoutes = serializer.toJson(_mapMetadata);
+        Path mapImagePath = Paths.get(mapImageFileName);
+        ByteArrayOutputStream mapImageStream = new ByteArrayOutputStream();
+        ImageIO.write(_drawing.getImage(), "jpg", mapImageStream);
+        byte[] mapImageBytes = mapImageStream.toByteArray();
+        Files.write(mapImagePath, mapImageBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        byte[] mapRoutesBytes = jsonMapRoutes.getBytes();
+        Files.write(mapImagePath, mapRoutesBytes, StandardOpenOption.APPEND);
+        byte[] mapImageLenBytes = toByteArray(BigInteger.valueOf(mapImageBytes.length), 4);
+        Files.write(mapImagePath, mapImageLenBytes, StandardOpenOption.APPEND);
+    }
+
+    private void refresh() {
+        _drawing.reset();
+        Graphics2D g=_drawing.getGraphics();
+        for (String overlay : _overlays) {
+            if (_mapOverlays.containsKey(overlay)) {
+                g.drawImage(_mapOverlays.get(overlay),0,0,null);
+            }
+        }
+        _drawingFrame.repaint();
+    }
+    // #endregion: [private] instance helper methods
+
+    /**
+     * Constructs a new MapCanvas object from a map image. The map image can be a .jpg file,
+     * a directory containing the map image and its overlays, or a resource path. 
+     * @param mapImagePath - path to the image file, directory or resource.
+     * @throws IOException
+     */
+    public MapCanvas(String mapImagePath) throws IOException {
+        File mapImageFile = new File(mapImagePath);
+        BufferedImage image = (mapImageFile.exists())
+            ? (mapImageFile.isDirectory())
+                ? loadFromDir(mapImageFile)
+                : loadFromFile(mapImageFile)
+            : loadFromRes(mapImagePath);
+        _drawing = new Drawing(image);
+        _drawingFrame = new DrawingFrame(_drawing);
+        buildRouteInfoMap();
+    }
+
+    // #region: [public] MapCanvas API
+    /**
+     * Gets the name of the map in this MapImage.
+     * @return The name of the map.
+     * @see #MapImage(String, BufferedImage)
+     * @see #load(String)
+     */
+    public String getMapName() {
+        return _mapMetadata._mapName;
     }
     
+    /**
+     * Gets the set of all the routes, given by name, embedded in this map.
+     * @return The names of all the routes embedded with this map.<br>
+     * e.g.: {"AB", "AC", "AD", "BA", "BC", "BD", ...}
+     */
+    public Set<String> getRoutes() {
+        return _mapOverlays.keySet();
+    }
+    
+    /**
+     * Gets the set of routes overlaid on the map. This is a subset
+     * of all the routes embedded in this map.
+     * @return The names of the routes overlayed on the map.<br>
+     * e.g.: {"AB", "AC", "CB", ...}
+     * @see #setOverlays(String...)
+     * @see #getRoutes()
+     */
+    public Set<String> getOverlays() {
+        return new TreeSet<String>(_overlays);
+    }
+    
+    /**
+     * Sets the routes to be overlaid on the map. This is expected
+     * to be a subset of all the routes embedded in this map.
+     * @param routes - var arg array with the routes to be overlaid on the map.
+     * @see #getOverlays()
+     * @see #getRoutes()
+     */
+    public void setOverlays(String... routes) {
+        setOverlays(Arrays.asList(routes));
+    }
+    
+    /**
+     * Sets the routes to be overlaid on the map. This is expected
+     * to be a subset of all the routes embedded in this map.
+     * @param routes - collection (List, or Set) with the routes to be overlaid on the map.
+     * @see #getOverlays()
+     * @see #getRoutes()
+     */
+    public void setOverlays(Collection<String> routes) {
+        _overlays.clear();
+        _overlays.addAll(routes);
+        refresh();
+    }
+    
+    /**
+     * Indicates whether any of the given routes are colliding with any other.
+     * A collision is detected if any of the route overlays have non-transparent
+     * pixels of different colors at the same coordinates on the map <br>
+     * <p><u>Examples:</u><br>
+     * assuming "AB" and "AC" have same color, collide("AB", "AC")
+     * returns false<br>
+     * assuming "AB" and "CA" have different colors and have overlapping pixels,
+     * collide("AB","CA") returns true. 
+     * @param routes - the list of route names to be tested.
+     * @return True if the routes do not collide, false otherwise.
+     */
+    public boolean collide(String... routes) {
+        int xMin = 0;
+        int yMin = 0;
+        if (_mapMetadata._centerTL != null) {
+            xMin = (int)_mapMetadata._centerTL.getX();
+            yMin = (int)_mapMetadata._centerTL.getY();
+        }
+        int xMax = _drawing.getWidth();
+        int yMax = _drawing.getHeight();
+        if (_mapMetadata._centerBR != null) {
+            xMax = (int)_mapMetadata._centerBR.getX()+1;
+            yMax = (int)_mapMetadata._centerBR.getY()+1;
+        }
+        for (int x = xMin; x < xMax; x++) {
+            for (int y = yMin; y < yMax; y++) {
+                String lastOpaque = null;
+                for(String route : routes) {
+                    if (!_mapOverlays.containsKey(route)) {
+                        continue;
+                    }
+                    
+                    int overlayPix = _mapOverlays.get(route).getRGB(x, y);
+                    if ((overlayPix >> 24) != 0) {
+                        if (lastOpaque == null) {
+                            lastOpaque = route;
+                        }
+                        if (route.charAt(0) != lastOpaque.charAt(0)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+       
+        return false;
+    }
+    // #endregion: [public] MapCanvas API
+
+    // #region: [public] Key hooking methods and lambdas
+    /**
+     * Registers a key hook for the given key. The key hook is a lambda
+     * function that will be called whenever the key is pressed.
+     * @param key - the key to be hooked.
+     * @param hook - the lambda function to be called when the key is pressed.
+     */
+    public void setKeyHook(char key, KeyHook hook) {
+        _drawingFrame.setKeyTypedHook(key, hook);
+    }
+
+    /**
+     * Gets the key hook registered for the given key.
+     * @param key - the key for which the hook is requested.
+     * @return The key hook registered for the given key.
+     */
+    public KeyHook getKeyHook(char key) {
+        return _drawingFrame.getKeyTypedHook(key);
+    }
+
+    /**
+     * Registers a set of demo key hooks. When enabled, typing the keys
+     * corresponding to the route endpoints will cycle through the routes originating
+     * at that endpoint and overlay them on the map. Typing 'X' performs a collision test on the overlayed routes.
+     * @param enable - true to enable the demo key hooks, false to disable.
+     */
+    public void setDemoKeyHooks(boolean enable) {
+        for(char key : _routeInfoMap.keySet()) {
+            _drawingFrame.setKeyTypedHook(key, enable ? _onDemoKeyHook : null);
+        }
+        _drawingFrame.setKeyTypedHook('X', enable ? _onDemoKeyHook : null);
+    }
+    
+    private KeyInterceptor.KeyHook _onDemoKeyHook = (keyEvent) -> {
+        char key = Character.toUpperCase(keyEvent.getKeyChar());
+        
+        // if the key is 'X', perform a collision test on the overlayed routes
+        if (key == 'X') {
+            boolean collides = collide(_overlays.toArray(new String[0]));
+            _drawingFrame.setStatusMessage(collides ? "Collide" : "Not collide");
+            return;
+        }
+
+        // if the key is not matching a rounte endpoint, do nothing (return).
+        if (!_routeInfoMap.containsKey(key)) {
+            return;
+        }
+
+        // cycle through the routes originating at the key endpoint
+        RouteNodeInfo oInfo = _routeInfoMap.get(key);
+        oInfo._index++;
+        if (oInfo._index == oInfo._routes.size()) {
+            oInfo._index = -1;
+        }
+        showRoutes();
+    };
+    // #endregion: [public] Key hooking API
 }

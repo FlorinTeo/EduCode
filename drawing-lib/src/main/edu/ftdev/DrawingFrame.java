@@ -340,7 +340,7 @@ public class DrawingFrame implements
 
         // output the current stack trace for all but step() (to give a chance for user-provided text to show in the UI)
         String crtStatusText = _statusText.getText();
-        if (level != 1) {
+        if (crtStatusText.isEmpty()) {
             StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
             String dbgLine = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
             _statusText.setText(dbgLine);
