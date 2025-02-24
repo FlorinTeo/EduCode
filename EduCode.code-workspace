@@ -25,10 +25,14 @@
 	"settings": {
 		"liveServer.settings.port": 5501,
 		"java.project.referencedLibraries": [
-			"lib/**/*.jar"
-		],
+            "d:\\Git.Hub\\FlorinTeo\\EduCode\\TestsManagement\\lib\\gson-2.9.1-javadoc.jar",
+            "d:\\Git.Hub\\FlorinTeo\\EduCode\\TestsManagement\\lib\\gson-2.9.1.jar"
+        ],
 		"java.configuration.updateBuildConfiguration": "interactive",
 		"java.compile.nullAnalysis.mode": "automatic",
-		"liveServer.settings.multiRootWorkspaceName": "GraphVisualizer"
+        "liveServer.settings.multiRootWorkspaceName": "GraphVisualizer",
+        "java.project.sourcePaths": [
+            "src"
+        ]
 	}
 }

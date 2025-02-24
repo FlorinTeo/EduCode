@@ -47,6 +47,24 @@ public class CafeWall extends DrawingFactory {
     }
 
     /**
+     * Returns the width of the CafeWall.
+     * @return the width of the CafeWall.
+     */
+    @Override
+    public int getWidth() {
+        return _WIDTH - 2 * _EDGE;
+    }
+
+    /**
+     * Returns the height of the CafeWall.
+     * @return the height of the CafeWall.
+     */
+    @Override
+    public int getHeight() {
+        return _HEIGHT - 2 * _EDGE;
+    }
+
+    /**
      * Draws a bright square at the <b>x</b>,<b>y</b> pixel coordinates with a side of <b>size</b> pixels.
      * @param x - x coordinate.
      * @param y - y coordinate.

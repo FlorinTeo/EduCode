@@ -1,3 +1,5 @@
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import edu.ftdev.CafeArt.CafeWall;
@@ -7,6 +9,8 @@ public class CafeWall_tests {
     @Test
     public void ctorTest() throws InterruptedException {
         CafeWall cafeWall = new CafeWall();
+        assertEquals(650, cafeWall.getWidth());
+        assertEquals(400, cafeWall.getHeight());
         cafeWall.open();
         cafeWall.leap();
         cafeWall.close();

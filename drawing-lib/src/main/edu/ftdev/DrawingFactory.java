@@ -66,6 +66,28 @@ public class DrawingFactory implements DbgControls, FrameControls {
         _drawing.reset();
         _drawingFrame.repaint();
     }
+
+    /**
+     * Gets the width of the drawing area.
+     * @return the width of the drawing area.
+     */
+    public int getWidth() {
+        if (_drawing == null) {
+            throw new IllegalStateException("Drawing window not initialized.");
+        }
+        return _drawing.getWidth();
+    }
+
+    /**
+     * Gets the height of the drawing area.
+     * @return the heighth of the drawing area.
+     */
+    public int getHeight() {
+        if (_drawing == null) {
+            throw new IllegalStateException("Drawing window not initialized.");
+        }
+        return _drawing.getHeight();
+    }
     // #endregion: FrameControls overrides
 
     // #region: DbgControls overrides
