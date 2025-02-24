@@ -35,7 +35,7 @@ public class CafeWall extends DrawingFactory {
         g.fillRect(_EDGE+1,_EDGE+1, _drawing.getWidth()-2 * _EDGE-1, _drawing.getHeight()-2 * _EDGE-1);
     }
 
-    public CafeWall() throws IOException {
+    public CafeWall() {
         try {
             _drawing = new Drawing(_WIDTH, _HEIGHT, _BKG_COLOR);
             _drawingFrame = new DrawingFrame(_drawing);

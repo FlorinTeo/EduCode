@@ -1,5 +1,3 @@
-import java.io.IOException;
-
 import org.junit.Test;
 
 import edu.ftdev.CafeArt.CafeWall;
@@ -7,7 +5,7 @@ import edu.ftdev.CafeArt.CafeWall;
 public class CafeWall_tests {
 
     @Test
-    public void ctorTest() throws IOException, InterruptedException {
+    public void ctorTest() throws InterruptedException {
         CafeWall cafeWall = new CafeWall();
         cafeWall.open();
         cafeWall.leap();
@@ -15,7 +13,7 @@ public class CafeWall_tests {
     }
 
     @Test
-    public void drawSquaresTest() throws IOException, InterruptedException {
+    public void drawSquaresTest() throws InterruptedException {
         CafeWall cafeWall = new CafeWall();
         cafeWall.open();
         cafeWall.step();
