@@ -1,4 +1,4 @@
-name: dl-build-deployment
+name: dl-build
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
           distribution: 'adopt'
           java-version: '8.0.342+7'
 
-      - name: Build with Maven
+      - name: Build drawing-lib with Maven
         run: |
             mvn clean install
             mvn compile package
@@ -29,18 +29,18 @@ jobs:
       - name: Clear and recreate the .dl-build directory
         run:  |
             rm -rf ./.dl-build
-            mkdir -p ./.dl-build/GraphicsLib
+            mkdir -p ./.dl-build
 
-      - name: Move site content to .dl-build directory
+      - name: Copy the drawing-lib files to the .dl-build directory
         run: |
-            mv ./drawing-lib/target/site/apidocs/* ./.dl-build/GraphicsLib
+            cp -r ./drawing-lib/target/site/apidocs/ ./.dl-build/GraphicsLib
             cp ./drawing-lib/target/drawing-lib-1.0-shaded.jar ./.dl-build
             cp ./drawing-lib/target/drawing-lib-1.0.jar ./.dl-build
 
       - name: List dl-Build
         run: find ./.dl-build/
 
-      - name: Create and upload dl-Artifact
+      - name: Create and upload dl-artifact
         uses: actions/upload-pages-artifact@v3
         with:
             name: dl-artifact

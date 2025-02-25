@@ -1,5 +1,4 @@
-name: gv-build-deployment
-
+name: gv-build
 on:
   push:
     branches: [ main ]
@@ -13,13 +12,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run gv-Build
-        run: bash .github/gv-build.sh
+      - name: Clear and recreate the .gv-build directory
+        run:  |
+          rm -rf ./.gv-build
+          mkdir -p ./.gv-build
+
+      - name: Copy the GraphVisualizer files to the .gv-build directory
+        run: |
+          cp ./index.html ./index.css ./favicon.ico ./.gv-build/
+          cp -r ./GraphVisualizer/ .gv-build/
 
       - name: List gv-Build
-        run: find .gv-build/
+        run: find ./.gv-build/
 
-      - name: Create and upload gv-Artifact
+      - name: Create and upload gv-artifact
         uses: actions/upload-pages-artifact@v3
         with:
           name: gv-artifact
