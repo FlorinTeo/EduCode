@@ -20,23 +20,27 @@ jobs:
           java-version: '8.0.342+7'
 
       - name: Build with Maven
-        run: mvn clean install
+        run: |
+            mvn clean install
+            mvn site
         working-directory: ./drawing-lib  # Set the working directory to where the pom.xml is located
 
-      - name: Generate Maven Site
-        run: mvn site
-        working-directory: ./drawing-lib  # Set the working directory to where the pom.xml is located
+      - name: Clear and recreate the .dl-build directory
+        run:  |
+          rm -rf ./.dl-build
+          mkdir -p ./.dl-build
 
-      - name: Create GraphicsLib directory
-        run: mkdir -p ./target/site/GraphicsLib
-        working-directory: ./drawing-lib  # Set the working directory to where the pom.xml is located
+      - name: Move site content to .dl-build directory
+        run: mv ./drawing-lib/target/site/apidocs/* ./.dl-build/apidocs
 
-      - name: Move site content to GraphicsLib directory
-        run: mv ./target/site/apidocs/* ./target/site/GraphicsLib/
-        working-directory: ./drawing-lib  # Set the working directory to where the pom.xml is located
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Create and upload dl-Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/site/GraphicsLib
+            name: dl-artifact
+            path: ./.dl-build/apidocs
+
+    #   - name: Deploy to GitHub Pages
+    #     uses: peaceiris/actions-gh-pages@v3
+    #     with:
+    #       github_token: ${{ secrets.GITHUB_TOKEN }}
+    #       publish_dir: ./target/site/GraphicsLib
