@@ -81,7 +81,6 @@ public class EquestriaMap extends DrawingFactory {
      * @param x - x coordinate
      * @param y - y coordinate
      * @return true if successful, false otherwise
-     * @see EquestriaMap#create()
      * @see EquestriaMap#open()
      * @see EquestriaMap#clear()
      */
@@ -204,7 +203,7 @@ public class EquestriaMap extends DrawingFactory {
 
     /**
      * Returns the minimum value of the x axis of the Equestria map.
-     * @returns minimum x value in Equestria map coordinate system.
+     * @return minimum x value in Equestria map coordinate system.
      */
     public int getXMin() {
         return 0;
@@ -212,7 +211,7 @@ public class EquestriaMap extends DrawingFactory {
 
     /**
      * Returns the minimum value of the y axis of the Equestria map.
-     * @returns minimum y value in Equestria map coordinate system.
+     * @return minimum y value in Equestria map coordinate system.
      */
     public int getYMin() {
         return 0;

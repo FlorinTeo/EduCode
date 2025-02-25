@@ -75,9 +75,9 @@ public interface DbgControls {
      * If paused, user can resume by pressing '1', '2', '3' or &lt; space &gt; to 
      * continue the execution in the corresponding mode.
      * @throws InterruptedException
-     * @see #step()
-     * @see #step(long)
-     * @see #leap()
+     * @see #breakStep()
+     * @see #breakStep(long)
+     * @see #breakLeap()
      */
     public void breakJump() throws InterruptedException;
 }

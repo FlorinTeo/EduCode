@@ -256,8 +256,6 @@ public class MapCanvas extends DrawingFactory {
     /**
      * Gets the name of the map in this MapImage.
      * @return The name of the map.
-     * @see #MapImage(String, BufferedImage)
-     * @see #load(String)
      */
     public String getMapName() {
         return _mapMetadata._mapName;

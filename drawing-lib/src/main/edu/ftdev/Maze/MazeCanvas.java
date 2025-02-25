@@ -42,11 +42,11 @@ public class MazeCanvas extends DrawingFactory {
     // #region: MazeCanvas.Side enum definition
     /**
      * Identifies a side of a maze cell. The cell is a square area having the following sides:
-     * <li>{@link Side#Left }</li>
-     * <li>{@link Side#Right }</li>
-     * <li>{@link Side#Top }</li>
-     * <li>{@link Side#Bottom }</li>
-     * <li>{@link Side#Center }</li>
+     * {@link Side#Left }
+     * {@link Side#Right }
+     * {@link Side#Top }
+     * {@link Side#Bottom }
+     * {@link Side#Center }
      * <br>
      * Cell sides are needed when drawing or erasing a <i>wall</i>, or a <i>path</i> segment of a maze cell.
      * <p>
@@ -139,8 +139,6 @@ public class MazeCanvas extends DrawingFactory {
         /**
          * Extracts the list of sides walled-in for a given cell. If successful, object WallSides
          * will contain the list of sides walled-in.
-         * @param row - row coordinate
-         * @param col - column coordinate
          * @return true if successful, false otherwise
          */
         public boolean getWallSides() {
@@ -165,8 +163,6 @@ public class MazeCanvas extends DrawingFactory {
         /**
          * Extracts the list of sides with path drawn over for a given cell. If successful, object PathSides
          * will contain the list of sides with the path drawn over.
-         * @param row - row coordinate
-         * @param col - column coordinate
          * @return true if successful, false otherwise
          */
         public boolean getPathSides() {
@@ -365,8 +361,6 @@ public class MazeCanvas extends DrawingFactory {
      * Clears the rendering canvas of this maze.<br>The window containing this canvas is brought back 
      * to its default state as it was when it was first opened. All prior rendering for
      * individual maze cells is lost.
-     * @return true if successful, false if the window is not opened.
-     * @see DrawingFactory#clear()
      * @see MazeCanvas#open()
      */
     @Override
