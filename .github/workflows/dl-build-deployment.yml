@@ -27,17 +27,21 @@ jobs:
 
       - name: Clear and recreate the .dl-build directory
         run:  |
-          rm -rf ./.dl-build
-          mkdir -p ./.dl-build
+            rm -rf ./.dl-build
+            mkdir -p ./.dl-build/GraphicsLib
 
       - name: Move site content to .dl-build directory
-        run: mv ./drawing-lib/target/site/apidocs/* ./.dl-build/apidocs
+        run: |
+            mv ./drawing-lib/target/site/apidocs/* ./.dl-build/GraphicsLib
+
+      - name: List dl-Build
+        run: find ./.dl-build/
 
       - name: Create and upload dl-Artifact
         uses: actions/upload-pages-artifact@v3
         with:
             name: dl-artifact
-            path: ./.dl-build/apidocs
+            path: ./.dl-build/GraphicsLib
 
     #   - name: Deploy to GitHub Pages
     #     uses: peaceiris/actions-gh-pages@v3
