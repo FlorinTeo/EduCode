@@ -22,6 +22,7 @@ jobs:
       - name: Build with Maven
         run: |
             mvn clean install
+            mvn compile package
             mvn site
         working-directory: ./drawing-lib  # Set the working directory to where the pom.xml is located
 
@@ -33,6 +34,8 @@ jobs:
       - name: Move site content to .dl-build directory
         run: |
             mv ./drawing-lib/target/site/apidocs/* ./.dl-build/GraphicsLib
+            cp ./drawing-lib/target/drawing-lib-1.0-shaded.jar ./.dl-build
+            cp ./drawing-lib/target/drawing-lib-1.0.jar ./.dl-build
 
       - name: List dl-Build
         run: find ./.dl-build/
@@ -41,7 +44,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
             name: dl-artifact
-            path: ./.dl-build/GraphicsLib
+            path: ./.dl-build/
 
     #   - name: Deploy to GitHub Pages
     #     uses: peaceiris/actions-gh-pages@v3
