@@ -21,15 +21,19 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
+        working-directory: ./drawing-lib  # Set the working directory to where the pom.xml is located
 
       - name: Generate Maven Site
         run: mvn site
+        working-directory: ./drawing-lib  # Set the working directory to where the pom.xml is located
 
       - name: Create GraphicsLib directory
         run: mkdir -p ./target/site/GraphicsLib
+        working-directory: ./drawing-lib  # Set the working directory to where the pom.xml is located
 
       - name: Move site content to GraphicsLib directory
         run: mv ./target/site/apidocs/* ./target/site/GraphicsLib/
+        working-directory: ./drawing-lib  # Set the working directory to where the pom.xml is located
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
