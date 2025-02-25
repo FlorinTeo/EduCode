@@ -265,10 +265,10 @@ public class DrawingFrame implements
     /**
      * In "step" mode, this method pauses the execution. It does nothing in any other modes.
      * @throws InterruptedException
-     * @see DbgControls#step()
+     * @see DbgControls#breakStep()
      */
     @Override
-    public void step() throws InterruptedException {
+    public void breakStep() throws InterruptedException {
         step(1, Long.MAX_VALUE);
     }
     
@@ -277,10 +277,10 @@ public class DrawingFrame implements
      * milliseconds. It does nothing in any other mode. 
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @throws InterruptedException
-     * @see DbgControls#step(long)
+     * @see DbgControls#breakStep(long)
      */
     @Override
-    public void step(long delay) throws InterruptedException {
+    public void breakStep(long delay) throws InterruptedException {
         step(1, delay);
     }
     
@@ -288,10 +288,11 @@ public class DrawingFrame implements
      * In "step" or "leap" modes, this method pauses the execution until resumed.
      * It does nothing in "jump" or "run" modes. 
      * @throws InterruptedException
-     * @see DbgControls#stop()
+     * @see DbgControls#breakStep()
+     * @see DbgControls#breakJump()
      */
     @Override
-    public void leap() throws InterruptedException {
+    public void breakLeap() throws InterruptedException {
         step(2, Long.MAX_VALUE);
     }
 
@@ -299,10 +300,11 @@ public class DrawingFrame implements
      * In "step", "leap" or "jump" modes, this method pauses the execution until resumed.
      * It does nothing in "run" mode. 
      * @throws InterruptedException
-     * @see DbgControls#leap()
+     * @see DbgControls#breakStep()
+     * @see DbgControls#breakLeap()
      */
     @Override
-    public void jump() throws InterruptedException {
+    public void breakJump() throws InterruptedException {
         step(3, Long.MAX_VALUE);
     }
     

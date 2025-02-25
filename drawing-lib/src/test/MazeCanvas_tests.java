@@ -15,21 +15,21 @@ public class MazeCanvas_tests {
         assertEquals(16, mazeCanvas.getRows());
         assertEquals(24, mazeCanvas.getCols());
         mazeCanvas.open();
-        mazeCanvas.step();
+        mazeCanvas.breakStep();
         mazeCanvas.drawCell(1, 1);
-        mazeCanvas.step();
+        mazeCanvas.breakStep();
         mazeCanvas.drawCell(1, 2);
         mazeCanvas.drawCell(2, 1);
         mazeCanvas.drawCell(2, 2);
-        mazeCanvas.step();
+        mazeCanvas.breakStep();
         mazeCanvas.drawShade(2, 2, Color.GRAY.brighter());
-        mazeCanvas.step();
+        mazeCanvas.breakStep();
         mazeCanvas.eraseWall(1, 1, Side.Right);
         mazeCanvas.eraseWall(1, 2, Side.Left);
-        mazeCanvas.step();
+        mazeCanvas.breakStep();
         mazeCanvas.eraseWall(1, 1, Side.Bottom);
         mazeCanvas.eraseWall(2, 1, Side.Top);
-        mazeCanvas.leap();
+        mazeCanvas.breakLeap();
         mazeCanvas.close();
     }
 
@@ -71,12 +71,12 @@ public class MazeCanvas_tests {
                 }
             }
             if (r == 0 || r == (mazeCanvas.getRows() - 1)) {
-                mazeCanvas.leap();
+                mazeCanvas.breakLeap();
             } else {
-                mazeCanvas.step();
+                mazeCanvas.breakStep();
             }
         }
-        mazeCanvas.jump();
+        mazeCanvas.breakJump();
         mazeCanvas.close();
     }
 }

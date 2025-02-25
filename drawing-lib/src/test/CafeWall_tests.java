@@ -12,7 +12,7 @@ public class CafeWall_tests {
         assertEquals(650, cafeWall.getWidth());
         assertEquals(400, cafeWall.getHeight());
         cafeWall.open();
-        cafeWall.leap();
+        cafeWall.breakLeap();
         cafeWall.close();
     }
 
@@ -20,11 +20,11 @@ public class CafeWall_tests {
     public void drawSquaresTest() throws InterruptedException {
         CafeWall cafeWall = new CafeWall();
         cafeWall.open();
-        cafeWall.step();
+        cafeWall.breakStep();
         cafeWall.drawBrightSquare(75, 60, 80);
-        cafeWall.step();
+        cafeWall.breakStep();
         cafeWall.drawDarkSquare(180, 95, 55);
-        cafeWall.leap();
+        cafeWall.breakLeap();
         cafeWall.close();
     }
 }

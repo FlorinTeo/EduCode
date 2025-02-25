@@ -14,11 +14,11 @@ public interface DbgControls {
      * If paused, user can resume by pressing '1', '2', '3' or &lt; space &gt; to 
      * continue the execution in the corresponding mode.
      * @throws InterruptedException
-     * @see #step(long)
-     * @see #leap()
-     * @see #jump()
+     * @see #breakStep(long)
+     * @see #breakLeap()
+     * @see #breakJump()
      */
-    public void step() throws InterruptedException;
+    public void breakStep() throws InterruptedException;
     
     /**
      * There are four modes in which the program can execute:
@@ -35,11 +35,11 @@ public interface DbgControls {
      * continue the execution in the corresponding mode.
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @throws InterruptedException
-     * @see #step()
-     * @see #leap()
-     * @see #jump()
+     * @see #breakStep()
+     * @see #breakLeap()
+     * @see #breakJump()
      */
-    public void step(long delay) throws InterruptedException;
+    public void breakStep(long delay) throws InterruptedException;
     
     /**
      * There are four modes in which the program can execute:
@@ -55,11 +55,11 @@ public interface DbgControls {
      * If paused, user can resume by pressing '1', '2', '3' or &lt; space &gt; to 
      * continue the execution in the corresponding mode.
      * @throws InterruptedException
-     * @see #step()
-     * @see #step(long)
-     * @see #jump()
+     * @see #breakStep()
+     * @see #breakStep(long)
+     * @see #breakJump()
      */
-    public void leap() throws InterruptedException;
+    public void breakLeap() throws InterruptedException;
 
      /**
      * There are four modes in which the program can execute:
@@ -79,5 +79,5 @@ public interface DbgControls {
      * @see #step(long)
      * @see #leap()
      */
-    public void jump() throws InterruptedException;
+    public void breakJump() throws InterruptedException;
 }

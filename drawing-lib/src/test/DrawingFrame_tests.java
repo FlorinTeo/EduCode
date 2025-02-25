@@ -31,25 +31,25 @@ public class DrawingFrame_tests {
         System.out.println("Sleeping 10sec");
         Thread.sleep(10000);
         System.out.println("Pausing");
-        drwFrame.step();
+        drwFrame.breakStep();
         for(int i = 0; i < 10; i++) {
             System.out.println(i);
-            drwFrame.step(1000);
+            drwFrame.breakStep(1000);
         }
         System.out.println("Stopping");
-        drwFrame.step();
+        drwFrame.breakStep();
         System.out.println("Leaping");
-        drwFrame.leap();
+        drwFrame.breakLeap();
         System.out.println("MouseHook enabled for 10sec!");
         // enabling the mouse hook. While mouse hook enabled, step() and leap() methods are inactive (pass-through)!
         drwFrame.setMouseClickedHook(_onMouseClick);
-        drwFrame.leap();
+        drwFrame.breakLeap();
         Thread.sleep(10000);
 
         // disable the mouse hook. When disabled, stop() and step() are active!
         drwFrame.setMouseClickedHook(null);
         System.out.println("MouseHook disabled!");
-        drwFrame.leap();
+        drwFrame.breakLeap();
 
         // close the frame
         drwFrame.close();
@@ -66,9 +66,9 @@ public class DrawingFrame_tests {
         Drawing drw2 = new Drawing(400, 300, Color.cyan);
         DrawingFrame drwFrame2 = new DrawingFrame(drw2);
         drwFrame2.open();
-        drwFrame1.leap();
+        drwFrame1.breakLeap();
         drwFrame1.close();
-        drwFrame2.leap();
+        drwFrame2.breakLeap();
         drwFrame2.close();
     }
 }

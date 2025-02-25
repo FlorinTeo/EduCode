@@ -25,7 +25,7 @@ public class Map_tests {
         _mapCanvas.open();
         _mapCanvas.setStatusMessage("Press T to display the routes");
         // stops, waiting for user action
-        _mapCanvas.jump();
+        _mapCanvas.breakJump();
         // close the window and terminate the program
         _mapCanvas.close();
     }
@@ -35,15 +35,15 @@ public class Map_tests {
         // opens the GUI window
         _mapCanvas = new MapCanvas("Woodlawn.jpg");
         _mapCanvas.open();
-        _mapCanvas.step();
+        _mapCanvas.breakStep();
         // sets the overlays to the routes "AB" and "CD" and checks if they collide. They should not.
         _mapCanvas.setOverlays("BA", "CD");
         _mapCanvas.setStatusMessage(_mapCanvas.collide("BA", "CD") ? "Collide" : "Not collide");
-        _mapCanvas.step();
+        _mapCanvas.breakStep();
         // sets the overlays to the routes "AD" and "CE" and checks if they collide. They should.
         _mapCanvas.setOverlays("AD", "CE");
         _mapCanvas.setStatusMessage(_mapCanvas.collide("AD", "CE") ? "Collide" : "Not collide");
-        _mapCanvas.jump();
+        _mapCanvas.breakJump();
         _mapCanvas.close();
     }
 
@@ -54,10 +54,10 @@ public class Map_tests {
         _mapCanvas.open();
         _mapCanvas.setStatusMessage("demo key hooks enabled");
         _mapCanvas.setDemoKeyHooks(true);
-        _mapCanvas.jump();
+        _mapCanvas.breakJump();
         _mapCanvas.setStatusMessage("demo key hooks disabled");
         _mapCanvas.setDemoKeyHooks(false);
-        _mapCanvas.jump();
+        _mapCanvas.breakJump();
         _mapCanvas.close();
     }
 }
