@@ -17,11 +17,8 @@ jobs:
         run:  |
           rm -rf ./.gv-build
           mkdir -p ./.gv-build
-
-      - name: Copy the GraphVisualizer files to the .gv-build directory
-        run: |
           cp ./index.html ./index.css ./favicon.ico ./.gv-build/
-          cp -r ./GraphVisualizer/ .gv-build/
+          cp -r ./GraphVisualizer/ ./.gv-build/GraphVisualizer
 
       - name: List gv-Build
         run: find ./.gv-build/
@@ -31,27 +28,36 @@ jobs:
         with:
           name: gv-artifact
           path: ./.gv-build/
-    
-  gv-deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: gv-build
-    permissions:
-      pages: write
-      id-token: write
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v3
-
-      - name: Deploy gv-Pages
-        uses: actions/deploy-pages@v4
-        id: deployment
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: gv-artifact
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./.gv-build/
+          publish_branch: gv-pages
+          destination_dir: GraphVisualizer
+          keep_files: true
+    
+  # gv-deploy:
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   needs: gv-build
+  #   permissions:
+  #     pages: write
+  #     id-token: write
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Configure GitHub Pages
+  #       uses: actions/configure-pages@v3
+
+  #     - name: Deploy gv-Pages
+  #       uses: actions/deploy-pages@v4
+  #       id: deployment
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         artifact_name: gv-artifact

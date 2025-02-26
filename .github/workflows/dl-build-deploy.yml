@@ -30,9 +30,6 @@ jobs:
         run:  |
             rm -rf ./.dl-build
             mkdir -p ./.dl-build
-
-      - name: Copy the drawing-lib files to the .dl-build directory
-        run: |
             cp -r ./drawing-lib/target/site/apidocs/ ./.dl-build/DrawingLib
             cp ./drawing-lib/target/drawing-lib-1.0-shaded.jar ./.dl-build/DrawingLib
             cp ./drawing-lib/target/drawing-lib-1.0.jar ./.dl-build/DrawingLib
@@ -46,26 +43,35 @@ jobs:
             name: dl-artifact
             path: ./.dl-build/
 
-  dl-deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: dl-build
-    permissions:
-      pages: write
-      id-token: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v3
-
-      - name: Deploy gv-Pages
-        uses: actions/deploy-pages@v4
-        id: deployment
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: dl-artifact
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./.dl-build/
+          publish_branch: gh-pages
+          destination_dir: DrawingLib
+          keep_files: true
+
+  # dl-deploy:
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   needs: dl-build
+  #   permissions:
+  #     pages: write
+  #     id-token: write
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Configure GitHub Pages
+  #       uses: actions/configure-pages@v3
+
+  #     - name: Deploy gv-Pages
+  #       uses: actions/deploy-pages@v4
+  #       id: deployment
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         artifact_name: dl-artifact
