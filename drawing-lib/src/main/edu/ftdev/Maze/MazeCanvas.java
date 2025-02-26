@@ -33,8 +33,8 @@ import edu.ftdev.DrawingFrame;
  * MazeCanvas mc = new MazeCanvas(4, 10, 32);
  * // open the maze canvas
  * mc.open();
- * for (int r = 0; r < mc.getRows(); r++) {
- *     for (int c = 0; c < mc.getCols(); c++) {
+ * for (int r = 0; r &lt; mc.getRows(); r++) {
+ *     for (int c = 0; c &lt; mc.getCols(); c++) {
  *         mc.drawCell(r, c);
  *     }
  * }
