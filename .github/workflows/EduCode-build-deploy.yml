@@ -24,8 +24,10 @@ jobs:
     # Build java projects with Maven
       - name: Build drawing-lib with Maven
         run: |
-            mvn clean install
-            mvn compile package
+            mvn clean
+            mvn compile
+            mvn package
+            mvn install
             mvn site
         working-directory: ./drawing-lib
 
@@ -37,7 +39,7 @@ jobs:
 
     # Drop home page files in the build
       - name: Drop home page files into the build
-        run: cp ./index.html ./index.css ./favicon.ico ./.build/
+        run: cp ./index.html ./index.css ./favicon.ico ./res/aptos.ttf ./.build/
 
     # Drop GraphVisualizer files in the build
       - name: Drop GraphVisualizer files into the build

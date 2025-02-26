@@ -128,6 +128,31 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <plugin> <!-- maven-replacer-plugin -->
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>maven-replacer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>target/site/apidocs/**/*.html</include>
+                            </includes>
+                            <regex>false</regex>
+                            <replacements>
+                                <replacement>
+                                    <token><![CDATA[<head>]]></token>
+                                    <value><![CDATA[<head><link rel="icon" type="image/x-icon" href="https://florinteo.github.io/EduCode/favicon.ico">]]></value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
