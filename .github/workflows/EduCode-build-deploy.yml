@@ -47,7 +47,7 @@ jobs:
       - name: Drop drawing-lib files into the build
         run:  |
           cp -r ./drawing-lib/target/site/apidocs/ ./.build/DrawingLib
-          cp ./favicon.ico ./.build/DrawingLib
+          cp ./drawing-lib/main/res/CafeWall-spec.png ./.build/DrawingLib/resource-files
           cp ./drawing-lib/target/drawing-lib-1.0-shaded.jar ./.build/DrawingLib
           cp ./drawing-lib/target/drawing-lib-1.0.jar ./.build/DrawingLib
 
