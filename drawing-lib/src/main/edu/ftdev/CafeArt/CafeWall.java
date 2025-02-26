@@ -12,11 +12,11 @@ import edu.ftdev.DrawingFrame;
 /**
  * The CafeWall class is a simple  canvas of 650 by 400 pixels to be used for drawing a cafe wall illusion.
  * The class contains methods for drawing bright or dark squares of various sizes, at specific positions
- * on the canvas.The following image shows a sample CafeWall window which was drawn by the code in the insets:
+ * on the canvas.The following image shows a sample CafeWall, drawn by the code in the insets:
  * <p>
  * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/CafeWall-spec.png" alt="CafeWall-spec.png">
  * <p>
- * As a subclass of the DrawingFactory class, CafewWall provides basic window frame and debug controls.
+ * As a subclass of the DrawingFactory class, CafeWall provides basic window frame and debug controls.
  * @see DrawingFactory
  */
 public class CafeWall extends DrawingFactory {
