@@ -6,7 +6,7 @@ package edu.ftdev;
  * The DrawingFactory is intended to be extended by subclasses that implement specific behaviors. It provides
  * functionality common to all specific needs, such as opening, closing, repainting and clearing the frame or suspending
  * the execution at specific locations in the code for debugging purposes.
- * Examples of subclasses: {@link edu.ftdev.CafeArt.CafeWall}</li> and {@link edu.ftdev.Equestria.EquestriaMap}.
+ * Examples of subclasses: {@link edu.ftdev.CafeArt.CafeWall} and {@link edu.ftdev.Equestria.EquestriaMap}.
  * @see Drawing
  * @see DrawingFrame
  */
