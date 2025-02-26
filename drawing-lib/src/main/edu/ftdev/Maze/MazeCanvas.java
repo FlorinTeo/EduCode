@@ -14,6 +14,20 @@ import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFactory;
 import edu.ftdev.DrawingFrame;
 
+/**
+ * MazeCanvas is a class that provides the basic building blocks for generating and displaying mazes.
+ * A maze is a grid of cells, each cell is a square area of pixels on the canvas. Cell sides can be walled-in or open.
+ * A cell can also have a shade (background) color, and a center color. A cell can have a path drawn over it,
+ * connecting its Center to any of its Top, Bottom, Left or Right sides. Each path component can be drawn in any color.
+ * <p>
+ * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/maze-canvas.png" alt="maze-canvas.png">
+ * </p>
+ * MazeCanvas provides primitives for drawing and erasing individual cells, walls, paths, and shades. It also provides.
+ * As an extension of {@link DrawingFactory}, MazeCanvas also provides simple ways to interact with the maze window
+ * and to control the program execution.
+ * @see Side
+ * @see DrawingFactory
+ */
 public class MazeCanvas extends DrawingFactory {
     private static final int _PADDING = 10;
     private static final Color _BKG_COLOR = Color.LIGHT_GRAY;

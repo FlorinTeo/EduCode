@@ -34,6 +34,44 @@ public class MazeCanvas_tests {
     }
 
     @Test
+    public void pathsTest() throws InterruptedException {
+        MazeCanvas mc = new MazeCanvas();
+        mc.open();
+        for (int i = 0; i < 16; i++) {
+            int r = i / 4;
+            int c = i % 4;
+            mc.drawCell(r, c);
+            if (i == 0 || i == 6 || i == 11) {
+                mc.eraseWall(r, c, Side.Left);
+                mc.drawPath(r, c, Side.Left, Color.RED);
+                mc.drawPath(r, c, Side.Center, Color.RED);
+                mc.drawPath(r, c, Side.Bottom, Color.RED);
+                mc.eraseWall(r, c, Side.Bottom);
+                mc.breakStep();
+            } else if (i == 4 || i == 10 || i == 15) {
+                mc.eraseWall(r, c, Side.Top);
+                mc.drawPath(r, c, Side.Top, Color.RED);
+                mc.drawPath(r, c, Side.Center, Color.RED);
+                mc.drawPath(r, c, Side.Right, Color.RED);
+                mc.eraseWall(r, c, Side.Right);
+                mc.breakStep();
+            } else if (i == 5) {
+                mc.eraseWall(r, c, Side.Left);
+                mc.drawPath(r, c, Side.Left, Color.RED);
+                mc.drawPath(r, c, Side.Center, Color.RED);
+                mc.drawPath(r, c, Side.Right, Color.RED);
+                mc.eraseWall(r, c, Side.Right);
+                mc.breakStep();
+            }
+        }
+        mc.drawShade(0, 0, Color.CYAN.brighter());
+        mc.drawShade(2, 1, Color.LIGHT_GRAY);
+        mc.drawPath(1, 2, Side.Center, Color.RED.darker());
+        mc.breakJump();
+        mc.close();
+    }
+
+    @Test
     public void snakeTest() throws IOException, InterruptedException {
         MazeCanvas mazeCanvas = new MazeCanvas(32, 48, 16);
         mazeCanvas.open();
