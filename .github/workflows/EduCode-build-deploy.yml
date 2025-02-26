@@ -46,8 +46,9 @@ jobs:
     # Drop drawing-lib files in the build
       - name: Drop drawing-lib files into the build
         run:  |
-          cp -r ./drawing-lib/target/site/apidocs/* ./.build/DrawingLib/
-          cp -r ./drawing-lib/src/res/*.png ./.build/DrawingLib/res/
+          mkdir -p ./.build/DrawingLib/res
+          cp -r ./drawing-lib/target/site/apidocs/ ./.build/DrawingLib/
+          cp -r ./drawing-lib/src/res/ ./.build/DrawingLib/res/
           cp ./drawing-lib/target/drawing-lib-1.0-shaded.jar ./.build/DrawingLib/
           cp ./drawing-lib/target/drawing-lib-1.0.jar ./.build/DrawingLib/
 

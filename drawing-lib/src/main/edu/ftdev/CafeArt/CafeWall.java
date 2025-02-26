@@ -14,7 +14,7 @@ import edu.ftdev.DrawingFrame;
  * The class contains methods for drawing bright or dark squares of various sizes, at specific positions
  * on the canvas.The following image shows a sample CafeWall, drawn by the code in the insets:
  * <p>
- * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/CafeWall-spec.png" alt="CafeWall-spec.png">
+ * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/CafeWall/CafeWall-spec.png" alt="CafeWall-spec.png">
  * <p>
  * As a subclass of the DrawingFactory class, CafeWall provides basic window frame and debug controls.
  * @see DrawingFactory
