@@ -49,6 +49,7 @@ jobs:
           mkdir -p ./.build/DrawingLib/res
           cp -r ./drawing-lib/target/site/apidocs/* ./.build/DrawingLib/
           cp ./drawing-lib/src/res/CafeWall/CafeWall-spec.png ./.build/DrawingLib/res
+          cp ./drawing-lib/src/res/ctrl_*.png ./.build/DrawingLib/res
           cp ./drawing-lib/target/drawing-lib-1.0-shaded.jar ./.build/DrawingLib
           cp ./drawing-lib/target/drawing-lib-1.0.jar ./.build/DrawingLib
 
