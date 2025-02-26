@@ -55,15 +55,10 @@ public class MazeCanvas extends DrawingFactory {
     
     // #region: MazeCanvas.Side enum definition
     /**
-     * Identifies a side of a maze cell. The cell is a square area having the following sides:
-     * {@link Side#Left }
-     * {@link Side#Right }
-     * {@link Side#Top }
-     * {@link Side#Bottom }
-     * {@link Side#Center }
-     * <br>
-     * Cell sides are needed when drawing or erasing a <i>wall</i>, or a <i>path</i> segment of a maze cell.
+     * The relevant sides around a maze cell. Cell sides are needed when drawing or erasing a <i>wall</i> at the cell boundary
+     * or a <i>path</i> segment crossing through the maze cell.
      * <p>
+     * @see MazeCanvas
      * @see MazeCanvas#drawWall(int, int, Side)
      * @see MazeCanvas#eraseWall(int, int, Side)
      * @see MazeCanvas#drawPath(int, int, Side, Color)
@@ -71,27 +66,27 @@ public class MazeCanvas extends DrawingFactory {
      */
     public enum Side {
         /**
-         * Identifies the <i>left</i> side of a cell.
+         * The <i>left</i> side of a cell.
          * @see Side
          */
         Left, 
         /**
-         * Identifies the <i>right</i> side of a cell.
+         * The <i>right</i> side of a cell.
          * @see Side
          */
         Right, 
         /**
-         * Identifies the <i>top</i> side of a cell.
+         * The <i>top</i> side of a cell.
          * @see Side
          */
         Top, 
         /**
-         * Identifies the <i>bottom</i> side of a cell.
+         * The <i>bottom</i> side of a cell.
          * @see Side
          */
         Bottom, 
         /**
-         * Identifies the <i>center</i> area of a cell.
+         * The <i>center</i> area of a cell.
          * @see Side
          */
         Center
@@ -116,8 +111,8 @@ public class MazeCanvas extends DrawingFactory {
         
         /**
          * Class constructor, retaining essential state parameters of the maze cell at the given location.
-         * @param row - row coordinate
-         * @param col - column coordinate
+         * @param row the row of the cell in the maze grid.
+         * @param col the column of the cell in the maze grid.
          */
         public CellState(int row, int col) {
             Valid = row >= 0 && row < _nRows && col >= 0 && col < _nCols;
@@ -143,6 +138,11 @@ public class MazeCanvas extends DrawingFactory {
             return Valid;
         }
         
+        /**
+         * Extracts the center color for a given cell. If successful, field CenterColor
+         * will contain the current center color.
+         * @return true if successful, false otherwise
+         */
         public boolean getCenter() {
             if (Valid) {
                 CenterColor = _centerColor;
@@ -207,7 +207,11 @@ public class MazeCanvas extends DrawingFactory {
             return Valid;
         }
         
-        public void drawDbgFrame() {
+        /**
+         * Draws a thin focus frame (dotted orange line) around the cell's boundary.
+         * This is useful for debugging purposes, to visually identify the cell being processed.
+         */
+        public void drawFocusFrame() {
             Graphics2D g = _drawing.getGraphics();
             g.setColor(_dbgFrameColor);
             g.setStroke(_dbgFrameStroke);
@@ -348,9 +352,9 @@ public class MazeCanvas extends DrawingFactory {
      * Constructs a Maze canvas of a given number of <i>rows</i> and <i>columns</i>. Each cell
      * in the maze is a square pixel area of the given <i>width</i>.<br>Use the {@link MazeCanvas#open()} method
      * to open the window and render the maze further.
-     * @param nRows - number of rows in the grid of maze cells.
-     * @param nCols - number of columns in the grid of maze cells.
-     * @param cellWidth - pixel size of one maze cell.
+     * @param nRows the number of rows in the grid of maze cells.
+     * @param nCols the number of columns in the grid of maze cells.
+     * @param cellWidth the size in pixels of the rectangular maze cell's side.
      * @see MazeCanvas#MazeCanvas()
      * @see MazeCanvas#open()
      */
@@ -372,9 +376,8 @@ public class MazeCanvas extends DrawingFactory {
     }
 
     /**
-     * Clears the rendering canvas of this maze.<br>The window containing this canvas is brought back 
-     * to its default state as it was when it was first opened. All prior rendering for
-     * individual maze cells is lost.
+     * Clears the canvas area of this maze.<br>The window containing this canvas is brought back 
+     * to its default state as it was when it was first opened. No cells are drawn, no walls or paths are visible.
      * @see MazeCanvas#open()
      */
     @Override
@@ -415,10 +418,10 @@ public class MazeCanvas extends DrawingFactory {
     
     /**
      * Draws a cell on the rendering canvas of this maze.<br>
-     * By default the cell is surrounded by <i>walls</i> on all sides, it has a white <i>shade</i>,
+     * By default the cell is surrounded by walls on all sides, it has a white <i>shade</i>,
      * no <i>center</i> and no connecting <i>paths</i>.
-     * @param row - row of the cell in the maze grid.
-     * @param col - column of the cell in the maze grid.
+     * @param row the row of the cell in the maze grid.
+     * @param col the column of the cell in the maze grid.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
      * @see MazeCanvas#open()
      * @see Side
@@ -431,9 +434,9 @@ public class MazeCanvas extends DrawingFactory {
      * Draws a cell on the rendering canvas of this maze.<br>
      * The cell is surrounded by <i>walls</i> on all sides, it has the given <i>shade</i> color, 
      * no <i>center</i> and no connecting <i>paths</i>.
-     * @param row - row of the cell in the maze grid.
-     * @param col - column of the cell in the maze grid.
-     * @param color - the shade color for this cell.
+     * @param row the row of the cell in the maze grid.
+     * @param col the column of the cell in the maze grid.
+     * @param color the shade color for this cell.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
      * @see MazeCanvas#open()
      * @see MazeCanvas#drawCell(int, int)
@@ -458,9 +461,9 @@ public class MazeCanvas extends DrawingFactory {
      * The cell is identified by its row and column location in the maze grid.<br>
      * The wall is rendered over the cell's <i>shade</i> color, if any, and under the same-side <i>path</i> segment
      * if one exist.
-     * @param row - row of the cell in the maze grid.
-     * @param col - column of the cell in the maze grid.
-     * @param side - side of the cell where the wall is to be drawn.
+     * @param row the row of the cell in the maze grid.
+     * @param col the column of the cell in the maze grid.
+     * @param side the side of the cell where the wall is to be drawn. If side is center, method does nothing.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
      * @see MazeCanvas#drawCell(int, int)
      * @see Side
@@ -482,9 +485,9 @@ public class MazeCanvas extends DrawingFactory {
      * Erases a <i>wall</i> from the given <i>side</i> of a cell.
      * The cell is identified by its row and column location in the maze grid.<br>
      * The wall is erased without affecting the same-side <i>path</i> segment, if one exists, or the <i>shade</i> of the cell, if any.
-     * @param row - row of the cell in the maze grid.
-     * @param col - column of the cell in the maze grid.
-     * @param side - side of the cell where the wall is to be drawn.
+     * @param row the row of the cell in the maze grid.
+     * @param col the column of the cell in the maze grid.
+     * @param side the side of the cell from where the wall is to be erased. If side is center, method does nothing.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
      * @see MazeCanvas#drawCell(int, int)
      * @see Side
@@ -527,10 +530,10 @@ public class MazeCanvas extends DrawingFactory {
      * Draws a <i>path</i> segment on a given <i>side</i> of a cell, in the specified color.
      * The cell is identified by its row and column location in the maze grid.<br>
      * The segment is rendered over the cell's <i>wall</i> and <i>shade</i>, if any exist. 
-     * @param row - row of the cell in the maze grid.
-     * @param col - column of the cell in the maze grid.
-     * @param side - side of the cell where the segment is to be drawn.
-     * @param color - color of the segment.
+     * @param row the row of the cell in the maze grid.
+     * @param col the column of the cell in the maze grid.
+     * @param side the side of the cell where the path is to be drawn.
+     * @param color the color of the segment.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
      * @see MazeCanvas#drawCell(int, int)
      * @see Side
@@ -551,9 +554,9 @@ public class MazeCanvas extends DrawingFactory {
      * Erases a <i>path</i> segment from a given <i>side</i> of a cell.
      * The cell is identified by its row and column location in the maze grid.<br>
      * Once the segment is erased, the obscured <i>wall</i> and <i>shade</i>, if any, become visible. 
-     * @param row - row of the cell in the maze grid.
-     * @param col - column of the cell in the maze grid.
-     * @param side - side of the cell from which to erase the segment.
+     * @param row the row of the cell in the maze grid.
+     * @param col the column of the cell in the maze grid.
+     * @param side the side of the cell from where the path is to be erased.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
      * @see MazeCanvas#drawCell(int, int)
      * @see Side
@@ -603,8 +606,8 @@ public class MazeCanvas extends DrawingFactory {
     
     /**
     * Erases the shade (background) of a cell to the default white color.
-    * @param row - row of the cell in the maze grid.
-    * @param col - column of the cell in the maze grid.
+    * @param row the row of the cell in the maze grid.
+    * @param col the column of the cell in the maze grid.
     * @return true if successful, false in case of an error: window not opened or coordinates out of range.
     * @see MazeCanvas#open()
     * @see MazeCanvas#drawShade(int, int, Color)
