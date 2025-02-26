@@ -3,12 +3,12 @@ package edu.ftdev;
 /**
  * This class is an abstract factory grouping a Drawing image and a DrawingFrame window which jointly
  * can be used to display and interact with the image in specific implementations.
- * <p>
  * The DrawingFactory is intended to be extended by subclasses that implement specific behaviors. It provides
  * functionality common to all specific needs, such as opening, closing, repainting and clearing the frame or suspending
  * the execution at specific locations in the code for debugging purposes.
- * <p>
- * Examples of subclasses are {@link edu.ftdev.CafeArt.CafeWall} or {@link edu.ftdev.Equestria.EquestriaMap}.
+ * Examples of subclasses:
+ * <li>{@link edu.ftdev.CafeArt.CafeWall}</li>
+ * <li>{@link edu.ftdev.Equestria.EquestriaMap}</li>
  * @see Drawing
  * @see DrawingFrame
  */
@@ -16,6 +16,13 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
     // instance drawing and drawing frame used for displaying the nap
     protected Drawing _drawing = null; // drawing is intended to be used by subclasses doing heavier graphics.
     protected DrawingFrame _drawingFrame = null;
+
+    /**
+     * Creates a new DrawingFactory object, with a null _drawing and _drawingFrame.
+     */
+    protected DrawingFactory() {
+        // Default constructor
+    }
 
     // #region: FrameControl overrides
     /**
