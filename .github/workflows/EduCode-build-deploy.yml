@@ -39,7 +39,7 @@ jobs:
 
     # Drop home page files in the build
       - name: Drop home page files into the build
-        run: cp ./index.html ./index.css ./favicon.ico ./res/aptos.ttf ./.build/
+        run: cp ./index.html ./index.css ./res/ ./.build/
 
     # Drop GraphVisualizer files in the build
       - name: Drop GraphVisualizer files into the build
