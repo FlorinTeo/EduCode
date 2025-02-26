@@ -1,8 +1,8 @@
 name: dl-build-deploy
 
 on:
-  push:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -10,6 +10,7 @@ jobs:
   dl-build:
     runs-on: ubuntu-latest
     steps:
+      # Checkout repository, setup build environment and cleanup build folder
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -19,12 +20,13 @@ jobs:
           distribution: 'adopt'
           java-version: '8.0.342+7'
 
+      # Build java projects with Maven
       - name: Build drawing-lib with Maven
         run: |
             mvn clean install
             mvn compile package
             mvn site
-        working-directory: ./drawing-lib  # Set the working directory to where the pom.xml is located
+        working-directory: ./drawing-lib
 
       - name: Clear and recreate the .dl-build directory
         run:  |

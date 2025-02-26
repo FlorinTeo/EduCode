@@ -1,8 +1,8 @@
 name: gv-build-deploy
 
 on:
-  push:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -10,8 +10,10 @@ jobs:
   gv-build:
     runs-on: ubuntu-latest
     steps:
+      # Checkout repository, setup build environment and cleanup build folder
       - name: Checkout repository
         uses: actions/checkout@v4
+      
 
       - name: Clear and recreate the .gv-build directory
         run:  |

@@ -1,0 +1,87 @@
+name: EduCode-build-deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+
+#------- Setup build, compile classes & packages, and upload artifact to GitHub Pages
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout repository, setup build environment and cleanup build folder
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '8.0.342+7'
+
+    # Build java projects with Maven
+      - name: Build drawing-lib with Maven
+        run: |
+            mvn clean install
+            mvn compile package
+            mvn site
+        working-directory: ./drawing-lib
+
+    # Setup build directory
+      - name: Clear and recreate the .build directory
+        run:  |
+          rm -rf ./.build
+          mkdir -p ./.build
+
+    # Drop home page files in the build
+      - name: Drop home page files into the build
+        run: cp ./index.html ./index.css ./favicon.ico ./.build/
+
+    # Drop GraphVisualizer files in the build
+      - name: Drop GraphVisualizer files into the build
+        run: cp -r ./GraphVisualizer/ ./.build/GraphVisualizer
+
+    # Drop drawing-lib files in the build
+      - name: Drop drawing-lib files into the build
+        run:  |
+          cp -r ./drawing-lib/target/site/apidocs/ ./.build/DrawingLib
+          cp ./drawing-lib/target/drawing-lib-1.0-shaded.jar ./.build/DrawingLib
+          cp ./drawing-lib/target/drawing-lib-1.0.jar ./.build/DrawingLib
+
+    # List build content
+      - name: List build content
+        run: find "$(pwd)/.build/"
+
+    # Create and upload build drop artifact
+      - name: Create and upload build drop artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: build-drop
+          path: ./.build/
+
+#------- Deploy the generated builkd artifact to github-pages
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v3
+
+      - name: Deploy pages
+        uses: actions/deploy-pages@v4
+        id: deployment
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: build-drop
