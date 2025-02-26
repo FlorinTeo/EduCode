@@ -1,11 +1,10 @@
 package edu.ftdev;
 
 /**
- * This class is an abstract factory grouping a Drawing image and a DrawingFrame window which jointly
- * can be used to display and interact with the image in specific implementations.
- * The DrawingFactory is intended to be extended by subclasses that implement specific behaviors. It provides
- * functionality common to all specific needs, such as opening, closing, repainting and clearing the frame or suspending
- * the execution at specific locations in the code for debugging purposes.
+ * This class is an abstract factory grouping together a Drawing image and a DrawingFrame window. These can be jointly
+ * be used by subclasses to display and interact with the image for specific needs and behaviors.
+ * The class provides functionality common to all cases, such as opening, closing, repainting and clearing the frame
+ * or suspending the execution of the program at specific code locations, useful for debugging.
  * Examples of subclasses: {@link edu.ftdev.CafeArt.CafeWall} and {@link edu.ftdev.Equestria.EquestriaMap}.
  * @see Drawing
  * @see DrawingFrame

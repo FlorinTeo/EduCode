@@ -1,82 +1,73 @@
 package edu.ftdev;
 
+/**
+ * This interface is used to control the execution of the program, facilitating step-by-step debugging and
+ * analysis of code. When calls to these methods are placed in ciode, the execution of the program is
+ * suspended or resumed according to a hierarchy of priorities. These priorities are enacted by the following
+ * four execution modes:
+ * <ul>
+ *  <li> <i><b>step</b></i>: active when the program starts, or after pressing the key '1'.
+ *       In this mode the program runs until it encounters any of the <i>breakStep()</i>, <i>breakLeap()</i>
+ *       or <i>breakJump()</i> methods.
+ *  <li> <i><b>leap</b></i>: active after pressing the key '2'.
+ *       In this mode the program runs until it encounters any of the <i>breakLeap()</i> or <i>breakJump()</i>
+ *       methods. Note that <i>breakStep()</i> is ignored in this mode.
+ *  <li> <i><b>jump</b></i>: active after pressing the key '3'.
+ *       In this mode the program runs until it encounters the <i>breakJump()</i> method. Note that
+ *       <i>breakStep()</i> and <i>breakLeap()</i> are ignored in this mode.
+ *  <li> <i><b>run</b></i>: active after pressing the &lt;space&gt; key.
+ *       In this mode the program runs uninterrupted until it terminates or encounters an exception.
+ *       Note that all break methods are ignored in this mode.
+ * </ul>
+ * At any time during the program execution, the user can switch the execution mode by 
+ * by pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or by clicking on the corresponding buttons
+ * on the top of the DrawingFrame window.
+ */
 public interface DbgControls {
     /**
-     * There are four modes in which the program can execute:
-     * <ul>
-     * <li> "step": when program starts or after resuming execution by pressing '1'.
-     * <li> "leap": when resuming execution by pressing '2'
-     * <li> "jump": when resuming execution by pressing '3'
-     * <li> "run": when resuming execution by pressing &lt;space&gt;.
-     * </ul>
-     * In "step" mode this method pauses the execution. It does nothing in any other modes.
-     * <br>
-     * If paused, user can resume by pressing '1', '2', '3' or &lt; space &gt; to 
-     * continue the execution in the corresponding mode.
+     * Suspends the execution if the program is running in <i>step</i> mode. In any other mode, this method does nothing.
+     * The execution can be resumed by pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or 
+     * by clicking the corresponding buttons on the top of the DrawingFrame window.
      * @throws InterruptedException
-     * @see #breakStep(long)
+     * @see DbgControls
      * @see #breakLeap()
      * @see #breakJump()
      */
     public void breakStep() throws InterruptedException;
     
     /**
-     * There are four modes in which the program can execute:
-     * <ul>
-     * <li> "step": when program starts or after resuming execution by pressing '1'.
-     * <li> "leap": when resuming execution by pressing '2'
-     * <li> "jump": when resuming execution by pressing '3'
-     * <li> "run": when resuming execution by pressing &lt;space&gt;.
-     * </ul>
-     * In "step" mode, this method delays execution for the given number of
-     * milliseconds. It does nothing in any other mode. 
-     * <br>
-     * If paused, user can resume by pressing '1', '2', '3' or &lt; space &gt; to 
-     * continue the execution in the corresponding mode.
+     * Pauses the execution for a given number of milliseconds if the program is running in <i>step</i> mode.
+     * It any other mode, this method does nothing.
+     * The execution can be resumed by pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or 
+     * by clicking the corresponding buttons on the top of the DrawingFrame window.
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @throws InterruptedException
-     * @see #breakStep()
+     * @see DbgControls
      * @see #breakLeap()
      * @see #breakJump()
      */
     public void breakStep(long delay) throws InterruptedException;
     
     /**
-     * There are four modes in which the program can execute:
-     * <ul>
-     * <li> "step": when program starts or after resuming execution by pressing '1'.
-     * <li> "leap": when resuming execution by pressing '2'
-     * <li> "jump": when resuming execution by pressing '3'
-     * <li> "run": when resuming execution by pressing &lt;space&gt;.
-     * </ul>
-     * In "step" or "leap" modes, this method pauses the execution until resumed.
-     * It does nothing in "jump" or "run" mode. 
-     * <br>
-     * If paused, user can resume by pressing '1', '2', '3' or &lt; space &gt; to 
-     * continue the execution in the corresponding mode.
+     * Suspends the execution if the program is running in either <i>step</i> or <i>leap</i> modes. 
+     * In any other mode, this method does nothing.
+     * The execution can be resumed by pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or 
+     * by clicking the corresponding buttons on the top of the DrawingFrame window.
      * @throws InterruptedException
+     * @see DbgControls
      * @see #breakStep()
-     * @see #breakStep(long)
      * @see #breakJump()
      */
     public void breakLeap() throws InterruptedException;
 
      /**
-     * There are four modes in which the program can execute:
-     * <ul>
-     * <li> "step": when program starts or after resuming execution by pressing '1'.
-     * <li> "leap": when resuming execution by pressing '2'
-     * <li> "jump": when resuming execution by pressing '3'
-     * <li> "run": when resuming execution by pressing &lt;space&gt;.
-     * </ul>
-     * In "step", "leap" or "jump" modes, this method pauses the execution until resumed.
-     * It does nothing in "run" mode. 
-     * <br>
-     * If paused, user can resume by pressing '1', '2', '3' or &lt; space &gt; to 
-     * continue the execution in the corresponding mode.
+     * Suspends the execution if the program is running in either of the <i>step</i>, <i>leap</i> or <i>jump</i> modes. 
+     * In <i>run</i> mode, this method does nothing.
+     * The execution can be resumed by pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or 
+     * by clicking the corresponding buttons on the top of the DrawingFrame window.
      * @throws InterruptedException
+     * @see DbgControls
      * @see #breakStep()
-     * @see #breakStep(long)
      * @see #breakLeap()
      */
     public void breakJump() throws InterruptedException;
