@@ -47,8 +47,8 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./.dl-build/DrawingLib
-          destination_dir: DrawingLib
+          publish_dir: ./.dl-build/DrawingLib/
+          destination_dir: DrawingLib/
           keep_files: true
 
   # dl-deploy:
