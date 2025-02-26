@@ -2,9 +2,8 @@ package edu.ftdev;
 
 /**
  * This interface is used to control the execution of the program, facilitating step-by-step debugging and
- * analysis of code. When calls to these methods are placed in ciode, the execution of the program is
- * suspended or resumed according to a hierarchy of priorities. These priorities are enacted by the following
- * four execution modes:
+ * analysis of code. Placing calls to these methods in code, will cause the execution of the program to be
+ * suspended or resumed according to the following rules:
  * <ul>
  *  <li> <i><b>step</b></i>: active when the program starts, or after pressing the key '1'.
  *       In this mode the program runs until it encounters any of the <i>breakStep()</i>, <i>breakLeap()</i>
@@ -20,7 +19,7 @@ package edu.ftdev;
  *       Note that all break methods are ignored in this mode.
  * </ul>
  * At any time during the program execution, the user can switch the execution mode by 
- * by pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or by clicking on the corresponding buttons
+ * pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or, by clicking on the corresponding buttons
  * on the top of the DrawingFrame window.
  */
 public interface DbgControls {
@@ -28,7 +27,7 @@ public interface DbgControls {
      * Suspends the execution if the program is running in <i>step</i> mode. In any other mode, this method does nothing.
      * The execution can be resumed by pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or 
      * by clicking the corresponding buttons on the top of the DrawingFrame window.
-     * @throws InterruptedException
+     * @throws InterruptedException if the program gets interrupted while suspended.
      * @see DbgControls
      * @see #breakLeap()
      * @see #breakJump()
@@ -41,7 +40,7 @@ public interface DbgControls {
      * The execution can be resumed by pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or 
      * by clicking the corresponding buttons on the top of the DrawingFrame window.
      * @param delay - milliseconds to delay execution in "continuous" mode.
-     * @throws InterruptedException
+     * @throws InterruptedException if the program gets interrupted while suspended.
      * @see DbgControls
      * @see #breakLeap()
      * @see #breakJump()
@@ -53,7 +52,7 @@ public interface DbgControls {
      * In any other mode, this method does nothing.
      * The execution can be resumed by pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or 
      * by clicking the corresponding buttons on the top of the DrawingFrame window.
-     * @throws InterruptedException
+     * @throws InterruptedException if the program gets interrupted while suspended.
      * @see DbgControls
      * @see #breakStep()
      * @see #breakJump()
@@ -65,7 +64,7 @@ public interface DbgControls {
      * In <i>run</i> mode, this method does nothing.
      * The execution can be resumed by pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or 
      * by clicking the corresponding buttons on the top of the DrawingFrame window.
-     * @throws InterruptedException
+     * @throws InterruptedException if the program gets interrupted while suspended.
      * @see DbgControls
      * @see #breakStep()
      * @see #breakLeap()
