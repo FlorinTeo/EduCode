@@ -146,7 +146,7 @@
                             <replacements>
                                 <replacement>
                                     <token><![CDATA[<head>]]></token>
-                                    <value><![CDATA[<head><link rel="icon" type="image/x-icon" href="https://florinteo.github.io/EduCode/favicon.ico">]]></value>
+                                    <value><![CDATA[<head><link rel="icon" type="image/x-icon" href="https://florinteo.github.io/EduCode/res/favicon.ico">]]></value>
                                 </replacement>
                             </replacements>
                         </configuration>

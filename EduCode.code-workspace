@@ -20,7 +20,10 @@
         },
         {
             "path": "TestsManagement"
-        }
+        },
+        {
+		    "path": "res"
+		}
     ],
 	"settings": {
 		"liveServer.settings.port": 5501,
