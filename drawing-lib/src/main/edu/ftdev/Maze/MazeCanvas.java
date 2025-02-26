@@ -402,6 +402,7 @@ public class MazeCanvas extends DrawingFactory {
      * Provides the number of rows in the grid of cells for this maze.
      * @return number of rows.
      * @see MazeCanvas#MazeCanvas(int, int, int)
+     * @see MazeCanvas#getCols()
      */
     public int getRows() {
         return _nRows;
@@ -411,6 +412,7 @@ public class MazeCanvas extends DrawingFactory {
      * Provides the number of columns in the grid of cells for this maze.
      * @return number of columns.
      * @see MazeCanvas#MazeCanvas(int, int, int) 
+     * @see MazeCanvas#getRows()
      */
     public int getCols() {
         return _nCols;
@@ -424,7 +426,6 @@ public class MazeCanvas extends DrawingFactory {
      * @param col the column of the cell in the maze grid.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
      * @see MazeCanvas#open()
-     * @see Side
      */  
     public boolean drawCell(int row, int col) {
     	return drawCell(row, col, Color.WHITE);
@@ -440,7 +441,6 @@ public class MazeCanvas extends DrawingFactory {
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
      * @see MazeCanvas#open()
      * @see MazeCanvas#drawCell(int, int)
-     * @see Side
      */    
     public boolean drawCell(int row, int col, Color color) {
         CellState cs = new CellState(row, col);
@@ -465,8 +465,8 @@ public class MazeCanvas extends DrawingFactory {
      * @param col the column of the cell in the maze grid.
      * @param side the side of the cell where the wall is to be drawn. If side is center, method does nothing.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
-     * @see MazeCanvas#drawCell(int, int)
      * @see Side
+     * @see MazeCanvas#drawCell(int, int)
      * @see MazeCanvas#eraseWall(int, int, Side)
      */  
     public boolean drawWall(int row, int col, Side side) {
@@ -489,8 +489,8 @@ public class MazeCanvas extends DrawingFactory {
      * @param col the column of the cell in the maze grid.
      * @param side the side of the cell from where the wall is to be erased. If side is center, method does nothing.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
-     * @see MazeCanvas#drawCell(int, int)
      * @see Side
+     * @see MazeCanvas#drawCell(int, int)
      * @see MazeCanvas#drawWall(int, int, Side)
      */  
     public boolean eraseWall(int row, int col, Side side) {
@@ -535,8 +535,8 @@ public class MazeCanvas extends DrawingFactory {
      * @param side the side of the cell where the path is to be drawn.
      * @param color the color of the segment.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
-     * @see MazeCanvas#drawCell(int, int)
      * @see Side
+     * @see MazeCanvas#drawCell(int, int)
      * @see MazeCanvas#erasePath(int, int, Side)
      */
     public boolean drawPath(int row, int col, Side side, Color color) {
@@ -558,8 +558,8 @@ public class MazeCanvas extends DrawingFactory {
      * @param col the column of the cell in the maze grid.
      * @param side the side of the cell from where the path is to be erased.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
-     * @see MazeCanvas#drawCell(int, int)
      * @see Side
+     * @see MazeCanvas#drawCell(int, int)
      * @see MazeCanvas#drawPath(int, int, Side, Color)
      */
     public boolean erasePath(int row, int col, Side side) {
@@ -576,9 +576,9 @@ public class MazeCanvas extends DrawingFactory {
     
     /**
      * Draws the <i>shade</i> (background) of a cell in a given color.
-     * @param row - row of the cell in the maze grid.
-     * @param col - column of the cell in the maze grid.
-     * @param color - color of the center.
+     * @param row the row of the cell in the maze grid.
+     * @param col the column of the cell in the maze grid.
+     * @param color the color to use when drawing the shade over the cell.
      * @return true if successful, false in case of an error: window not opened or coordinates out of range.
      * @see MazeCanvas#open()
      * @see MazeCanvas#eraseShade(int, int)
