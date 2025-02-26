@@ -10,15 +10,13 @@ import edu.ftdev.DrawingFactory;
 import edu.ftdev.DrawingFrame;
 
 /**
- * The CafeWall class is a simple drawing canvas for a cafe wall illusion. The class contains methods 
- * for getting the canvas dimensions and for drawing bright or dark squares of various sizes, at specific positions
- * on the canvas.
- * <br>
- * The basic representation of the CafeWall is as follows:
- * <br>
+ * The CafeWall class is a simple  canvas of 650 by 400 pixels to be used for drawing a cafe wall illusion.
+ * The class contains methods for drawing bright or dark squares of various sizes, at specific positions
+ * on the canvas.The following image shows a sample CafeWall window which was drawn by the code in the insets:
+ * <p>
  * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/CafeWall-spec.png" alt="CafeWall-spec.png">
- * <br>
- * CafeWall is a subclass of DrawingFactory, which provides basic window frame and debug controls.
+ * <p>
+ * As a subclass of the DrawingFactory class, CafewWall provides basic window frame and debug controls.
  * @see DrawingFactory
  */
 public class CafeWall extends DrawingFactory {
@@ -47,6 +45,9 @@ public class CafeWall extends DrawingFactory {
         g.fillRect(_EDGE+1,_EDGE+1, _drawing.getWidth()-2 * _EDGE-1, _drawing.getHeight()-2 * _EDGE-1);
     }
 
+    /**
+     * Creates a new CafeWall object with a default size of 650 by 400 pixels.
+     */
     public CafeWall() {
         try {
             _drawing = new Drawing(_WIDTH, _HEIGHT, _BKG_COLOR);
@@ -60,7 +61,7 @@ public class CafeWall extends DrawingFactory {
 
     /**
      * Returns the width of the CafeWall.
-     * @return the width of the CafeWall.
+     * @return the width as a value in the range [0, 649].
      */
     @Override
     public int getWidth() {
@@ -69,7 +70,7 @@ public class CafeWall extends DrawingFactory {
 
     /**
      * Returns the height of the CafeWall.
-     * @return the height of the CafeWall.
+     * @return the height as a value in the range [0, 399].
      */
     @Override
     public int getHeight() {
@@ -78,9 +79,10 @@ public class CafeWall extends DrawingFactory {
 
     /**
      * Draws a bright square at the <b>x</b>,<b>y</b> pixel coordinates with a side of <b>size</b> pixels.
-     * @param x - x coordinate.
-     * @param y - y coordinate.
-     * @param size - size of the square side.
+     * If the coordinates are outside the canvas, the square is clipped.
+     * @param x x coordinate.
+     * @param y y coordinate.
+     * @param size size of the square side.
      */
     public void drawBrightSquare(int x, int y, int size) {
         Graphics2D g = _drawing.getGraphics();
@@ -93,9 +95,10 @@ public class CafeWall extends DrawingFactory {
     
     /**
      * Draws a dark square at the <b>x</b>,<b>y</b> pixel coordinates with a side of <b>size</b> pixels.
-     * @param x - x coordinate.
-     * @param y - y coordinate.
-     * @param size - size of the square side.
+     * If the coordinates are outside the canvas, the square is clipped.
+     * @param x x coordinate.
+     * @param y y coordinate.
+     * @param size size of the square side.
      */
     public void drawDarkSquare(int x, int y, int size ) {
         Graphics2D g = _drawing.getGraphics();
