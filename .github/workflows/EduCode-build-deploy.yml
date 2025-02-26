@@ -39,7 +39,11 @@ jobs:
 
     # Drop home page files in the build
       - name: Drop home page files into the build
-        run: cp ./index.html ./index.css ./res/ ./.build/
+        run: |
+          mkdir -p ./.build/res
+          cp ./index.html ./index.css ./.build/
+          cp -r ./res/* ./.build/res/
+
 
     # Drop GraphVisualizer files in the build
       - name: Drop GraphVisualizer files into the build
