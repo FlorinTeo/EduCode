@@ -35,7 +35,7 @@ jobs:
             cp ./drawing-lib/target/drawing-lib-1.0.jar ./.dl-build/DrawingLib
 
       - name: List dl-Build
-        run: find ./.dl-build/
+        run: find "$(pwd)/.dl-build/"
 
       - name: Create and upload dl-artifact
         uses: actions/upload-pages-artifact@v3

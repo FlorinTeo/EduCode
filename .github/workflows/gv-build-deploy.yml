@@ -21,7 +21,7 @@ jobs:
           cp -r ./GraphVisualizer/ ./.gv-build/GraphVisualizer
 
       - name: List gv-Build
-        run: find ./.gv-build/
+        run: find "$(pwd)/.gv-build/"
 
       - name: Create and upload gv-artifact
         uses: actions/upload-pages-artifact@v3
