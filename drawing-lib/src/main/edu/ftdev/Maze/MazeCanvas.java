@@ -25,7 +25,38 @@ import edu.ftdev.DrawingFrame;
  * MazeCanvas provides primitives for drawing and erasing individual cells, walls, paths, and shades. It also provides.
  * As an extension of {@link DrawingFactory}, MazeCanvas also provides simple ways to interact with the maze window
  * and to control the program execution.
- * @see Side
+ * <p>
+ * The following code snippet demonstrates how to use MazeCanvas to draw a simple maze of 4 rows and 10 columns of cells.
+ * The removes the wall between cells at coordinates (1, 1) and (1, 2), and draws a path connecting their centers.
+ * Lastly, the cell at coordinates (2, 2) is shaded in a light green color:
+ * <pre style="margin-left: 20px;">
+ * MazeCanvas mc = new MazeCanvas(4, 10, 32);
+ * // open the maze canvas
+ * mc.open();
+ * for (int r = 0; r < mc.getRows(); r++) {
+ *     for (int c = 0; c < mc.getCols(); c++) {
+ *         mc.drawCell(r, c);
+ *     }
+ * }
+ * // customize cell at coordinates (1, 1)
+ * mc.eraseWall(1, 1, Side.Right);
+ * mc.drawPath(1, 1, Side.Center, Color.RED.darker());
+ * mc.drawPath(1, 1, Side.Right, Color.RED);
+ * // customize cell at coordinates (1, 2)
+ * mc.eraseWall(1, 2, Side.Left);
+ * mc.drawPath(1, 2, Side.Left, Color.RED);
+ * mc.drawPath(1, 2, Side.Center, Color.RED.darker());
+ * // customize cell at coordinates (2, 1)
+ * mc.drawShade(2, 2, Color.GREEN.brighter());
+ * // suspend execution until action then terminate
+ * mc.breakStep();
+ * mc.close();
+ * </pre>
+ * The result of executing the above code is shown in the image below:
+ * <p>
+ * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Maze/maze_canvas-demo.png" alt="maze_canvas.png">
+ * </p>
+  * @see Side
  * @see DrawingFactory
  */
 public class MazeCanvas extends DrawingFactory {

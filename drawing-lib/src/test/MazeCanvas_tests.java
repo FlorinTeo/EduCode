@@ -72,6 +72,31 @@ public class MazeCanvas_tests {
     }
 
     @Test
+    public void docCodeTest() throws InterruptedException {
+        MazeCanvas mc = new MazeCanvas(4, 10, 32);
+        // open the maze canvas
+        mc.open();
+        for (int r = 0; r < mc.getRows(); r++) {
+            for (int c = 0; c < mc.getCols(); c++) {
+                mc.drawCell(r, c);
+            }
+        }
+        // customize cell at coordinates (1, 1)
+        mc.eraseWall(1, 1, Side.Right);
+        mc.drawPath(1, 1, Side.Center, Color.RED.darker());
+        mc.drawPath(1, 1, Side.Right, Color.RED);
+        // customize cell at coordinates (1, 2)
+        mc.eraseWall(1, 2, Side.Left);
+        mc.drawPath(1, 2, Side.Left, Color.RED);
+        mc.drawPath(1, 2, Side.Center, Color.RED.darker());
+        // customize cell at coordinates (2, 1)
+        mc.drawShade(2, 2, Color.GREEN.brighter());
+        // suspend execution until action then terminate
+        mc.breakStep();
+        mc.close();
+    }
+
+    @Test
     public void snakeTest() throws IOException, InterruptedException {
         MazeCanvas mazeCanvas = new MazeCanvas(32, 48, 16);
         mazeCanvas.open();
