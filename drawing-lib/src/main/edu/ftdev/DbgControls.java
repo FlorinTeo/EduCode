@@ -1,7 +1,7 @@
 package edu.ftdev;
 
 /**
- * This interface is used to control the execution of the program, facilitating step-by-step debugging and
+ * Interface used to control the execution of the program, facilitating step-by-step debugging and
  * analysis of code. Placing calls to these methods in code, will cause the execution of the program to be
  * suspended or resumed according to the following rules:
  * <ul>

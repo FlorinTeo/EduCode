@@ -2,6 +2,11 @@ package edu.ftdev;
 
 import java.io.Closeable;
 
+/**
+ * Interface used to control operations on the drawing frame. Typically implemented by <i>DrawingFrame</i> or
+ * subclasses of it, allowing opening and closing the frame window, refreshing its content, and printing
+ * custom one-line messages in the status bar area.
+ */
 public interface FrameControls extends Closeable {
 
     /**
