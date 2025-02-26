@@ -1,0 +1,32 @@
+@font-face {
+    font-family: 'Aptos';
+    src: url('res/aptos.ttf');
+}
+
+body {
+    font-family: Aptos;
+    font-size: 12pt;
+
+    h2 {
+        font-size: 18pt;
+    }
+
+    table, th, td {
+        border-collapse: collapse;
+        border: 0px solid black;
+        vertical-align: top;
+        text-align: left;
+        padding: 10px;
+        th, td {
+            border-left: 1px solid lightgray;
+            border-right: 1px solid lightgray;
+            padding: 10px;
+        }
+        th:first-child, td:first-child {
+            border-left: none;
+        }
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+    }
+}
