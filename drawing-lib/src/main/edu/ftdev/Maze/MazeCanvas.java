@@ -20,7 +20,7 @@ import edu.ftdev.DrawingFrame;
  * A cell can also have a shade (background) color, and a center color. A cell can have a path drawn over it,
  * connecting its Center to any of its Top, Bottom, Left or Right sides. Each path component can be drawn in any color.
  * <p>
- * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/maze-canvas.png" alt="maze-canvas.png" width="60%">
+ * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/maze-canvas.png" alt="maze-canvas.png" width="40%">
  * </p>
  * MazeCanvas provides primitives for drawing and erasing individual cells, walls, paths, and shades. It also provides.
  * As an extension of {@link DrawingFactory}, MazeCanvas also provides simple ways to interact with the maze window
