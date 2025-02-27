@@ -264,11 +264,10 @@ public class DrawingFrame implements
     // #region: [Interface] DbgControls overrides
     /**
      * In "step" mode, this method pauses the execution. It does nothing in any other modes.
-     * @throws InterruptedException
      * @see DbgControls#breakStep()
      */
     @Override
-    public void breakStep() throws InterruptedException {
+    public void breakStep() {
         step(1, Long.MAX_VALUE);
     }
     
@@ -276,39 +275,36 @@ public class DrawingFrame implements
      * In "step" mode, this method delays execution for the given number of
      * milliseconds. It does nothing in any other mode. 
      * @param delay - milliseconds to delay execution in "continuous" mode.
-     * @throws InterruptedException
      * @see DbgControls#breakStep(long)
      */
     @Override
-    public void breakStep(long delay) throws InterruptedException {
+    public void breakStep(long delay) {
         step(1, delay);
     }
     
     /**
      * In "step" or "leap" modes, this method pauses the execution until resumed.
      * It does nothing in "jump" or "run" modes. 
-     * @throws InterruptedException
      * @see DbgControls#breakStep()
      * @see DbgControls#breakJump()
      */
     @Override
-    public void breakLeap() throws InterruptedException {
+    public void breakLeap() {
         step(2, Long.MAX_VALUE);
     }
 
      /**
      * In "step", "leap" or "jump" modes, this method pauses the execution until resumed.
      * It does nothing in "run" mode. 
-     * @throws InterruptedException
      * @see DbgControls#breakStep()
      * @see DbgControls#breakLeap()
      */
     @Override
-    public void breakJump() throws InterruptedException {
+    public void breakJump() {
         step(3, Long.MAX_VALUE);
     }
     
-    private void step(int level, long delay) throws InterruptedException {
+    private void step(int level, long delay) {
         // step control calls are disabled if there are mouse custom hooks in effect since
         // same step controls are expected to be in the hooks and would incorrectly trigger
         // the ones from the main thread as well.

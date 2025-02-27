@@ -7,7 +7,7 @@ import edu.ftdev.CafeArt.CafeWall;
 public class CafeWall_tests {
 
     @Test
-    public void ctorTest() throws InterruptedException {
+    public void ctorTest() {
         CafeWall cafeWall = new CafeWall();
         assertEquals(650, cafeWall.getWidth());
         assertEquals(400, cafeWall.getHeight());
@@ -17,7 +17,7 @@ public class CafeWall_tests {
     }
 
     @Test
-    public void drawSquaresTest() throws InterruptedException {
+    public void drawSquaresTest() {
         CafeWall cafeWall = new CafeWall();
         cafeWall.open();
         cafeWall.breakStep();

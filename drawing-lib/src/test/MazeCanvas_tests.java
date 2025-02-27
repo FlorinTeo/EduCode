@@ -1,7 +1,6 @@
 import static org.junit.Assert.assertEquals;
 
 import java.awt.Color;
-import java.io.IOException;
 
 import org.junit.Test;
 
@@ -10,7 +9,7 @@ import edu.ftdev.Maze.MazeCanvas.Side;
 
 public class MazeCanvas_tests {
     @Test
-    public void basicTest() throws IOException, InterruptedException {
+    public void basicTest() {
         MazeCanvas mazeCanvas = new MazeCanvas(16,24,32);
         assertEquals(16, mazeCanvas.getRows());
         assertEquals(24, mazeCanvas.getCols());
@@ -34,7 +33,7 @@ public class MazeCanvas_tests {
     }
 
     @Test
-    public void pathsTest() throws InterruptedException {
+    public void pathsTest() {
         MazeCanvas mc = new MazeCanvas();
         mc.open();
         for (int i = 0; i < 16; i++) {
@@ -72,7 +71,7 @@ public class MazeCanvas_tests {
     }
 
     @Test
-    public void docCodeTest() throws InterruptedException {
+    public void docCodeTest() {
         MazeCanvas mc = new MazeCanvas(4, 10, 32);
         // open the maze canvas
         mc.open();
@@ -97,7 +96,7 @@ public class MazeCanvas_tests {
     }
 
     @Test
-    public void snakeTest() throws IOException, InterruptedException {
+    public void snakeTest() {
         MazeCanvas mazeCanvas = new MazeCanvas(32, 48, 16);
         mazeCanvas.open();
         for(int r = 0; r < mazeCanvas.getRows(); r++) {

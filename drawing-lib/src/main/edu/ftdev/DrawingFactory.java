@@ -123,7 +123,7 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see DbgControls#breakStep()
      */
     @Override
-    public void breakStep() throws InterruptedException {
+    public void breakStep() {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
@@ -139,7 +139,7 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see DbgControls#breakStep(long)
      */
     @Override
-    public void breakStep(long delay) throws InterruptedException {
+    public void breakStep(long delay) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
@@ -154,7 +154,7 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see DbgControls#breakLeap()
      */
     @Override
-    public void breakLeap() throws InterruptedException {
+    public void breakLeap() {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
@@ -169,7 +169,7 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see DbgControls#breakJump()
      */
     @Override
-    public void breakJump() throws InterruptedException {
+    public void breakJump() {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }

@@ -16,7 +16,7 @@ public class Map_tests {
     };
 
     @Test
-    public void routesTest() throws IOException, InterruptedException {
+    public void routesTest() throws IOException {
         // loads an intersection image file and displays it in a map frame.
         _mapCanvas = new MapCanvas("Ravenna.jpg");
         // registers the key T with the method _onKeyT
@@ -31,7 +31,7 @@ public class Map_tests {
     }
 
     @Test
-    public void collisionTest() throws IOException, InterruptedException {
+    public void collisionTest() throws IOException {
         // opens the GUI window
         _mapCanvas = new MapCanvas("Woodlawn.jpg");
         _mapCanvas.open();
@@ -48,7 +48,7 @@ public class Map_tests {
     }
 
     @Test
-    public void demoKeyHooksTest() throws IOException, InterruptedException {
+    public void demoKeyHooksTest() throws IOException {
         _mapCanvas = new MapCanvas("Loyal.jpg");
         _mapCanvas.setOverlays();
         _mapCanvas.open();

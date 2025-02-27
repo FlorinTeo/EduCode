@@ -57,7 +57,7 @@ public class DrawingFrame_tests {
     }
 
     @Test
-    public void doubleFrameTest() throws IOException, InterruptedException {
+    public void doubleFrameTest() throws IOException {
         File drwFile = new File("src/res/test/test_img1.jpg");
         BufferedImage drwImg = ImageIO.read(drwFile);
         Drawing drw1 = new Drawing(drwImg);

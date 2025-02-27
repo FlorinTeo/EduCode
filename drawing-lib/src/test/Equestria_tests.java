@@ -4,7 +4,7 @@ import edu.ftdev.Equestria.EquestriaMap;
 
 public class Equestria_tests {
     @Test
-    public void demoTest() throws InterruptedException {
+    public void demoTest() {
 		// create a new map of Equestria
         EquestriaMap map = new EquestriaMap();
 
