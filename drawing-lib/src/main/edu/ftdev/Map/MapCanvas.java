@@ -44,10 +44,10 @@ import edu.ftdev.KeyInterceptor.KeyHook;
  * <caption></caption>
  *   <tr>
  *     <td style="border: none;">
- *       <img src="https://florinteo.github.io/EduCode/DrawingLib/res/map/map_canvas-flow.png" alt="maze_canvas-flow.png" style="height: 400px;">
+ *       <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Map/map_canvas-flow.png" alt="maze_canvas-flow.png" style="height: 320px;">
  *     </td>
  *     <td style="border: none;">
- *       <img src="https://florinteo.github.io/EduCode/DrawingLib/res/map/map_canvas-collide.png" alt="maze_canvas-collide.png" style="height: 400px;">
+ *       <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Map/map_canvas-collide.png" alt="maze_canvas-collide.png" style="height: 320px;">
  *     </td>
  *   </tr>
  * </table>
