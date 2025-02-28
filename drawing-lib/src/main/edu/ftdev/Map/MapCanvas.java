@@ -40,8 +40,8 @@ import edu.ftdev.KeyInterceptor.KeyHook;
  * MapCanvas provides the abstractions and the user interface for displaying and interacting with a street intersection on a road map.
  * The roads converging in an intersection are labeled with a letter: A, B, C, D, etc. The routes connecting these roads represent
  * the various ways the intersection can be travelled through.
- * <p>
  * <table style="border-collapse: collapse; border: none;">
+ * <caption></caption>
  *   <tr>
  *     <td style="border: none;">
  *       <img src="https://florinteo.github.io/EduCode/DrawingLib/res/map/maze_canvas-flow.png" alt="maze_canvas-flow.png" style="height: 400px;">
@@ -51,7 +51,6 @@ import edu.ftdev.KeyInterceptor.KeyHook;
  *     </td>
  *   </tr>
  * </table>
- * </p>
  */
 public class MapCanvas extends DrawingFactory {
 
