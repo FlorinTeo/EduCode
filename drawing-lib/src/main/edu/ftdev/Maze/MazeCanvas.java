@@ -15,7 +15,7 @@ import edu.ftdev.DrawingFactory;
 import edu.ftdev.DrawingFrame;
 
 /**
- * MazeCanvas is a class that provides the basic building blocks for generating and displaying mazes.
+ * MazeCanvas provides the basic building blocks for generating and displaying mazes.
  * A maze is a grid of cells, each cell is a square area of pixels on the canvas. Cell sides can be walled-in or open.
  * A cell can also have a shade (background) color, and a center color. A cell can have a path drawn over it,
  * connecting its Center to any of its Top, Bottom, Left or Right sides. Each path component can be drawn in any color.
