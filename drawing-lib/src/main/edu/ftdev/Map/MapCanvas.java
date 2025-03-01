@@ -414,7 +414,7 @@ public class MapCanvas extends DrawingFactory {
      * @return The key hook registered for the given key.
      */
     public KeyHook getKeyHook(int key) {
-        return _drawingFrame.getKeyTypedHook(key);
+        return _drawingFrame.getKeyPressedHook(key);
     }
 
     /**
@@ -425,9 +425,9 @@ public class MapCanvas extends DrawingFactory {
      */
     public void setDemoKeyHooks(boolean enable) {
         for(char key : _routeInfoMap.keySet()) {
-            _drawingFrame.setKeyTypedHook(key, enable ? _onDemoKeyHook : null);
+            _drawingFrame.setKeyPressedHook(key, enable ? _onDemoKeyHook : null);
         }
-        _drawingFrame.setKeyTypedHook('X', enable ? _onDemoKeyHook : null);
+        _drawingFrame.setKeyPressedHook('X', enable ? _onDemoKeyHook : null);
     }
     
     private KeyInterceptor.KeyHook _onDemoKeyHook = (keyEvent, args) -> {

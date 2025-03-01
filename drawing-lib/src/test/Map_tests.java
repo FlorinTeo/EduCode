@@ -80,4 +80,21 @@ public class Map_tests {
         mp.breakLeap();
         mp.close();
     }
+
+    private KeyHook onDKey = (keyEvent, args) -> {
+        MapCanvas mp = (MapCanvas) args[0];
+        int i = (int)args[1];
+        mp.setStatusMessage("Key D pressed " + i);
+        args[1] = i + 1;
+    };
+    
+    @Test
+    public void demoCodeTest() throws IOException {
+        MapCanvas mp = new MapCanvas("Woodlawn.jpg");
+        mp.open();
+        mp.setDemoKeyHooks(true);
+        mp.setKeyHook(KeyEvent.VK_D, onDKey, mp, 0);
+        mp.breakJump();
+        mp.close();
+    }
 }
