@@ -1,4 +1,7 @@
+import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.junit.Test;
 
@@ -60,19 +63,20 @@ public class Map_tests {
         _mapCanvas.close();
     }
 
-    private static int counter = 0;
-
+    @SuppressWarnings("unchecked")
     private KeyHook onTab = (keyEvent, args) -> {
         MapCanvas mp = (MapCanvas) args[0];
-        mp.setStatusMessage("Tab key pressed " + counter);
-        counter++;
+        Queue<String> routes = (Queue<String>)args[1];
+        mp.setOverlays(routes.peek());
+        routes.add(routes.remove());
     };
 
     @Test
     public void docCodeTest() throws IOException {
         MapCanvas mp = new MapCanvas("Woodlawn.jpg");
         mp.open();
-        mp.setKeyHook('N', onTab, mp);
+        Queue<String> routes = new LinkedList<String>(mp.getRoutes());
+        mp.setKeyHook(KeyEvent.VK_TAB, onTab, mp, routes);
         mp.breakLeap();
         mp.close();
     }

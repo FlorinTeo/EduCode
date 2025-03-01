@@ -214,6 +214,7 @@ public class DrawingFrame implements
         
         // create the map canvas
         _canvas = new DrawingCanvas(xAnchor, yAnchor, _drawing);
+        _canvas.setFocusTraversalKeysEnabled(false);
         _canvas.addKeyListener(_keyInterceptor);
         _canvas.addMouseMotionListener(_mouseInterceptor);
         _canvas.addMouseListener(_mouseInterceptor);

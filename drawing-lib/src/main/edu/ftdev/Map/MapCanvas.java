@@ -382,8 +382,8 @@ public class MapCanvas extends DrawingFactory {
      * @param hook the lambda function to be called when the key is pressed.
      * @param args the arguments to be passed to the hook when the key is pressed.
      */
-    public void setKeyHook(char key, KeyHook hook, Object... args) {
-        _drawingFrame.setKeyTypedHook(key, hook, args);
+    public void setKeyHook(int key, KeyHook hook, Object... args) {
+        _drawingFrame.setKeyPressedHook(key, hook, args);
     }
 
     /**

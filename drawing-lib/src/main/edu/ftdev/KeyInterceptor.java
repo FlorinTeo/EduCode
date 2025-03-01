@@ -58,19 +58,19 @@ public class KeyInterceptor implements KeyListener {
     // #endregion: [Private] Data fields
     
     // #region: [Private] Key hooking private helpers
-    private KeyHook getKeyHook(int keyEventKey) {
-        KeyHookContext keyHookContext = _keyTypedHooks.get(keyEventKey);
+    private KeyHook getKeyHook(int keyEventKey, HashMap<Integer, KeyHookContext> keyHooksMap) {
+        KeyHookContext keyHookContext = keyHooksMap.get(keyEventKey);
         return keyHookContext != null ? keyHookContext._keyHook : null;
     }
 
-    private KeyHook setKeyHook(int keyEventKey, KeyHook keyHook, Object... args) {
+    private KeyHook setKeyHook(int keyEventKey, HashMap<Integer, KeyHookContext> keyHooksMap, KeyHook keyHook, Object... args) {
         KeyHookContext prevContext;
         keyEventKey = Character.toUpperCase(keyEventKey);
         if (keyHook == null) {
-            prevContext = _keyTypedHooks.remove(keyEventKey);
+            prevContext = keyHooksMap.remove(keyEventKey);
         } else {
             KeyHookContext newContext = new KeyHookContext(keyHook, args);
-            prevContext = _keyTypedHooks.put(keyEventKey, newContext);
+            prevContext = keyHooksMap.put(keyEventKey, newContext);
         }
         return prevContext != null ? prevContext._keyHook : null;
     }
@@ -92,27 +92,27 @@ public class KeyInterceptor implements KeyListener {
     
     // #region: [Internal] Keys hooking methods
     KeyHook getKeyTypedHook(int keyEventKey) {
-        return getKeyHook(keyEventKey);
+        return getKeyHook(keyEventKey, _keyTypedHooks);
     }
     
     KeyHook setKeyTypedHook(int keyEventKey, KeyHook keyHook, Object... args) {
-        return setKeyHook(keyEventKey, keyHook, args);
+        return setKeyHook(keyEventKey, _keyTypedHooks, keyHook, args);
     }
     
     KeyHook getKeyPressedHook(int keyEventKey) {
-        return getKeyHook(keyEventKey);
+        return getKeyHook(keyEventKey, _keyPressedHooks);
     }
     
     KeyHook setKeyPressedHook(int keyEventKey, KeyHook keyHook, Object... args) {
-        return setKeyHook(keyEventKey, keyHook, args);
+        return setKeyHook(keyEventKey, _keyPressedHooks, keyHook, args);
     }
     
     KeyHook getKeyReleasedHook(int keyEventKey) {
-        return getKeyHook(keyEventKey);
+        return getKeyHook(keyEventKey, _keyReleasedHooks);
     }
     
     KeyHook setKeyReleasedHook(int keyEventKey, KeyHook keyHook, Object... args) {
-        return setKeyHook(keyEventKey, keyHook, args);
+        return setKeyHook(keyEventKey, _keyReleasedHooks, keyHook, args);
     }
     // #endregion: [Internal] Keys hooking methods
     
