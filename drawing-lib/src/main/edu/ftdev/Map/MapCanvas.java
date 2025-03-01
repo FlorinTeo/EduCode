@@ -413,7 +413,7 @@ public class MapCanvas extends DrawingFactory {
      * @param key the key for which the hook is requested.
      * @return The key hook registered for the given key.
      */
-    public KeyHook getKeyHook(char key) {
+    public KeyHook getKeyHook(int key) {
         return _drawingFrame.getKeyTypedHook(key);
     }
 
