@@ -20,10 +20,9 @@ package edu.ftdev;
  * </ul>
  * At any time during the program execution, the user can switch the execution mode by 
  * pressing any of the '1', '2', '3' or '&lt;space&gt;' keys or, by clicking on the corresponding control buttons
- * on the top of the DrawingFrame window. The meaning of the control buttons is as follows:
- * <p></p>
+ * on the top of the DrawingFrame window.
  * <table style="border-collapse: collapse; border: none;">
- *   <caption></caption>
+ *   <caption>Meaning of the control buttons:</caption>
  *   <tr>
  *     <td style="border: none;"><img src="https://florinteo.github.io/EduCode/DrawingLib/res/ctrl_running.png" alt="ctrl-running.png"></td>
  *     <td style="border: none;">Program is currently running in the execution mode colored in yellow

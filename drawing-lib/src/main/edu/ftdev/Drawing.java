@@ -26,6 +26,8 @@ public class Drawing implements AutoCloseable {
     /**
      * Creates an instance of a Drawing object encapsulating the representation of 
      * the imageFile given as argument.
+     * @param imageFile - the path to the image file to be loaded.
+     * @throws IOException if the image file does not exist or is a directory.
      */
     public static Drawing read(String imageFile) throws IOException {
         File drwFile = new File(imageFile);
@@ -35,6 +37,11 @@ public class Drawing implements AutoCloseable {
         return new Drawing(ImageIO.read(drwFile));
     }
     
+    /**
+     * Creates an instance of a Drawing object encapsulating the representation of 
+     * the image given as argument.
+     * @param image the image to be encapsulated.
+     */
     public Drawing(BufferedImage image) {
         _image = image;
         _g2d = _image.createGraphics();
@@ -56,6 +63,10 @@ public class Drawing implements AutoCloseable {
         reset();
     }
 
+    /**
+     * Gets the image encapsulated by this Drawing object.
+     * @return the image encapsulated by this Drawing object.
+     */
     public BufferedImage getImage() {
         return _image;
     }

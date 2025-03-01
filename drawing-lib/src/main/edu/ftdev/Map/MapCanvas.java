@@ -40,17 +40,19 @@ import edu.ftdev.KeyInterceptor.KeyHook;
  * MapCanvas provides the abstractions and the user interface for displaying and interacting with a street intersection on a road map.
  * The roads converging in an intersection are labeled with a letter: A, B, C, D, etc. The routes connecting these roads represent
  * the various ways the intersection can be travelled through.
- * <table style="border-collapse: collapse; border: none;">
- * <caption></caption>
- *   <tr>
- *     <td style="border: none;">
- *       <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Map/map_canvas-flow.png" alt="maze_canvas-flow.png" style="height: 320px;">
- *     </td>
- *     <td style="border: none;">
- *       <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Map/map_canvas-collide.png" alt="maze_canvas-collide.png" style="height: 320px;">
- *     </td>
- *   </tr>
- * </table>
+ * <p>
+ * Map images embed the base map and the information about the routes, specific to that map. The image below depicts two routes, AC and
+ * CD overlaid on the map. There are others such routes which are not overlaid: AD, ED, etc. Note, depending on the map, some routes
+ * may not be possible: for example no routes can originate at point B since B sits on a one-way road, leaving away from the intersection.
+ * </p>
+ * <p>
+ * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Map/map_canvas-collide.png" alt="maze_canvas-collide.png" style="height: 320px;">
+ * </p>
+ * <p>
+ * A MazeCanvas instance, created for given map image can be used to fetch all the available routes in that image. The routes can be overlaid
+ * in any combination and same instance can provide collision information such as AC and CD colliding in the intersection. MazeCanvas also
+ * provides the ability to enable interactive exploration of the routes by registering specific key strokes with the custom code.
+ * </p>
  */
 public class MapCanvas extends DrawingFactory {
 
@@ -378,9 +380,10 @@ public class MapCanvas extends DrawingFactory {
      * function that will be called whenever the key is pressed.
      * @param key - the key to be hooked.
      * @param hook - the lambda function to be called when the key is pressed.
+     * @param args - the arguments to be passed to the hook when the key is pressed.
      */
-    public void setKeyHook(char key, KeyHook hook) {
-        _drawingFrame.setKeyTypedHook(key, hook);
+    public void setKeyHook(char key, KeyHook hook, Object... args) {
+        _drawingFrame.setKeyTypedHook(key, hook, args);
     }
 
     /**
@@ -405,7 +408,7 @@ public class MapCanvas extends DrawingFactory {
         _drawingFrame.setKeyTypedHook('X', enable ? _onDemoKeyHook : null);
     }
     
-    private KeyInterceptor.KeyHook _onDemoKeyHook = (keyEvent) -> {
+    private KeyInterceptor.KeyHook _onDemoKeyHook = (keyEvent, args) -> {
         char key = Character.toUpperCase(keyEvent.getKeyChar());
         
         // if the key is 'X', perform a collision test on the overlayed routes

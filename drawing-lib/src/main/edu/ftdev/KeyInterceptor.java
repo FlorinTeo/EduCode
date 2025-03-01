@@ -18,41 +18,73 @@ public class KeyInterceptor implements KeyListener {
     // I.e:
     // KeyIterceptor.KeyHook onSTyped = (KeyEvent keyEvent) -> {..}
     // myKeyInterceptor.setKeyTypedHook('S', onSTyped)
+
+    /**
+     * private class to hold the key hook and the arguments to be passed
+     * to the hook when the key event occurs. 
+     */
+    private class KeyHookContext {
+        private KeyHook _keyHook;
+        private Object[] _args;
+
+        private KeyHookContext(KeyHook keyHook, Object... args) {
+            _keyHook = keyHook;
+            _args = args;
+        }
+    }
     
     /**
      * Functional Interface for a generic key hooking method.
      * Users can instantiate a lambda method that can be registered with the
      * drawing engine such that custom code gets called when specific key is pressed.
-     * @see #keyHook(KeyEvent)
+     * @see #keyHook(KeyEvent, Object[])
      */
     public interface KeyHook {
         /**
          * Method called when a registered key event is intercepted.
          * @param keyEvent - the key event that as detected.
+         * @param args - optional arguments to be passed to the hook when event occurs.
          * @see KeyEvent
          */
-        public void keyHook(KeyEvent keyEvent);
+        public void keyHook(KeyEvent keyEvent, Object[] args);
     }
     
     // #region: [Private] Data fields
     private Object _sync = new Object();
     private Integer _keyStepLevel = Integer.MIN_VALUE;
-    private HashMap<Integer, KeyHook> _keyTypedHooks = new HashMap<Integer, KeyHook>();
-    private HashMap<Integer, KeyHook> _keyPressedHooks = new HashMap<Integer, KeyHook>();
-    private HashMap<Integer, KeyHook> _keyReleasedHooks = new HashMap<Integer, KeyHook>();
+    private HashMap<Integer, KeyHookContext> _keyTypedHooks = new HashMap<Integer, KeyHookContext>();
+    private HashMap<Integer, KeyHookContext> _keyPressedHooks = new HashMap<Integer, KeyHookContext>();
+    private HashMap<Integer, KeyHookContext> _keyReleasedHooks = new HashMap<Integer, KeyHookContext>();
     // #endregion: [Private] Data fields
     
     // #region: [Private] Key hooking private helpers
-    private void forwardKeyEvent(KeyEvent e, HashMap<Integer, KeyHook> keyHooks) {
+    private KeyHook getKeyHook(int keyEventKey) {
+        KeyHookContext keyHookContext = _keyTypedHooks.get(keyEventKey);
+        return keyHookContext != null ? keyHookContext._keyHook : null;
+    }
+
+    private KeyHook setKeyHook(int keyEventKey, KeyHook keyHook, Object... args) {
+        KeyHookContext prevContext;
+        keyEventKey = Character.toUpperCase(keyEventKey);
+        if (keyHook == null) {
+            prevContext = _keyTypedHooks.remove(keyEventKey);
+        } else {
+            KeyHookContext newContext = new KeyHookContext(keyHook, args);
+            prevContext = _keyTypedHooks.put(keyEventKey, newContext);
+        }
+        return prevContext != null ? prevContext._keyHook : null;
+    }
+
+    private void forwardKeyEvent(KeyEvent e, HashMap<Integer, KeyHookContext> keyHookContexts) {
         int hookKey = e.getKeyCode();
         if (hookKey == KeyEvent.VK_UNDEFINED) {
             hookKey = Character.toUpperCase(e.getKeyChar());
         }
         
-        if (keyHooks.containsKey(hookKey)) {
-            KeyHook targetKeyHook = keyHooks.get(hookKey);
-            if (targetKeyHook != null) {
-                targetKeyHook.keyHook(e);
+        if (keyHookContexts.containsKey(hookKey)) {
+            KeyHookContext targetKeyHookContext = keyHookContexts.get(hookKey);
+            if (targetKeyHookContext != null) {
+                targetKeyHookContext._keyHook.keyHook(e, targetKeyHookContext._args);
             }
         }
     }
@@ -60,34 +92,27 @@ public class KeyInterceptor implements KeyListener {
     
     // #region: [Internal] Keys hooking methods
     KeyHook getKeyTypedHook(int keyEventKey) {
-        return _keyTypedHooks.get(keyEventKey);
+        return getKeyHook(keyEventKey);
     }
     
-    KeyHook setKeyTypedHook(int keyEventKey, KeyHook keyHook) {
-        keyEventKey = Character.toUpperCase(keyEventKey);
-        return (keyHook == null)
-            ? _keyTypedHooks.remove(keyEventKey)
-            : _keyTypedHooks.put(keyEventKey, keyHook);
+    KeyHook setKeyTypedHook(int keyEventKey, KeyHook keyHook, Object... args) {
+        return setKeyHook(keyEventKey, keyHook, args);
     }
     
     KeyHook getKeyPressedHook(int keyEventKey) {
-        return _keyPressedHooks.get(keyEventKey);
+        return getKeyHook(keyEventKey);
     }
     
-    KeyHook setKeyPressedHook(int keyEventKey, KeyHook keyHook) {
-        return (keyHook == null)
-                ? _keyPressedHooks.remove(keyEventKey)
-                : _keyPressedHooks.put(keyEventKey, keyHook);
+    KeyHook setKeyPressedHook(int keyEventKey, KeyHook keyHook, Object... args) {
+        return setKeyHook(keyEventKey, keyHook, args);
     }
     
     KeyHook getKeyReleasedHook(int keyEventKey) {
-        return _keyReleasedHooks.get(keyEventKey);
+        return getKeyHook(keyEventKey);
     }
     
-    KeyHook setKeyReleasedHook(int keyEventKey, KeyHook keyHook) {
-        return (keyHook == null)
-                ? _keyReleasedHooks.remove(keyEventKey)
-                : _keyReleasedHooks.put(keyEventKey, keyHook);
+    KeyHook setKeyReleasedHook(int keyEventKey, KeyHook keyHook, Object... args) {
+        return setKeyHook(keyEventKey, keyHook, args);
     }
     // #endregion: [Internal] Keys hooking methods
     

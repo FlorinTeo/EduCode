@@ -10,8 +10,13 @@ package edu.ftdev;
  * @see DrawingFrame
  */
 public abstract class DrawingFactory implements DbgControls, FrameControls {
-    // instance drawing and drawing frame used for displaying the nap
+    /**
+     * The Drawing object encapsulating the image to be displayed in the DrawingFrame.
+     */
     protected Drawing _drawing = null; // drawing is intended to be used by subclasses doing heavier graphics.
+    /**
+     * The DrawingFrame object hosting the Drawing object and providing the UI controls for interacting with it.
+     */
     protected DrawingFrame _drawingFrame = null;
 
     /**

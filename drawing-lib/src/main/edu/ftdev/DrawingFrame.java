@@ -41,11 +41,17 @@ public class DrawingFrame implements
     private TextField _statusY = null;
     private TextField _statusText = null;
 
+    /**
+     * KeyInterceptor object to intercept key events and trigger custom actions.
+     */
     protected KeyInterceptor _keyInterceptor = new KeyInterceptor();
+    /**
+     * MouseInterceptor object to intercept mouse events and trigger custom actions.
+     */
     protected MouseInterceptor _mouseInterceptor = new MouseInterceptor();
     
     // #region: [Private] KeyInterceptor hooks
-    private KeyInterceptor.KeyHook _onKeyInterceptorCtrl = (keyEvent) -> {
+    private KeyInterceptor.KeyHook _onKeyInterceptorCtrl = (keyEvent, args) -> {
         char ch = Character.toUpperCase(keyEvent.getKeyChar());
         switch (ch) {
         case '1': // break on {step}
@@ -366,10 +372,11 @@ public class DrawingFrame implements
      * Sets a key hook to be called when a given key is typed.
      * @param keyEvent - the key type event to be intercepted.
      * @param keyHook - the key hook to be called when the key is typed.
+     * @param args - additional arguments to be passed to the key hook when called.
      * @return - the key hook previously set for the given event, or null if none exist.
      */
-    public KeyHook setKeyTypedHook(int keyEvent, KeyHook keyHook) {
-        return _keyInterceptor.setKeyTypedHook(keyEvent, keyHook);
+    public KeyHook setKeyTypedHook(int keyEvent, KeyHook keyHook, Object... args) {
+        return _keyInterceptor.setKeyTypedHook(keyEvent, keyHook, args);
     }
     
     /**
@@ -385,10 +392,11 @@ public class DrawingFrame implements
      * Sets a key hook to be called when a given key is pressed.
      * @param keyEvent - the key pressed event to be intercepted.
      * @param keyHook - the key hook to be called when the key is pressed.
+     * @param args - additional arguments to be passed to the key hook when called.
      * @return - the key hook previously set for the given event, or null if none exist.
      */
-    public KeyHook setKeyPressedHook(int keyEvent, KeyHook keyHook) {
-        return _keyInterceptor.setKeyPressedHook(keyEvent, keyHook);
+    public KeyHook setKeyPressedHook(int keyEvent, KeyHook keyHook, Object... args) {
+        return _keyInterceptor.setKeyPressedHook(keyEvent, keyHook, args);
     }
     
     /**
@@ -402,21 +410,22 @@ public class DrawingFrame implements
     
     /**
      * Sets a key hook to be called when a given key is released.
-     * @param keyEvent - the key released event to be intercepted.
-     * @param keyHook - the key hook to be called when the key is released.
-     * @return - the key hook previously set for the given event, or null if none exist.
+     * @param keyEvent the key released event to be intercepted.
+     * @param keyHook the key hook to be called when the key is released.
+     * @param args additional arguments to be passed to the key hook when called.
+     * @return the key hook previously set for the given event, or null if none exist.
      */
-    public KeyHook setKeyReleasedHook(int keyEvent, KeyHook keyHook) {
-        return _keyInterceptor.setKeyReleasedHook(keyEvent, keyHook);
+    public KeyHook setKeyReleasedHook(int keyEvent, KeyHook keyHook, Object... args) {
+        return _keyInterceptor.setKeyReleasedHook(keyEvent, keyHook, args);
     }
     // #endregion: [Public] Key hooking methods
  
     // #region: [Public] Mouse hooking methods
     /**
      * Sets a mouse hook to be called when the left mouse button is clicked.
-     * @param mouseHook - the mouse hook to be called when the button is clicked
+     * @param mouseHook the mouse hook to be called when the button is clicked
      * or null if the event should not be intercepted.
-     * @return - the mouse hook previously set for the given event, or null if none exist.
+     * @return the mouse hook previously set for the given event, or null if none exist.
      */
     public MouseHook setMouseClickedHook(MouseHook mouseHook) {
         return _mouseInterceptor.setCustomMouseHook(MouseEvent.MOUSE_CLICKED, _canvas, mouseHook);
@@ -424,10 +433,18 @@ public class DrawingFrame implements
     // #endregion: [Public] Mouse hooking methods
 
     // #region: [Public] FrameControls overrides
+    /**
+     * Gets the window title of the drawing frame.
+     * @return the window title of the drawing frame.
+     */
     public String getTitle() {
         return _title;
     }
     
+    /**
+     * Sets the window title of the drawing frame.
+     * @param title the new title to be set on the drawing frame window.
+     */
     public void setTitle(String title) {
         _title = title;
         _frame.setTitle(_title);

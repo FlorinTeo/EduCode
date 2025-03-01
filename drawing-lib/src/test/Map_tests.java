@@ -1,4 +1,3 @@
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -9,7 +8,7 @@ import edu.ftdev.Map.MapCanvas;
 public class Map_tests {
     private static MapCanvas _mapCanvas;
 
-    private static KeyHook _onKeyT = (KeyEvent keyEvent) -> {
+    private static KeyHook _onKeyT = (keyEvent, args) -> {
         String statusText = "Key: '" + keyEvent.getKeyChar() + "'; ";
         statusText += "Routes: " + _mapCanvas.getRoutes();
         _mapCanvas.setStatusMessage(statusText);
@@ -59,5 +58,22 @@ public class Map_tests {
         _mapCanvas.setDemoKeyHooks(false);
         _mapCanvas.breakJump();
         _mapCanvas.close();
+    }
+
+    private static int counter = 0;
+
+    private KeyHook onTab = (keyEvent, args) -> {
+        MapCanvas mp = (MapCanvas) args[0];
+        mp.setStatusMessage("Tab key pressed " + counter);
+        counter++;
+    };
+
+    @Test
+    public void docCodeTest() throws IOException {
+        MapCanvas mp = new MapCanvas("Woodlawn.jpg");
+        mp.open();
+        mp.setKeyHook('N', onTab, mp);
+        mp.breakLeap();
+        mp.close();
     }
 }
