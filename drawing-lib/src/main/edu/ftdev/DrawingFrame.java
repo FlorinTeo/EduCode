@@ -117,37 +117,42 @@ public class DrawingFrame implements
     // #endregion: [Private] MouseInterceptor hooks
 
     // #region: [Private] DbgButtons management
-    private void dbgButtonsSetup(int xAnchor, int yAnchor) throws IOException {
+    private void dbgButtonsSetup(int xAnchor, int yAnchor) {
         _dbgButtons = new DbgButton[4];
 
-        _dbgButtons[0] = new DbgButton(
-            '1',
-            xAnchor,
-            yAnchor,
-            "edu/ftdev/res/step_0.png", "edu/ftdev/res/step_1.png", "edu/ftdev/res/step_2.png");
-        _dbgButtons[0].setFace(BtnFace.CLICKED);
-        xAnchor += _dbgButtons[0].getWidth();
-
-        _dbgButtons[1] = new DbgButton(
-            '2',
-            xAnchor,
-            yAnchor,
-            "edu/ftdev/res/leap_0.png", "edu/ftdev/res/leap_1.png", "edu/ftdev/res/leap_2.png");
-        xAnchor += _dbgButtons[1].getWidth();
-
-        _dbgButtons[2] = new DbgButton(
-            '3',
-            xAnchor,
-            yAnchor,
-            "edu/ftdev/res/jump_0.png", "edu/ftdev/res/jump_1.png", "edu/ftdev/res/jump_2.png");
-        xAnchor += _dbgButtons[2].getWidth();
-
-        _dbgButtons[3] = new DbgButton(
-            ' ',
-            xAnchor,
-            yAnchor,
-            "edu/ftdev/res/run_0.png", "edu/ftdev/res/run_1.png", "edu/ftdev/res/run_2.png");
-        xAnchor += _dbgButtons[2].getWidth();
+        try {
+            _dbgButtons[0] = new DbgButton(
+                '1',
+                xAnchor,
+                yAnchor,
+                "edu/ftdev/res/step_0.png", "edu/ftdev/res/step_1.png", "edu/ftdev/res/step_2.png");
+            _dbgButtons[0].setFace(BtnFace.CLICKED);
+            xAnchor += _dbgButtons[0].getWidth();
+    
+            _dbgButtons[1] = new DbgButton(
+                '2',
+                xAnchor,
+                yAnchor,
+                "edu/ftdev/res/leap_0.png", "edu/ftdev/res/leap_1.png", "edu/ftdev/res/leap_2.png");
+            xAnchor += _dbgButtons[1].getWidth();
+    
+            _dbgButtons[2] = new DbgButton(
+                '3',
+                xAnchor,
+                yAnchor,
+                "edu/ftdev/res/jump_0.png", "edu/ftdev/res/jump_1.png", "edu/ftdev/res/jump_2.png");
+            xAnchor += _dbgButtons[2].getWidth();
+    
+            _dbgButtons[3] = new DbgButton(
+                ' ',
+                xAnchor,
+                yAnchor,
+                "edu/ftdev/res/run_0.png", "edu/ftdev/res/run_1.png", "edu/ftdev/res/run_2.png");
+            xAnchor += _dbgButtons[2].getWidth();
+        } catch (IOException e) {
+            // won't happen: the jar is configured to include the resources
+            e.printStackTrace();
+        }
     }
     // #endregion: [Private] DbgButtons management
     
@@ -179,9 +184,8 @@ public class DrawingFrame implements
     /**
      * Creates an instance of a DrawingFrame object encapsulating the representation of a window displaying the pixels of the given drawing object.
      * @param drawing - the drawing to be displayed by this frame.
-     * @throws IOException
      */
-    public DrawingFrame(Drawing drawing) throws IOException {
+    public DrawingFrame(Drawing drawing) {
         // keep track of the creating thread
         _mainThread = Thread.currentThread();
 

@@ -63,7 +63,7 @@ public class MazeCanvas extends DrawingFactory {
     private static final int _PADDING = 10;
     private static final Color _BKG_COLOR = Color.LIGHT_GRAY;
 
-    // #region: private fields
+    // #region: [Private] fields
     // Padding around the canvas edge
     // Number of rows and columns
     private int _nRows = 80;
@@ -82,13 +82,12 @@ public class MazeCanvas extends DrawingFactory {
     private int _dbgFrameOffset = 5;
     private Color _dbgFrameColor = new Color(255, 134, 13);
     private Stroke _dbgFrameStroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
-    // #endregion: private fields
+    // #endregion: [Private] fields
     
     // #region: MazeCanvas.Side enum definition
     /**
      * The relevant sides around a maze cell. Cell sides are needed when drawing or erasing a <i>wall</i> at the cell boundary
      * or a <i>path</i> segment crossing through the maze cell.
-     * <p>
      * @see MazeCanvas
      * @see MazeCanvas#drawWall(int, int, Side)
      * @see MazeCanvas#eraseWall(int, int, Side)
@@ -134,10 +133,29 @@ public class MazeCanvas extends DrawingFactory {
         private Color _shadeColor;
         private Color _centerColor;
         
+        /**
+         * The default color for the shade of the cell.
+         * @see MazeCanvas#drawCell(int, int, Color)
+         */
         public Color ShadeColor = Color.WHITE;
+        /**
+         * The default color for the center of the cell.
+         * @see MazeCanvas#drawCell(int, int, Color)
+         */
         public Color CenterColor = Color.WHITE;
+        /**
+         * The list of sides walled-in for the cell.
+         * @see MazeCanvas#drawWall(int, int, Side)
+         */
         public Set<Side> WallSides = new HashSet<Side>();
+        /**
+         * The list of sides with path drawn over for the cell.
+         * @see MazeCanvas#drawPath(int, int, Side, Color)
+         */
         public Map<Side, Color> PathSides = new HashMap<Side, Color>();
+        /**
+         * The validity of the cell state. If false, the cell is out of the maze grid.
+         */
         public boolean Valid = false;
         
         /**
@@ -157,6 +175,7 @@ public class MazeCanvas extends DrawingFactory {
             }
         }
         
+        // #region: [Public] methods
         /**
          * Extracts the shade color for a given cell. If successful, field ShadeColor
          * will contain the current shade color.
@@ -253,7 +272,9 @@ public class MazeCanvas extends DrawingFactory {
                     _cellWidth+2*_dbgFrameOffset);
             g.dispose();
         }
+        // #endregion: [Public] methods
 
+        // #region: [Private] methods
         private void drawWall(Side side) {
             Graphics2D g = _drawing.getGraphics();
             if (side == Side.Top) {
@@ -341,10 +362,11 @@ public class MazeCanvas extends DrawingFactory {
             g.setColor(color);
             g.fillRect(_xo, _yo, _cellWidth, _cellWidth);
         }
+        // #endregion: [Private] methods
     }
     // #endregion: CellState class definition
     
-    // #region: private methods
+    // #region: [Private] methods
     /**
      * Calculates the pixel X-coordinate of the top-left corner
      * of the cell at the given row and column in the maze.
@@ -366,7 +388,7 @@ public class MazeCanvas extends DrawingFactory {
     private int cellY(int r, int c) {
         return _PADDING + r * _cellWidth;
     }
-    // #endregion: private methods
+    // #endregion: [Private] methods
     
     /**
      * Constructs a Maze canvas of 16 rows and 24 columns. Each cell
@@ -390,13 +412,8 @@ public class MazeCanvas extends DrawingFactory {
      * @see MazeCanvas#open()
      */
     public MazeCanvas(int nRows, int nCols, int cellWidth) {
-        try {
-            _drawing = new Drawing(2 * _PADDING + nCols * cellWidth, 2 * _PADDING + nRows * cellWidth, _BKG_COLOR);
-            _drawingFrame = new DrawingFrame(_drawing);
-        } catch (IOException e) {
-            // Can't happen
-            e.printStackTrace();
-        }
+        _drawing = new Drawing(2 * _PADDING + nCols * cellWidth, 2 * _PADDING + nRows * cellWidth, _BKG_COLOR);
+        _drawingFrame = new DrawingFrame(_drawing);
         _nRows = nRows;
         _nCols = nCols;
         _cellWidth = cellWidth;
@@ -406,6 +423,7 @@ public class MazeCanvas extends DrawingFactory {
         clear();
     }
 
+    // #region: [Public] methods
     /**
      * Clears the canvas area of this maze.<br>The window containing this canvas is brought back 
      * to its default state as it was when it was first opened. No cells are drawn, no walls or paths are visible.
@@ -428,7 +446,6 @@ public class MazeCanvas extends DrawingFactory {
         _drawingFrame.repaint();
     }
     
-    // #region: public methods
     /**
      * Provides the number of rows in the grid of cells for this maze.
      * @return number of rows.
@@ -646,5 +663,5 @@ public class MazeCanvas extends DrawingFactory {
     public boolean eraseShade(int row, int col) {
         return drawShade(row, col, Color.WHITE);
     }
-    // #endregion: public methods
+    // #endregion: [Public] methods
 }

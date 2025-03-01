@@ -49,13 +49,8 @@ public class CafeWall extends DrawingFactory {
      * Creates a new CafeWall object with a default size of 650 by 400 pixels.
      */
     public CafeWall() {
-        try {
-            _drawing = new Drawing(_WIDTH, _HEIGHT, _BKG_COLOR);
-            _drawingFrame = new DrawingFrame(_drawing);
-        } catch (IOException e) {
-            // can't happen - resource is in the JAR
-            e.printStackTrace();
-        }
+        _drawing = new Drawing(_WIDTH, _HEIGHT, _BKG_COLOR);
+        _drawingFrame = new DrawingFrame(_drawing);
         rawSetup();
     }
 

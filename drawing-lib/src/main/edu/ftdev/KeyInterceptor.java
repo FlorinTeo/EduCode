@@ -20,19 +20,13 @@ public class KeyInterceptor implements KeyListener {
     // myKeyInterceptor.setKeyTypedHook('S', onSTyped)
 
     /**
-     * private class to hold the key hook and the arguments to be passed
-     * to the hook when the key event occurs. 
+     * Creates a new instance of the KeyInterceptor class.
      */
-    private class KeyHookContext {
-        private KeyHook _keyHook;
-        private Object[] _args;
-
-        private KeyHookContext(KeyHook keyHook, Object... args) {
-            _keyHook = keyHook;
-            _args = args;
-        }
+    public KeyInterceptor() {
+        // default constructor
     }
-    
+
+    // #region: [Private] classes and interfaces
     /**
      * Functional Interface for a generic key hooking method.
      * Users can instantiate a lambda method that can be registered with the
@@ -48,6 +42,21 @@ public class KeyInterceptor implements KeyListener {
          */
         public void keyHook(KeyEvent keyEvent, Object[] args);
     }
+
+     /**
+     * private class to hold the key hook and the arguments to be passed
+     * to the hook when the key event occurs. 
+     */
+    private class KeyHookContext {
+        private KeyHook _keyHook;
+        private Object[] _args;
+
+        private KeyHookContext(KeyHook keyHook, Object... args) {
+            _keyHook = keyHook;
+            _args = args;
+        }
+    }
+    // #endregion: [Private] classes and interfaces
     
     // #region: [Private] Data fields
     private Object _sync = new Object();
@@ -117,6 +126,10 @@ public class KeyInterceptor implements KeyListener {
     // #endregion: [Internal] Keys hooking methods
     
     // #region: [Public] KeyListener overrides
+    /**
+     * Forwards the key typed event to the registered hooks.
+     * @param keyEvent - the key event to be forwarded.
+     */
     @Override
     public void keyTyped(KeyEvent keyEvent) {
         synchronized (_sync) {
@@ -150,6 +163,10 @@ public class KeyInterceptor implements KeyListener {
         }
     }
     
+    /**
+     * Forwards the key pressed event to the registered hooks.
+     * @param keyEvent - the key event to be forwarded.
+     */
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         synchronized (_sync) {
@@ -163,6 +180,10 @@ public class KeyInterceptor implements KeyListener {
         }
     }
     
+    /**
+     * Forwards the key released event to the registered hooks.
+     * @param keyEvent - the key event to be forwarded.
+     */
     @Override
     public void keyReleased(KeyEvent keyEvent) {
         forwardKeyEvent(keyEvent, _keyReleasedHooks);

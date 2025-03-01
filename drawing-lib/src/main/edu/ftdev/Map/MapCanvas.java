@@ -255,8 +255,8 @@ public class MapCanvas extends DrawingFactory {
     /**
      * Constructs a new MapCanvas object from a map image. The map image can be a .jpg file,
      * a directory containing the map image and its overlays, or a resource path. 
-     * @param mapImagePath - path to the image file, directory or resource.
-     * @throws IOException
+     * @param mapImagePath path to the image file, directory or resource.
+     * @throws IOException if the map image cannot be located at the given path.
      */
     public MapCanvas(String mapImagePath) throws IOException {
         File mapImageFile = new File(mapImagePath);

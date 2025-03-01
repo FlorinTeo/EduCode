@@ -18,6 +18,13 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // MouseIterceptor.mouseHook onMClicked = (MouseEvent mouseEvent) -> {..}
     // myMouseInterceptor.setMouseHook(onMClicked);
 
+    /**
+     * Creates a new instance of the MouseInterceptor class.
+     */
+    public MouseInterceptor() {
+        super();
+    }
+
     // #region: [Private] classes and interfaces
     /**
      * Functional Interface for a generic mouse hooking method.
@@ -29,9 +36,10 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
         /**
          * Method called when a registered mouse event is intercepted.
          * @param mouseEvent - the mouse event that was detected.
+         * @param args - optional arguments to be passed to the hook when event occurs.
          * @see MouseEvent
          */
-        public void mouseHook(MouseEvent mouseEvent, Object[] args) throws InterruptedException;
+        public void mouseHook(MouseEvent mouseEvent, Object[] args);
     }
 
     /**
@@ -173,7 +181,7 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // #region: [Public] MouseListener overrides
     /**
      * Forwards the mouse click event to the registered hooks.
-     * @param e - the mouse event to be forwarded.
+     * @param e the mouse event to be forwarded.
      */
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -182,7 +190,7 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
 
     /**
      * Forwards the mouse press event to the registered hooks.
-     * @param e - the mouse event to be forwarded.
+     * @param e the mouse event to be forwarded.
      */
     @Override
     public void mousePressed(MouseEvent e) {
@@ -191,7 +199,7 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
 
     /**
      * Forwards the mouse release event to the registered hooks.
-     * @param e - the mouse event to be forwarded.
+     * @param e the mouse event to be forwarded.
      */
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -200,7 +208,7 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
 
     /**
      * Forwards the mouse enter event to the registered hooks.
-     * @param e - the mouse event to be forwarded.
+     * @param e the mouse event to be forwarded.
      */
     @Override
     public void mouseEntered(MouseEvent e) {
@@ -209,7 +217,7 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
 
     /**
      * Forwards the mouse exit event to the registered hooks.
-     * @param e - the mouse event to be forwarded.
+     * @param e the mouse event to be forwarded.
      */
     @Override
     public void mouseExited(MouseEvent e) {
@@ -220,7 +228,7 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // #region: [Public] MouseMotionListener overrides
     /**
      * Forwards the mouse drag event to the registered hooks.
-     * @param e - the mouse event to be forwarded.
+     * @param e the mouse event to be forwarded.
      */
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -229,7 +237,7 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
 
     /**
      * Forwards the mouse move event to the registered hooks.
-     * @param e - the mouse event to be forwarded.
+     * @param e the mouse event to be forwarded.
      */
     @Override
     public void mouseMoved(MouseEvent e) {
@@ -240,7 +248,7 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // #region: [Public] MouseWheelListener overrides
     /**
      * Forwards the mouse wheel event to the registered hooks.
-     * @param e - the mouse event to be forwarded.
+     * @param e the mouse event to be forwarded.
      */
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {

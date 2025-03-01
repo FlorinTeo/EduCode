@@ -15,12 +15,24 @@ import javax.imageio.ImageIO;
  */
 public class Drawing implements AutoCloseable {
     
-    // internal reference to the drawing canvas hosting this image.
-    // This is directly set by the DrawingFrame when the drawing is loaded into the canvas, is intended
-    // to be used by subclasses doing heavier graphics, in order trigger a canvas repaint.
+    /**
+     * Internal reference to the drawing canvas hosting this image.
+     * This is directly set by the DrawingFrame when the drawing is loaded into the canvas, is intended
+     * to be used by subclasses doing heavier graphics, in order trigger a canvas repaint.
+     */
     protected DrawingCanvas _drwCanvas = null;
+    /**
+     * Internal reference to the image file path from which this drawing was created.
+     */
     protected BufferedImage _image = null;
+    /**
+     * Internal reference to the original image file from which this drawing was created.
+     * This is used to reset the image to its original state.
+     */
     protected BufferedImage _origImage = null;
+    /**
+     * Internal reference to the Graphics2D object associated with the drawing image.
+     */
     protected Graphics2D _g2d = null;
     
     /**
@@ -28,6 +40,7 @@ public class Drawing implements AutoCloseable {
      * the imageFile given as argument.
      * @param imageFile - the path to the image file to be loaded.
      * @throws IOException if the image file does not exist or is a directory.
+     * @return a Drawing object encapsulating the image file.
      */
     public static Drawing read(String imageFile) throws IOException {
         File drwFile = new File(imageFile);
@@ -40,7 +53,7 @@ public class Drawing implements AutoCloseable {
     /**
      * Creates an instance of a Drawing object encapsulating the representation of 
      * the image given as argument.
-     * @param image the image to be encapsulated.
+     * @param image a Drawing object encapsulating the image file.
      */
     public Drawing(BufferedImage image) {
         _image = image;
