@@ -89,8 +89,8 @@ public class EquestriaMap extends DrawingFactory {
     // #region: Public methods
     /**
      * Draws a point/bubble on Equestria map, at the given coordinates
-     * @param x - x coordinate
-     * @param y - y coordinate
+     * @param x x coordinate
+     * @param y y coordinate
      * @return true if successful, false otherwise
      * @see EquestriaMap#open()
      * @see EquestriaMap#clear()
@@ -117,8 +117,8 @@ public class EquestriaMap extends DrawingFactory {
      * i.e.: if last draw operation was line(10, 10, 20, 20), the line drawn by
      * line(42, 64) has the starting point at (20, 20) and the ending point at (42,
      * 64)
-     * @param x - x coordinate of the ending point of the line
-     * @param y - y coordinate of the ending point of the line
+     * @param x x coordinate of the ending point of the line
+     * @param y y coordinate of the ending point of the line
      * @return true if successful, false otherwise
      * @see EquestriaMap#line(int, int, int, int)
      */
@@ -142,10 +142,10 @@ public class EquestriaMap extends DrawingFactory {
 
     /**
      * Draws a line in between the (xFrom, yFrom) and (xTo, yTo) coordinates.
-     * @param xFrom - x coordinate of the starting point
-     * @param yFrom - y coordinate of the starting point
-     * @param xTo   - x coordinate of the ending point
-     * @param yTo   - y coordinate of the ending point
+     * @param xFrom x coordinate of the starting point
+     * @param yFrom y coordinate of the starting point
+     * @param xTo   x coordinate of the ending point
+     * @param yTo   y coordinate of the ending point
      * @return true if successful, false otherwise
      * @see EquestriaMap#lineTo(int, int)
      */
@@ -163,9 +163,9 @@ public class EquestriaMap extends DrawingFactory {
      * is not fully contained on the map, the method will not fail, but only the portions
      * that intersect the map area will be shown. The center of the circle is also drawn
      * on the map as if it was drawn by plot().
-     * @param xCenter  - x coordinate of the center of the circle.
-     * @param yCenter  - y coordinate of the center of the circle.
-     * @param radius - the radius of the circle
+     * @param xCenter x coordinate of the center of the circle.
+     * @param yCenter y coordinate of the center of the circle.
+     * @param radius the radius of the circle
      * @return true if successful, false otherwise
      * @see EquestriaMap#plot(int, int)
      */

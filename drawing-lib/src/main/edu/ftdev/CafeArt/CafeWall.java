@@ -3,7 +3,6 @@ package edu.ftdev.CafeArt;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.io.IOException;
 
 import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFactory;
