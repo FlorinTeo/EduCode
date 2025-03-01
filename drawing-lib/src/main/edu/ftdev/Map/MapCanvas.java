@@ -53,6 +53,28 @@ import edu.ftdev.KeyInterceptor.KeyHook;
  * in any combination and same instance can provide collision information such as AC and CD colliding in the intersection. MazeCanvas also
  * provides the ability to enable interactive exploration of the routes by registering specific key strokes with the custom code.
  * </p>
+ * The following code demonstrates the usage of the MapCanvas class and the way to interact with the routes by means of key hooks:
+ * <pre>{@code
+ * MapCanvas mp = new MapCanvas("Woodlawn.jpg");
+ * mp.open();
+ * Queue<String> routes = new LinkedList<String>(mp.getRoutes());
+ * mp.setKeyHook(KeyEvent.VK_TAB, onTab, mp, routes);
+ * mp.breakLeap();
+ * mp.close();
+ * } </pre>
+ * In this snippet of code, <i>onTab</i> is a lambda function that will be called whenever the TAB key is pressed. The lambda function
+ * will cycle through the routes and overlay them on the map. The <i>mp</i> object is the MapCanvas instance that will be used to interact
+ * with the map image. Both the <i>mp</i> object and the <i>routes</i> queue are passed as arguments to the lambda function. The lambda
+ * function definition is as follows:
+ * <pre>{@code
+ *  private KeyHook onTab = (keyEvent, args) -> {
+ *     MapCanvas mp = (MapCanvas) args[0];
+ *     Queue<String> routes = (Queue<String>)args[1];
+ *     mp.setOverlays(routes.peek());
+ *     routes.add(routes.remove());
+ * };
+ * }</pre>
+ * @see KeyInterceptor
  */
 public class MapCanvas extends DrawingFactory {
 
