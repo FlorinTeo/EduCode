@@ -303,7 +303,7 @@ public class MapCanvas extends DrawingFactory {
     /**
      * Sets the routes to be overlaid on the map. This is expected
      * to be a subset of all the routes embedded in this map.
-     * @param routes - var arg array with the routes to be overlaid on the map.
+     * @param routes var arg array with the routes to be overlaid on the map.
      * @see #getOverlays()
      * @see #getRoutes()
      */
@@ -314,7 +314,7 @@ public class MapCanvas extends DrawingFactory {
     /**
      * Sets the routes to be overlaid on the map. This is expected
      * to be a subset of all the routes embedded in this map.
-     * @param routes - collection (List, or Set) with the routes to be overlaid on the map.
+     * @param routes collection (List, or Set) with the routes to be overlaid on the map.
      * @see #getOverlays()
      * @see #getRoutes()
      */
@@ -333,7 +333,7 @@ public class MapCanvas extends DrawingFactory {
      * returns false<br>
      * assuming "AB" and "CA" have different colors and have overlapping pixels,
      * collide("AB","CA") returns true. 
-     * @param routes - the list of route names to be tested.
+     * @param routes the list of route names to be tested.
      * @return True if the routes do not collide, false otherwise.
      */
     public boolean collide(String... routes) {
@@ -378,9 +378,9 @@ public class MapCanvas extends DrawingFactory {
     /**
      * Registers a key hook for the given key. The key hook is a lambda
      * function that will be called whenever the key is pressed.
-     * @param key - the key to be hooked.
-     * @param hook - the lambda function to be called when the key is pressed.
-     * @param args - the arguments to be passed to the hook when the key is pressed.
+     * @param key the key to be hooked.
+     * @param hook the lambda function to be called when the key is pressed.
+     * @param args the arguments to be passed to the hook when the key is pressed.
      */
     public void setKeyHook(char key, KeyHook hook, Object... args) {
         _drawingFrame.setKeyTypedHook(key, hook, args);
@@ -388,7 +388,7 @@ public class MapCanvas extends DrawingFactory {
 
     /**
      * Gets the key hook registered for the given key.
-     * @param key - the key for which the hook is requested.
+     * @param key the key for which the hook is requested.
      * @return The key hook registered for the given key.
      */
     public KeyHook getKeyHook(char key) {
@@ -399,7 +399,7 @@ public class MapCanvas extends DrawingFactory {
      * Registers a set of demo key hooks. When enabled, typing the keys
      * corresponding to the route endpoints will cycle through the routes originating
      * at that endpoint and overlay them on the map. Typing 'X' performs a collision test on the overlayed routes.
-     * @param enable - true to enable the demo key hooks, false to disable.
+     * @param enable true to enable the demo key hooks, false to disable.
      */
     public void setDemoKeyHooks(boolean enable) {
         for(char key : _routeInfoMap.keySet()) {

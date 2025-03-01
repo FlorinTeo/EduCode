@@ -1,6 +1,5 @@
 import java.awt.image.BufferedImage;
 import java.awt.Color;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -14,10 +13,11 @@ import edu.ftdev.MouseInterceptor.MouseHook;
 
 public class DrawingFrame_tests {
 
-    public static MouseHook _onMouseClick = (MouseEvent e) -> {
+    public static MouseHook _onMouseClick = (e, args) -> {
+        DrawingFrame drwFrame = (DrawingFrame) args[0];
         int x = e.getX();
         int y = e.getY();
-        System.out.printf("Clicked at (%d, %d)\n", x, y);
+        drwFrame.setStatusMessage(String.format("Clicked at (%d, %d)\n", x, y));
     };
 
     @Test
@@ -42,7 +42,7 @@ public class DrawingFrame_tests {
         drwFrame.breakLeap();
         System.out.println("MouseHook enabled for 10sec!");
         // enabling the mouse hook. While mouse hook enabled, step() and leap() methods are inactive (pass-through)!
-        drwFrame.setMouseClickedHook(_onMouseClick);
+        drwFrame.setMouseClickedHook(_onMouseClick, drwFrame);
         drwFrame.breakLeap();
         Thread.sleep(10000);
 

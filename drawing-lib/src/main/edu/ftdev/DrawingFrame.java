@@ -83,7 +83,7 @@ public class DrawingFrame implements
     // #endregion: [Private] KeyInterceptor hooks
 
     // #region: [Private] MouseInterceptor hooks
-    private MouseInterceptor.MouseHook _onMouseClicked = (e) -> {
+    private MouseInterceptor.MouseHook _onMouseClicked = (e, args) -> {
         if (e.getSource() instanceof DbgButton) {
             DbgButton dbgButton = (DbgButton)e.getSource();
             _keyInterceptor.simulateKeyTyped(dbgButton, dbgButton.getKey());
@@ -97,19 +97,19 @@ public class DrawingFrame implements
         }
     };
 
-    private MouseInterceptor.MouseHook _onMouseDragged = (e) -> {
+    private MouseInterceptor.MouseHook _onMouseDragged = (e, args) -> {
         _canvas.pan(e.getX()-_lastMouseEvent.getX(), e.getY()-_lastMouseEvent.getY());
         _lastMouseEvent = e;
     };
 
-    private MouseInterceptor.MouseHook _onMouseMoved = (e) -> {
+    private MouseInterceptor.MouseHook _onMouseMoved = (e, args) -> {
         _lastMouseEvent = e;
         _statusX.setText(""+_canvas.xScreenToCanvas(e.getX()));
         _statusY.setText(""+_canvas.yScreenToCanvas(e.getY()));
         //_statusText.setText("");
     };
 
-    private MouseInterceptor.MouseHook _onMouseWheelMoved = (e) -> {
+    private MouseInterceptor.MouseHook _onMouseWheelMoved = (e, args) -> {
         // wheel upwards (negative rotation) => zoom in => positive level value
         int levels = -((MouseWheelEvent)e).getWheelRotation();
         _canvas.zoom(e.getX(), e.getY(), levels);
@@ -425,10 +425,11 @@ public class DrawingFrame implements
      * Sets a mouse hook to be called when the left mouse button is clicked.
      * @param mouseHook the mouse hook to be called when the button is clicked
      * or null if the event should not be intercepted.
+     * @param args additional arguments to be passed to the mouse hook when called.
      * @return the mouse hook previously set for the given event, or null if none exist.
      */
-    public MouseHook setMouseClickedHook(MouseHook mouseHook) {
-        return _mouseInterceptor.setCustomMouseHook(MouseEvent.MOUSE_CLICKED, _canvas, mouseHook);
+    public MouseHook setMouseClickedHook(MouseHook mouseHook, Object... args) {
+        return _mouseInterceptor.setCustomMouseHook(MouseEvent.MOUSE_CLICKED, _canvas, mouseHook, args);
     }
     // #endregion: [Public] Mouse hooking methods
 

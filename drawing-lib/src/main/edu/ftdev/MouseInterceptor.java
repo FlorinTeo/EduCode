@@ -17,12 +17,13 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // I.e:
     // MouseIterceptor.mouseHook onMClicked = (MouseEvent mouseEvent) -> {..}
     // myMouseInterceptor.setMouseHook(onMClicked);
-    
+
+    // #region: [Private] classes and interfaces
     /**
      * Functional Interface for a generic mouse hooking method.
      * Users can instantiate a lambda method that can be registered with the
      * drawing engine such that custom code gets called when specific mouse events are detected.
-     * @see #mouseHook(MouseEvent)
+     * @see #mouseHook(MouseEvent, Object[])
      */
     public interface MouseHook {
         /**
@@ -30,7 +31,21 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
          * @param mouseEvent - the mouse event that was detected.
          * @see MouseEvent
          */
-        public void mouseHook(MouseEvent mouseEvent) throws InterruptedException;
+        public void mouseHook(MouseEvent mouseEvent, Object[] args) throws InterruptedException;
+    }
+
+    /**
+     * private class to hold the mouse hook and the arguments to be passed
+     * to the hook when the mouse event occurs. 
+     */
+    private class MouseHookContext {
+        private MouseHook _mouseHook;
+        private Object[] _args;
+
+        private MouseHookContext(MouseHook mouseHook, Object... args) {
+            _mouseHook = mouseHook;
+            _args = args;
+        }
     }
 
     /**
@@ -39,13 +54,13 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     private class CustomMouseHook {
 
         private Object _mouseEventSource;
-        private MouseHook _mouseHook;
+        private MouseHookContext _mouseHookContext;
         private MouseEvent _mouseEvent;
         private Thread _runner;
 
-        public CustomMouseHook(Object mouseEventSource, MouseHook mouseHook) {
+        public CustomMouseHook(Object mouseEventSource, MouseHookContext mouseHookContext) {
             _mouseEventSource = mouseEventSource;
-            _mouseHook = mouseHook;
+            _mouseHookContext = mouseHookContext;
             _mouseEvent = null;
             _runner = null;
         }
@@ -57,7 +72,7 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
             _mouseEvent = mouseEvent;
             _runner = new Thread(() -> {
                 try {
-                    _mouseHook.mouseHook(_mouseEvent);
+                    _mouseHookContext._mouseHook.mouseHook(_mouseEvent, _mouseHookContext._args);
                 } catch(Exception exc) {
                     System.out.println(exc.getStackTrace());
                 }
@@ -79,9 +94,10 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
             return false;
         }
     }
+    // #endregion: [Private] classes and interfaces
 
     // #region: [Private] Data fields
-    private HashMap<Integer, MouseHook> _sysMouseHooks = new HashMap<Integer, MouseHook>();
+    private HashMap<Integer, MouseHookContext> _sysMouseHooks = new HashMap<Integer, MouseHookContext>();
     private HashMap<Integer, CustomMouseHook> _customMouseHooks = new HashMap<Integer, CustomMouseHook>();
     // #endregion: [Private] Data fields
     
@@ -91,10 +107,10 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
         
         // handle system hooks
         if (_sysMouseHooks.containsKey(hookKey)) {
-            MouseHook targetSysHook = _sysMouseHooks.get(hookKey);
+            MouseHookContext targetSysHook = _sysMouseHooks.get(hookKey);
             if (targetSysHook != null) {
                 try {
-                    targetSysHook.mouseHook(e);
+                    targetSysHook._mouseHook.mouseHook(e, targetSysHook._args);
                 } catch (Exception exc) {
                     exc.printStackTrace();
                 }
@@ -114,13 +130,20 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
         return null;
     }
     
-    MouseHook setSysMouseHook(int mouseEventId, MouseHook mouseHook) {
-        return (mouseHook == null)
-            ? _sysMouseHooks.remove(mouseEventId)
-            : _sysMouseHooks.put(mouseEventId, mouseHook);
+    MouseHook setSysMouseHook(int mouseEventId, MouseHook mouseHook, Object... args) {
+            MouseHookContext prevMouseHookContext;
+        if (mouseHook != null) {
+            // wire the given event to the new, non-null hook
+            MouseHookContext newSysHook = new MouseHookContext(mouseHook, args);
+            prevMouseHookContext = _sysMouseHooks.put(mouseEventId, newSysHook);
+        } else {
+            // remove the previous hook (if any) for the given event
+            prevMouseHookContext = _sysMouseHooks.remove(mouseEventId);
+        }
+        return (prevMouseHookContext != null) ? prevMouseHookContext._mouseHook : null;
     }
 
-    MouseHook setCustomMouseHook(int mouseEventId, Object mouseEventSource, MouseHook mouseHook) {
+    MouseHook setCustomMouseHook(int mouseEventId, Object mouseEventSource, MouseHook mouseHook, Object... args) {
         CustomMouseHook crtCustomHook = _customMouseHooks.get(mouseEventId);
         if (crtCustomHook != null) {
             crtCustomHook.stop();
@@ -128,11 +151,12 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
         }
 
         if (mouseHook != null) {
-            CustomMouseHook newCustomHook = new CustomMouseHook(mouseEventSource, mouseHook);
+            MouseHookContext newMouseHookContext = new MouseHookContext(mouseHook, args);
+            CustomMouseHook newCustomHook = new CustomMouseHook(mouseEventSource, newMouseHookContext);
             _customMouseHooks.put(mouseEventId, newCustomHook);
         }
 
-        return (crtCustomHook != null) ? crtCustomHook._mouseHook : null;
+        return (crtCustomHook != null) ? crtCustomHook._mouseHookContext._mouseHook : null;
     }
 
     boolean hasCustomHooks() {
@@ -147,26 +171,46 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // #endregion: [Internal] Mouse hooking methods
 
     // #region: [Public] MouseListener overrides
+    /**
+     * Forwards the mouse click event to the registered hooks.
+     * @param e - the mouse event to be forwarded.
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         forwardMouseEvent(e);
     }
 
+    /**
+     * Forwards the mouse press event to the registered hooks.
+     * @param e - the mouse event to be forwarded.
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         forwardMouseEvent(e);
     }
 
+    /**
+     * Forwards the mouse release event to the registered hooks.
+     * @param e - the mouse event to be forwarded.
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
         forwardMouseEvent(e);
     }
 
+    /**
+     * Forwards the mouse enter event to the registered hooks.
+     * @param e - the mouse event to be forwarded.
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
         forwardMouseEvent(e);
     }
 
+    /**
+     * Forwards the mouse exit event to the registered hooks.
+     * @param e - the mouse event to be forwarded.
+     */
     @Override
     public void mouseExited(MouseEvent e) {
         forwardMouseEvent(e);
@@ -174,11 +218,19 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // #endregion: [Public] MouseListener overrides
 
     // #region: [Public] MouseMotionListener overrides
+    /**
+     * Forwards the mouse drag event to the registered hooks.
+     * @param e - the mouse event to be forwarded.
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
         forwardMouseEvent(e);
     }
 
+    /**
+     * Forwards the mouse move event to the registered hooks.
+     * @param e - the mouse event to be forwarded.
+     */
     @Override
     public void mouseMoved(MouseEvent e) {
         forwardMouseEvent(e);
@@ -186,6 +238,10 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // #endregion: [Public] MouseMotionListener overrides
 
     // #region: [Public] MouseWheelListener overrides
+    /**
+     * Forwards the mouse wheel event to the registered hooks.
+     * @param e - the mouse event to be forwarded.
+     */
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         forwardMouseEvent(e);
