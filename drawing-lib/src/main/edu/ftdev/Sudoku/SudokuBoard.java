@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,10 +17,30 @@ import edu.ftdev.DrawingFactory;
 import edu.ftdev.DrawingFrame;
 
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Color;
 
+/**
+ * TODO: Add javadoc
+ */
 public class SudokuBoard extends DrawingFactory {
+    // #region [Private] SudokuCell class
+    private class SudokuCell {
+        private int _row;
+        private int _col;
+        private int _value;
+        private boolean _isPinned;
+
+        public SudokuCell(int row, int col, int value, boolean isPinned) {
+            _row = row;
+            _col = col;
+            _value = value;
+            _isPinned = isPinned;
+        }
+    }
+    // #endregion [Private] SudokuCell class
+    
     // #region [Private] Constants and fields
     private final int CANVAS_BORDER = 20;
     private final int CELL_BORDER = 2;
@@ -27,15 +48,21 @@ public class SudokuBoard extends DrawingFactory {
     private final int SEP_BORDER = 2;
 
     private final Color _BOARD_COLOR = Color.GRAY;
+    private final Color _PINNED_SHADE_COLOR = new Color(224, 224, 224);
     private final Color _EDGE_COLOR_LIGHT = new Color(232, 232, 232);
     private final Color _EDGE_COLOR_DARK = new Color(182, 182, 182);
     private final Color _SEP_COLOR = new Color(0, 0, 0);
     private final Color _TEXT_COLOR = new Color(24, 24, 186);
     private final Font _TEXT_FONT = new Font("Arial", Font.BOLD, 36);
 
-    private int[][] _board;
+    private SudokuCell[][] _board;
     // #endregion [Private] Constants and fields
 
+    /**
+     * TODO: Add javadoc
+     * @param filePath the path to the text file containing the Sudoku board spec.
+     * @throws IOException if the Sudoku board spec file cannot be located or loaded.
+     */
     public SudokuBoard(String filePath) throws IOException {
         super();
         File sudokuFile = new File(filePath);
@@ -44,6 +71,7 @@ public class SudokuBoard extends DrawingFactory {
             : loadFromRes(filePath);
         setupPuzzle(rawLines);
         setupBoard();
+        _drawing.freezeFrame();
     }
 
     // #region [Private] Helper methods
@@ -64,7 +92,7 @@ public class SudokuBoard extends DrawingFactory {
     }
 
     private void setupPuzzle(List<String> rawLines) {
-        _board = new int[9][9];
+        _board = new SudokuCell[9][9];
         int row = 0;
         int col = 0;
         for (String line : rawLines) {
@@ -76,10 +104,11 @@ public class SudokuBoard extends DrawingFactory {
                 if (c != ' ' && c != '.' && (c < '1' || c > '9')) {
                     throw new IllegalArgumentException("Invalid character in Sudoku file: " + c);
                 }
-                _board[row][col] = (c >= '1' && c <= '9')
-                    ? c - '0'
-                    : 0;
-
+                if (c >= '1' && c <= '9') {
+                    _board[row][col] = new SudokuCell(row, col, c - '0', true);
+                } else {
+                    _board[row][col] = new SudokuCell(row, col, 0, false);
+                }
                 if (c != ' ') {
                     col++;
                 }
@@ -176,20 +205,120 @@ public class SudokuBoard extends DrawingFactory {
                 g.fillRect(
                     xOrigin + CELL_BORDER, yOrigin + CELL_BORDER,
                     CELL_SIZE - 2 * CELL_BORDER, CELL_SIZE - 2 * CELL_BORDER);
+                // finally fill the cell with the value
+                writeCell(row, col);
             }
         }
+    }
+
+    private void writeCell(int row, int col) {
+        int xOrigin = getXOrig(row, col);
+        int yOrigin = getYOrig(row, col);
+        Graphics2D g = _drawing.getGraphics();
+        
+        // set the shade color for this cell
+        SudokuCell cell = _board[row][col];
+        g.setColor(cell._isPinned ? _PINNED_SHADE_COLOR : Color.WHITE);
+
+        // fill the shade of the cell
+        g.fillRect(
+                xOrigin + CELL_BORDER,  yOrigin + CELL_BORDER, 
+                CELL_SIZE - 2 * CELL_BORDER, CELL_SIZE - 2 * CELL_BORDER);
+
+        g.setColor(_TEXT_COLOR);
+        g.setFont(_TEXT_FONT);
+        if (cell._value != 0) {
+
+            // Get the FontMetrics to calculate text dimensions
+            FontMetrics fm = g.getFontMetrics();
+            int textWidth = fm.stringWidth(Integer.toString(cell._value));
+            int textHeight = fm.getAscent();
+
+            // Draw the string
+            g.drawString(
+                Integer.toString(cell._value),
+                xOrigin + CELL_SIZE / 2 - (textWidth / 2),
+                yOrigin + CELL_SIZE / 2 + (textHeight / 2) - 2);
+        }
+    }
+
+    private SudokuCell getCell(int row, int col) {
+        if (row < 0 || row > 8 || col < 0 || col > 8) {
+            throw new InvalidParameterException(String.format("Invalid board coordinates: (%d, %d)", row, col));
+        }
+        return _board[row][col];
     }
     // #endregion: [Private] Helper methods 
     
     // #region: [Public] Board methods
-    public int getValue(int row, int col) {
-        return _board[row][col];
+    /**
+     * TODO: Add javadoc
+     * @param row the row of the grid position to be tested.
+     * @param col the column of the grid position to be tested.
+     * @return true if the grid position is pinned.
+     */
+    public boolean isPinned(int row, int col) {
+        SudokuCell cell = getCell(row, col);
+        return cell._isPinned;
     }
 
+    /**
+     * TODO: Add javadoc
+     * @param row the row of the grid position to be tested.
+     * @param col the column of the grid position to be tested.
+     * @return true if the grid position is set.
+     */
+    public boolean isSet(int row, int col) {
+        SudokuCell cell = getCell(row, col);
+        return (cell._value != 0);
+    }
+
+    /**
+     * TODO: Add javadoc
+     * @param row the row of the grid position to be fetched.
+     * @param col the column of the grid position to be fetched.
+     * @return the value in the given grid position.
+     */
+    public int getValue(int row, int col) {
+        SudokuCell cell = getCell(row, col);
+        return cell._value;
+    }
+
+    /**
+     * TODO: Add javadoc
+     * @param row the row of the grid position to be fetched.
+     * @param col the column of the grid position to be fetched.
+     * @param value the value to be set in the given grid position.
+     * @return the previous value in the given grid position.
+     */
     public int setValue(int row, int col, int value) {
-        int prev = _board[row][col];
-        _board[row][col] = value;
+        SudokuCell cell = getCell(row, col);
+        if (value < 0 || value > 9) {
+            throw new InvalidParameterException(String.format("Invalid board value: %d", value));
+        }
+        if (cell._isPinned) {
+            throw new IllegalStateException(String.format("Can't modify value of pinned cell: (%d, %d)", row, col));
+        }
+        int prev = cell._value;
+        cell._value = value;
+        writeCell(row, col);
         return prev;
+    }
+
+
+    /**
+     * Resets the Sudoku board to its initial state: all grid positions are cleared, with the exception
+     * of the values originally pinned.
+     */
+    public void reset() {
+        _drawing.reset();
+        for(SudokuCell[] boardRow : _board) {
+            for (SudokuCell cell : boardRow) {
+                if (!cell._isPinned) {
+                    cell._value = 0;
+                }
+            }
+        }
     }
     // #endregion: [Public] Board methods
 }

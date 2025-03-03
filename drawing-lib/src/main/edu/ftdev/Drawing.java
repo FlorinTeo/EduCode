@@ -58,7 +58,7 @@ public class Drawing implements AutoCloseable {
     public Drawing(BufferedImage image) {
         _image = image;
         _g2d = _image.createGraphics();
-        reset();
+        freezeFrame();
     }
     
     /**
@@ -73,7 +73,7 @@ public class Drawing implements AutoCloseable {
         _g2d = _image.createGraphics();
         _g2d.setColor(bkgColor);
         _g2d.fillRect(0, 0, width, height);
-        reset();
+        freezeFrame();
     }
 
     /**
@@ -87,23 +87,25 @@ public class Drawing implements AutoCloseable {
     /**
      * Resets the drawing image to its original state. If the image was created from a file,
      * this method will reload the image from the file. If the image was created as a blank canvas,
-     * this method will clear the canvas to its original state.
-     * @return true if the image was reset successfully, false otherwise.
+     * this method will clear the canvas to its original blank state.
+     * @see freezeFrame
      */
-    public boolean reset() {
-        BufferedImage sourceImage = _origImage;
-        BufferedImage targetImage = _image;
-
-        if (sourceImage == null) {
-            _origImage = new BufferedImage(_image.getWidth(), _image.getHeight(), _image.getType());
-            sourceImage = _image;
-            targetImage = _origImage;
-        }
-
-        Graphics2D g = targetImage.createGraphics();
-        g.drawImage(sourceImage, 0, 0, null);
+    public void reset() {
+        Graphics2D g = _image.createGraphics();
+        g.drawImage(_origImage, 0, 0, null);
         g.dispose();
-        return (targetImage == _image);
+    }
+
+    /**
+     * Takes a snapshot of the current state of the drawing image. Subsequent reset operations
+     * will reload the image to this state.
+     * @see reset
+     */
+    public void freezeFrame() {
+        _origImage = new BufferedImage(_image.getWidth(), _image.getHeight(), _image.getType());
+        Graphics2D g = _origImage.createGraphics();
+        g.drawImage(_image, 0, 0, null);
+        g.dispose();
     }
 
     /**

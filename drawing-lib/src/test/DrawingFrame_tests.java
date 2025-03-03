@@ -1,5 +1,6 @@
 import java.awt.image.BufferedImage;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.io.File;
 import java.io.IOException;
 
@@ -70,5 +71,26 @@ public class DrawingFrame_tests {
         drwFrame1.close();
         drwFrame2.breakLeap();
         drwFrame2.close();
+    }
+
+    @Test
+    public void freezeFrameTest() throws IOException {
+        Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
+        DrawingFrame drwFrame = new DrawingFrame(drw);
+        drwFrame.open();
+        drwFrame.breakStep();
+        Graphics2D g = drw.getGraphics();
+        g.setColor(Color.BLACK);
+        g.drawLine(0, 0, drw.getWidth(), drw.getHeight());
+        drwFrame.breakStep();
+        drw.reset();
+        drwFrame.breakStep();
+        g.drawLine(0, drw.getHeight(), drw.getWidth(), 0);
+        drw.freezeFrame();
+        g.drawLine(0, 0, drw.getWidth(), drw.getHeight());
+        drwFrame.breakStep();
+        drw.reset();
+        drwFrame.breakJump();
+        drwFrame.close();
     }
 }
