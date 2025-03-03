@@ -27,14 +27,10 @@ import java.awt.Color;
 public class SudokuBoard extends DrawingFactory {
     // #region [Private] SudokuCell class
     private class SudokuCell {
-        private int _row;
-        private int _col;
         private int _value;
         private boolean _isPinned;
 
-        public SudokuCell(int row, int col, int value, boolean isPinned) {
-            _row = row;
-            _col = col;
+        public SudokuCell(int value, boolean isPinned) {
             _value = value;
             _isPinned = isPinned;
         }
@@ -105,9 +101,9 @@ public class SudokuBoard extends DrawingFactory {
                     throw new IllegalArgumentException("Invalid character in Sudoku file: " + c);
                 }
                 if (c >= '1' && c <= '9') {
-                    _board[row][col] = new SudokuCell(row, col, c - '0', true);
+                    _board[row][col] = new SudokuCell(c - '0', true);
                 } else {
-                    _board[row][col] = new SudokuCell(row, col, 0, false);
+                    _board[row][col] = new SudokuCell(0, false);
                 }
                 if (c != ' ') {
                     col++;
