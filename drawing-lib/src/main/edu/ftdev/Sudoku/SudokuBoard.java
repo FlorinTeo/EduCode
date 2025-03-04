@@ -77,7 +77,7 @@ import java.awt.Color;
     /**
      * Constructs a new SudokuBoard from a text file containing the specification of a puzzle. The format
      * of the specification file is demonstrated in the five puzzles preloaded in this package, which can
-     * be viewed <a href="https://github.com/FlorinTeo/EduCode/tree/main/drawing-lib/src/res/Sudoku">here</a>.
+     * be viewed <a href="https://github.com/FlorinTeo/EduCode/tree/main/drawing-lib/src/res/Sudoku" target="_blank">here</a>.
      * Any custom puzzle can be loaded as long as the <i>filePath</i> leads to a text file with a valid puzzle format.
      * @param filePath the path to the text file containing the Sudoku board spec.
      * @throws IOException if the Sudoku board spec file cannot be located or loaded.
