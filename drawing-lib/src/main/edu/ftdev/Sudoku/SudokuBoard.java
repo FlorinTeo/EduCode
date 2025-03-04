@@ -25,16 +25,26 @@ import java.awt.Color;
  * SudokuBoard class is providing a framework for interacting with a <a href="https://en.wikipedia.org/wiki/Sudoku">Sudoku puzzle</a>.
  * A Sudoku board is a 9x9 grid of numbers, with the top-left corner at position (0,0). Each number is in the range
  * 1-9. The puzzle is pre-populated with a few pinned numbers, each occuring once in the row, column and  
- * 3x3 subgrid they are placed in. The puzzle is solved when each open position is filled in, such that the above rules stand true.
+ * the 3x3 subgrid it is placed in. The puzzle is solved when each open position is filled in, such that the above rules stand true.
  * A puzzle can be loaded in a SudokuBoard instance which can be used to read or set any valid value at any valid position. In addition, the
  * instance provides methods for determining if a position is set or pinned.
- * <p>
- * The following image shows a sample SudokuBoard:
- * </p>
+ * <p> The following image shows a sample SudokuBoard: </p>
  * <p>
  * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Sudoku/SudokuBoard-spec.jpg" alt="SudokuBoard-spec.jpg" width="320">
  * </p>
- */
+ * This board is loaded from a text file, "sudoku3.txt". The numbers in black are pinned, as the starting state of the puzzle.
+ * The numbers in red were added as demonstrated in the code below:
+ * </pre>{@code
+ * SudokuBoard board = new SudokuBoard("sudoku3.txt");
+ * board.open();
+ * board.setValue(2, 2, 8);
+ * board.setValue(4, 4, 1);
+ * board.setValue(6, 6, 4);
+ * board.breakStep();
+ * }</pre>
+ * The SudokuBoard is a subclass of DrawingFactory, so it provides methods for interacting with the window frame, 
+ * and for controlling, pausing and resuming the program execution.
+  */
  public class SudokuBoard extends DrawingFactory {
     // #region [Private] SudokuCell class
     private class SudokuCell {
