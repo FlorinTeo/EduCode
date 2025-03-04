@@ -34,7 +34,7 @@ import java.awt.Color;
  * </p>
  * This board is loaded from a text file, "sudoku3.txt". The numbers in black are pinned, as the starting state of the puzzle.
  * The numbers in red were added as demonstrated in the code below:
- * </pre>{@code
+ * <pre>{@code
  * SudokuBoard board = new SudokuBoard("sudoku3.txt");
  * board.open();
  * board.setValue(2, 2, 8);
