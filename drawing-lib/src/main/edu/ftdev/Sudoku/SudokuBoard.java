@@ -40,8 +40,7 @@ import java.awt.Color;
  * board.setValue(2, 2, 8);
  * board.setValue(4, 4, 1);
  * board.setValue(6, 6, 4);
- * board.breakStep();
- * }</pre>
+ * board.breakStep();}</pre>
  * The SudokuBoard is a subclass of DrawingFactory, so it provides methods for interacting with the window frame, 
  * and for controlling, pausing and resuming the program execution.
   */
