@@ -14,7 +14,7 @@ import edu.ftdev.DrawingFactory;
 import edu.ftdev.DrawingFrame;
 
 /**
- * EquestriaMap is a class providing a canvas for the map of equestria, with a coordinate system overlay.
+ * EquestriaMap class is providing a canvas for the map of Equestria, with a coordinate system overlaid on top.
  * The map is a 37x27 grid, with the origin in the top-left corner, and the horizontal range [0-37] and the vertical range [0-27].
  * The class provides methods for plotting points, drawing lines and circles on the map.
  * <p>

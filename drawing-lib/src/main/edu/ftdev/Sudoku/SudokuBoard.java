@@ -22,9 +22,20 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 
 /**
- * TODO: Add javadoc
+ * SudokuBoard class is providing a framework for interacting with a <a href="https://en.wikipedia.org/wiki/Sudoku">Sudoku puzzle</a>.
+ * A Sudoku board is a 9x9 grid of numbers, with the top-left corner at position (0,0). Each number is in the range
+ * 1-9. The puzzle is pre-populated with a few pinned numbers, each occuring once in the row, column and  
+ * 3x3 subgrid they are placed in. The puzzle is solved when each open position is filled in, such that the above rules stand true.
+ * A puzzle can be loaded in a SudokuBoard instance which can be used to read or set any valid value at any valid position. In addition, the
+ * instance provides methods for determining if a position is set or pinned.
+ * <p>
+ * The following image shows a sample SudokuBoard:
+ * </p>
+ * <p>
+ * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Sudoku/SudokuBoard-spec.jpg" alt="SudokuBoard-spec.jpg" width="320">
+ * </p>
  */
-public class SudokuBoard extends DrawingFactory {
+ public class SudokuBoard extends DrawingFactory {
     // #region [Private] SudokuCell class
     private class SudokuCell {
         private int _value;
@@ -44,11 +55,10 @@ public class SudokuBoard extends DrawingFactory {
     private final int SEP_BORDER = 2;
 
     private final Color _BOARD_COLOR = Color.GRAY;
-    private final Color _PINNED_SHADE_COLOR = new Color(224, 224, 224);
     private final Color _EDGE_COLOR_LIGHT = new Color(232, 232, 232);
     private final Color _EDGE_COLOR_DARK = new Color(182, 182, 182);
     private final Color _SEP_COLOR = new Color(0, 0, 0);
-    private final Color _TEXT_COLOR = new Color(24, 24, 186);
+    private final Color _TEXT_COLOR = Color.RED;
     private final Font _TEXT_FONT = new Font("Arial", Font.BOLD, 36);
 
     private SudokuCell[][] _board;
@@ -214,14 +224,14 @@ public class SudokuBoard extends DrawingFactory {
         
         // set the shade color for this cell
         SudokuCell cell = _board[row][col];
-        g.setColor(cell._isPinned ? _PINNED_SHADE_COLOR : Color.WHITE);
 
         // fill the shade of the cell
+        g.setColor(Color.WHITE);
         g.fillRect(
                 xOrigin + CELL_BORDER,  yOrigin + CELL_BORDER, 
                 CELL_SIZE - 2 * CELL_BORDER, CELL_SIZE - 2 * CELL_BORDER);
 
-        g.setColor(_TEXT_COLOR);
+        g.setColor(isPinned(row, col) ? Color.BLACK : _TEXT_COLOR);
         g.setFont(_TEXT_FONT);
         if (cell._value != 0) {
 
