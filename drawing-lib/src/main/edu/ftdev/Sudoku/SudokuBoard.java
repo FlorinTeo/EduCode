@@ -34,15 +34,16 @@ import java.awt.Color;
  * </p>
  * This board is loaded from a text file, "sudoku3.txt". The numbers in black are pinned, as the starting state of the puzzle.
  * The numbers in red were added as demonstrated in the code below:
- * <pre>{@code
+ * <pre>
  * SudokuBoard board = new SudokuBoard("sudoku3.txt");
  * board.open();
  * board.setValue(2, 2, 8);
  * board.setValue(4, 4, 1);
  * board.setValue(6, 6, 4);
- * board.breakStep();}</pre>
- * The SudokuBoard is a subclass of DrawingFactory, so it provides methods for interacting with the window frame, 
- * and for controlling, pausing and resuming the program execution.
+ * board.breakStep();
+ * </pre>
+ * The SudokuBoard is a subclass of DrawingFactory, which provides methods for interacting with the window frame, 
+ * and for pausing and resuming the execution of the program in any specific code locations.
   */
  public class SudokuBoard extends DrawingFactory {
     // #region [Private] SudokuCell class
