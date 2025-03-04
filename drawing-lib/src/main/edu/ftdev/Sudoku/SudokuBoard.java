@@ -75,7 +75,10 @@ import java.awt.Color;
     // #endregion [Private] Constants and fields
 
     /**
-     * TODO: Add javadoc
+     * Constructs a new SudokuBoard from a text file containing the specification of a puzzle. The format
+     * of the specification file is demonstrated in the five puzzles preloaded in this package, which can
+     * be viewed <a href="https://github.com/FlorinTeo/EduCode/tree/main/drawing-lib/src/res/Sudoku">here</a>.
+     * Any custom puzzle can be loaded as long as the <i>filePath</i> leads to a text file with a valid puzzle format.
      * @param filePath the path to the text file containing the Sudoku board spec.
      * @throws IOException if the Sudoku board spec file cannot be located or loaded.
      */
@@ -268,7 +271,7 @@ import java.awt.Color;
     
     // #region: [Public] Board methods
     /**
-     * TODO: Add javadoc
+     * Determines if a grid position contains a pinned number.
      * @param row the row of the grid position to be tested.
      * @param col the column of the grid position to be tested.
      * @return true if the grid position is pinned.
@@ -279,7 +282,7 @@ import java.awt.Color;
     }
 
     /**
-     * TODO: Add javadoc
+     * Determines if a grid position is filled in with a valid number.
      * @param row the row of the grid position to be tested.
      * @param col the column of the grid position to be tested.
      * @return true if the grid position is set.
@@ -290,10 +293,10 @@ import java.awt.Color;
     }
 
     /**
-     * TODO: Add javadoc
+     * Gives the value at a given position in the grid.
      * @param row the row of the grid position to be fetched.
      * @param col the column of the grid position to be fetched.
-     * @return the value in the given grid position.
+     * @return the value in the given grid position or 0 if non was set.
      */
     public int getValue(int row, int col) {
         SudokuCell cell = getCell(row, col);
@@ -301,11 +304,13 @@ import java.awt.Color;
     }
 
     /**
-     * TODO: Add javadoc
-     * @param row the row of the grid position to be fetched.
-     * @param col the column of the grid position to be fetched.
+     * Sets a value at a given grid position.
+     * @param row the row of the grid position to be set.
+     * @param col the column of the grid position to be set.
      * @param value the value to be set in the given grid position.
      * @return the previous value in the given grid position.
+     * @throws InvalidParameterException if either the grid position is out of range or the value is outside the 1-9 range.
+     * @throws IllegalStateException if the position to be set already contains a pinned number (which cannot be changed).
      */
     public int setValue(int row, int col, int value) {
         SudokuCell cell = getCell(row, col);
@@ -320,7 +325,6 @@ import java.awt.Color;
         writeCell(row, col);
         return prev;
     }
-
 
     /**
      * Resets the Sudoku board to its initial state: all grid positions are cleared, with the exception
