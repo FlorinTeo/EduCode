@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -103,6 +104,10 @@ public class Map_tests {
     public void moonTest() throws IOException {
         MoonCanvas mc = new MoonCanvas("moon.jpg");
         mc.open();
+        mc.setStatusMessage("Moon map opened!");
+        mc.breakJump();
+        Color[][] area = mc.getArea(0, 0, 10, 10);
+        mc.setStatusMessage(area.toString());
         mc.breakJump();
         mc.close();
     }
