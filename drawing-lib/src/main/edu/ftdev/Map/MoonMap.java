@@ -100,7 +100,7 @@ public class MoonMap extends DrawingFactory {
                 rgbArray[i++] = colors[r][c].getRGB();
             }
         }
-        _drawing.getImage().setRGB(row, col, width, height, rgbArray, 0, width);
+        _drawing.getImage().setRGB(col, row, width, height, rgbArray, 0, width);
     }
     // #endregion [Public]
 }
