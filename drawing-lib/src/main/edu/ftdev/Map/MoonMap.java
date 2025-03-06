@@ -39,7 +39,7 @@ public class MoonMap extends DrawingFactory {
     private boolean isValidArea(int row, int col, int width, int height) {
         return width > 0 && height > 0
             && isValidPixel(row, col)
-            && isValidPixel(row + width - 1, col + height - 1);
+            && isValidPixel(row + height - 1, col + width - 1);
     }
     // #endregion [Private]
 
