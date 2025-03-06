@@ -45,6 +45,23 @@ public class MoonMap extends DrawingFactory {
 
     // #region [Public]
     /**
+     * Takes a snapshot of the current map image. A subsequent call to <i>reset</i> will
+     * will reload the map image to the most recent snapshot.
+     * @see reset
+     */
+    public void snapshot() {
+        _drawing.snapshot();
+    }
+
+    /**
+     * Resets the current map image to the most recent snaapshot. If no snapshot was
+     * taken the reset will bring the map image back to the state it was at the moment
+     * of the object creation. 
+     */
+    public void reset() {
+        _drawing.reset();
+    }
+    /**
      * Gets the colors of each pixel in a specific rectangular area of the map. The area is identified
      * by the row and col coordinates of its top-left corner and its width and height, in pixels.
      * This method expects the entire area to be contained within the image bounds.
