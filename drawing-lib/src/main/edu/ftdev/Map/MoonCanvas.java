@@ -46,11 +46,11 @@ public class MoonCanvas extends DrawingFactory {
 
     // #region [Public]
     /**
-     * Returns the color values of each pixel in a specific area of the map. The area is given as
-     * the X and Y coordinates of the top-left and bottom-right corners of the rectangle defining
-     * the area. This method expects the (topLeftX, topLeftY) and (bottomRightX, bottomRightY) to
-     * be valid, within the map image boundaries. It also expects topLeftX to be lesser or equal
-     * to bottomRightX and similarly topLeftY to be lesser or equal to bottomRightY.
+     * Gets the colors of each pixel in a specific rectangular area of the map identified by
+     * the X and Y coordinates of its top-left and bottom-right corners. This method expects 
+     * the (topLeftX, topLeftY) and (bottomRightX, bottomRightY) to be valid, within the map
+     * image boundaries. It also expects topLeftX to be lesser or equal to bottomRightX and
+     * similarly topLeftY to be lesser or equal to bottomRightY.
      * @param topLeftX the X component of the top-left corner of the area.
      * @param topLeftY the Y component of the top-left corner of the area.
      * @param bottomRightX the X component of the bottom-right corner of the area.
@@ -76,6 +76,38 @@ public class MoonCanvas extends DrawingFactory {
             }
         }
         return area;
+    }
+
+    /**
+     * Sets the colors of each pixel in a specific rectangular area of the map identified by
+     * the X and Y coordinates of its top-left corner. The height and width of the area are
+     * the same as the number of rows and columns in matrix of colors <i>area</i> given as
+     * the last parameter of the call. The method expects all these parameters to fit within
+     * the bounds of the map image.
+     * @param topLeftX the X component of the top-left corner of the area.
+     * @param topLeftY the Y component of the top-left corner of the area.
+     * @param areaColors the X component of the bottom-right corner of the area.
+     * @throws IllegalArgumentException if any of the parameters are invalid.
+     */
+    public void setArea(int topLeftX, int topLeftY, Color[][] areaColors) {
+        if (areaColors == null || areaColors.length == 0 || areaColors[0].length == 0) {
+            throw new IllegalArgumentException("Area matrix is invalid");
+        }
+        int height = areaColors.length;
+        int width = areaColors[0].length;
+        int bottomRightX = topLeftX + width - 1;
+        int bottomRightY = topLeftY + height - 1;
+        if (!isValidArea(topLeftX, topLeftY, bottomRightX, bottomRightY)) {
+            throw new IllegalArgumentException("Coordinates out of range");
+        }
+        int[] rgbArray = new int[width * height];
+        int i = 0;
+        for (int r = 0; r < height; r++) {
+            for (int c = 0; c < width; c++) {
+                rgbArray[i++] = areaColors[r][c].getRGB();
+            }
+        }
+        _drawing.getImage().setRGB(topLeftX, topLeftY, width, height, rgbArray, 0, width);
     }
     // #endregion [Public]
 }

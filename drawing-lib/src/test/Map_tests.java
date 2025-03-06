@@ -106,9 +106,19 @@ public class Map_tests {
         mc.open();
         mc.setStatusMessage("Moon map opened!");
         mc.breakJump();
-        Color[][] area = mc.getArea(0, 0, 10, 10);
-        mc.setStatusMessage(area.toString());
+        Color[][] areaColors = mc.getArea(0, 0, 50, 50);
+        for(int r = 0; r < areaColors.length; r++) {
+            for (int c = 0; c < areaColors[r].length; c++) {
+                Color orig = areaColors[r][c];
+                areaColors[r][c] = new Color(255 - orig.getRed(), 255 - orig.getGreen(), 255-orig.getBlue());
+            }
+        }
+        mc.setStatusMessage("Area fetched and negated");
+        mc.breakJump();
+        mc.setArea(0, 0, areaColors);
+        mc.setStatusMessage("Area updated");
         mc.breakJump();
         mc.close();
+
     }
 }
