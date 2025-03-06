@@ -74,22 +74,27 @@ public class DrawingFrame_tests {
     }
 
     @Test
-    public void freezeFrameTest() throws IOException {
+    public void snapshotTest() throws IOException {
         Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
         DrawingFrame drwFrame = new DrawingFrame(drw);
         drwFrame.open();
+        drwFrame.setStatusMessage("Frame opened.");
         drwFrame.breakStep();
         Graphics2D g = drw.getGraphics();
         g.setColor(Color.BLACK);
         g.drawLine(0, 0, drw.getWidth(), drw.getHeight());
+        drwFrame.setStatusMessage("Diagonal down drawn.");
         drwFrame.breakStep();
         drw.reset();
+        drwFrame.setStatusMessage("Image reset to initial state.");
         drwFrame.breakStep();
         g.drawLine(0, drw.getHeight(), drw.getWidth(), 0);
-        drw.freezeFrame();
+        drw.snapshot();
         g.drawLine(0, 0, drw.getWidth(), drw.getHeight());
+        drwFrame.setStatusMessage("Diagonal up > snapshot > Diagonal down.");
         drwFrame.breakStep();
         drw.reset();
+        drwFrame.setStatusMessage("Reset to snapshot (diagonal up).");
         drwFrame.breakJump();
         drwFrame.close();
     }

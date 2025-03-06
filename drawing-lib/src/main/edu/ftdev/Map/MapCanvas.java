@@ -167,36 +167,9 @@ public class MapCanvas extends DrawingFactory {
         System.arraycopy(base,0,returnArray,returnArray.length-base.length,base.length);
         return returnArray;
     }
-
-    private static byte[] readAllBytes(InputStream input) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int nRead;
-        byte[] data = new byte[16384];
-        while ((nRead = input.read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, nRead);
-        }
-        buffer.flush();
-        return buffer.toByteArray();
-    }
     // #endregion: [private] Static IO helper methods
 
     // #region: [private] Instance helper methods
-    private BufferedImage loadFromRes(String mapImageRes) throws IOException {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/Map/" + mapImageRes);
-        if (input == null) {
-            throw new IOException("Resource not found: " + mapImageRes);
-        }
-        byte[] rawBytes = readAllBytes(input);
-        return loadFromRawBytes(rawBytes);
-    }
-    
-    private BufferedImage loadFromFile(File file) throws IOException {
-        Path filePath = Paths.get(file.getAbsolutePath());
-        byte[] rawBytes = Files.readAllBytes(filePath);
-        return loadFromRawBytes(rawBytes);
-    }
-
     private BufferedImage loadFromRawBytes(byte[] rawBytes) throws IOException {
         byte[] rawOffset = Arrays.copyOfRange(rawBytes, rawBytes.length-4, rawBytes.length);
         BigInteger offset = new BigInteger(rawOffset);
@@ -282,12 +255,26 @@ public class MapCanvas extends DrawingFactory {
      */
     public MapCanvas(String mapImagePath) throws IOException {
         File mapImageFile = new File(mapImagePath);
-        BufferedImage image = (mapImageFile.exists())
-            ? (mapImageFile.isDirectory())
-                ? loadFromDir(mapImageFile)
-                : loadFromFile(mapImageFile)
-            : loadFromRes(mapImagePath);
-        _drawing = new Drawing(image);
+        if (mapImageFile.exists() && mapImageFile.isDirectory()) {
+        }
+        if (mapImageFile.exists()) {
+            // load map from the disk
+            if (mapImageFile.isDirectory()) {
+                // load map from base & overlay images in a folder
+                BufferedImage image = loadFromDir(mapImageFile);
+                _drawing = new Drawing(image);
+            } else {
+                // load from enhanced image file
+                byte[] rawBytes = bytesFromFile(mapImageFile);
+                BufferedImage image = loadFromRawBytes(rawBytes);
+                _drawing = new Drawing(image);
+            }
+        } else {
+            // load map from enhanced image file from the package resources
+            byte[] rawBytes = bytesFromRes(mapImagePath);
+            BufferedImage image = loadFromRawBytes(rawBytes);
+            _drawing = new Drawing(image);
+        }
         _drawingFrame = new DrawingFrame(_drawing);
         buildRouteInfoMap();
     }

@@ -90,7 +90,7 @@ import java.awt.Color;
             : loadFromRes(filePath);
         setupPuzzle(rawLines);
         setupBoard();
-        _drawing.freezeFrame();
+        _drawing.snapshot();
     }
 
     // #region [Private] Helper methods

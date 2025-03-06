@@ -58,7 +58,7 @@ public class Drawing implements AutoCloseable {
     public Drawing(BufferedImage image) {
         _image = image;
         _g2d = _image.createGraphics();
-        freezeFrame();
+        snapshot();
     }
     
     /**
@@ -73,7 +73,7 @@ public class Drawing implements AutoCloseable {
         _g2d = _image.createGraphics();
         _g2d.setColor(bkgColor);
         _g2d.fillRect(0, 0, width, height);
-        freezeFrame();
+        snapshot();
     }
 
     /**
@@ -85,10 +85,26 @@ public class Drawing implements AutoCloseable {
     }
 
     /**
+     * Resizes the drawing image on both width and height dimensions with a specific scale factor.
+     * For instance a factor of 0.5 means the picture is shrunk to half its size on both dimensions.
+     * @param scaleFactor the factor by which the image should be scaled.
+     */
+    public void resize(double scaleFactor) {
+        int newWidth = (int)(_image.getWidth() * scaleFactor);
+        int newHeight = (int)(_image.getHeight() * scaleFactor);
+        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, _image.getType());
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(_image, 0, 0, newWidth, newHeight, null);
+        _g2d.dispose();
+        _image = resizedImage;
+        _g2d = g;
+    }
+
+    /**
      * Resets the drawing image to its original state. If the image was created from a file,
      * this method will reload the image from the file. If the image was created as a blank canvas,
      * this method will clear the canvas to its original blank state.
-     * @see freezeFrame
+     * @see snapshot
      */
     public void reset() {
         Graphics2D g = _image.createGraphics();
@@ -101,7 +117,7 @@ public class Drawing implements AutoCloseable {
      * will reload the image to this state.
      * @see reset
      */
-    public void freezeFrame() {
+    public void snapshot() {
         _origImage = new BufferedImage(_image.getWidth(), _image.getHeight(), _image.getType());
         Graphics2D g = _origImage.createGraphics();
         g.drawImage(_image, 0, 0, null);

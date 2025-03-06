@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import edu.ftdev.KeyInterceptor.KeyHook;
 import edu.ftdev.Map.MapCanvas;
+import edu.ftdev.Map.MoonCanvas;
 
 public class Map_tests {
     private static MapCanvas _mapCanvas;
@@ -96,5 +97,13 @@ public class Map_tests {
         mp.setKeyHook(KeyEvent.VK_D, onDKey, mp, 0);
         mp.breakJump();
         mp.close();
+    }
+
+    @Test
+    public void moonTest() throws IOException {
+        MoonCanvas mc = new MoonCanvas("moon.jpg");
+        mc.open();
+        mc.breakJump();
+        mc.close();
     }
 }

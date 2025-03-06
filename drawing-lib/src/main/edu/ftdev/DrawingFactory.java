@@ -1,5 +1,13 @@
 package edu.ftdev;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * This class is an abstract factory grouping together a Drawing image and a DrawingFrame window. These can be jointly
  * be used by subclasses to display and interact with the image for specific needs and behaviors.
@@ -19,6 +27,47 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      */
     protected DrawingFrame _drawingFrame = null;
 
+    // #region: [Public] File loading helpers
+    /**
+     * Reads the entire content of a file from the disk and returns it as an array of bytes.
+     * @param file the path to the file on the disk.
+     * @return the content of the file as a byte array.
+     * @throws IOException if the file cannot be located or read from the disk.
+     */
+    public static byte[] bytesFromFile(File file) throws IOException {
+        Path filePath = Paths.get(file.getAbsolutePath());
+        byte[] rawBytes = Files.readAllBytes(filePath);
+        return rawBytes;
+    }
+
+    /**
+     * Reads the entire content of a file from within the resources of the class's package and returns it as an array of bytes.
+     * @param mapImageRes the path to the file within the package (typically just the file and its extension).
+     * @return the content of the file as a byte array.
+     * @throws IOException if the file cannot be located or read from within the package.
+     */
+    public static byte[] bytesFromRes(String mapImageRes) throws IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/Map/" + mapImageRes);
+        if (input == null) {
+            throw new IOException("Resource not found: " + mapImageRes);
+        }
+        byte[] rawBytes = readAllBytes(input);
+        return rawBytes;
+    }
+
+    private static byte[] readAllBytes(InputStream input) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] data = new byte[16384];
+        while ((nRead = input.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+        buffer.flush();
+        return buffer.toByteArray();
+    }
+    // #endregion: [Public] File loading helpers
+
     /**
      * Creates a new DrawingFactory object, with a null _drawing and _drawingFrame.
      */
@@ -26,7 +75,7 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
         // Default constructor
     }
 
-    // #region: FrameControl overrides
+    // #region: [Public] FrameControl overrides
     /**
      * Opens a window on the screen, displaying the associated Drawing
      * and the controls for interacting with it. 
@@ -117,9 +166,9 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
         }
         return _drawing.getHeight();
     }
-    // #endregion: FrameControls overrides
+    // #endregion: [Public] FrameControls overrides
 
-    // #region: DbgControls overrides
+    // #region: [Public] DbgControls overrides
     /**
      * When running in <i>step</i> mode, this method suspends the execution waiting for an explicit action to continue.
      * It does nothing in any other modes.
@@ -180,5 +229,5 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
         }
         _drawingFrame.breakJump();
     }
-    // #endregion: DbgControls overrides 
+    // #endregion: [Public] DbgControls overrides 
 }

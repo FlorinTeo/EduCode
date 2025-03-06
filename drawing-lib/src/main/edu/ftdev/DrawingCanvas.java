@@ -1,7 +1,8 @@
 package edu.ftdev;
 import java.awt.Canvas;
+import java.awt.Dimension;
 import java.awt.Graphics;
-
+import java.awt.Toolkit;;
 public class DrawingCanvas extends Canvas {
 
     private static final long serialVersionUID = 1L;
@@ -12,9 +13,21 @@ public class DrawingCanvas extends Canvas {
     
     DrawingCanvas(int xAnchor, int yAnchor, Drawing drwImage) {
         _drwImage = drwImage;
+
+        // check if resizing is needed such that entire image is shown on the screen.
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        double maxWidth = screenSize.getWidth() * 2 / 3;
+        double maxHeight = screenSize.getHeight() * 2 / 3;
+        double scaleFactor = Math.min(maxWidth / _drwImage.getWidth(), maxHeight / _drwImage.getHeight());
+        if (scaleFactor < 1) {
+            _drwImage.resize(scaleFactor);
+        }
+        
         setBounds(
             xAnchor, yAnchor,
-            _drwImage.getWidth(), _drwImage.getHeight());
+            _drwImage.getWidth(),
+            _drwImage.getHeight());
     }
     
     // Region: [Internal] User control methods
