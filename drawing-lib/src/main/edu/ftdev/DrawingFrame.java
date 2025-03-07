@@ -316,14 +316,18 @@ public class DrawingFrame implements
     }
     
     private void step(int level, long delay) {
-        // step control calls are disabled if there are mouse custom hooks in effect since
-        // same step controls are expected to be in the hooks and would incorrectly trigger
-        // the ones from the main thread as well.
-        if (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) {
+        // if the execution mode is at a break level which would not cause an interruption,
+        // or mouse custom hooks are in effect and this is the main thread, just return instantly (no-op).
+        // if mouse custom hooks are in effect, break controls are expected to be in the hooks. UI
+        // actions would be ambiguous if both main thread and hook thread breaks were active, so
+        // we give priority to the ones in the hooks and inhibit the ones in the main thread.
+        if (!_keyInterceptor.blocksOnLevel(level) || (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread)) {
             return;
         }
 
-        if (_keyInterceptor.blocksOnLevel(level) && delay == Long.MAX_VALUE) {
+        // From here on, we know execution is affected: either suspended or delayed.
+        // If suspended, change the face of the corresponding button.
+        if (delay == Long.MAX_VALUE) {
             switch(level) {
             case 1: // step()
                 _dbgButtons[0].setFace(BtnFace.STOPPED);
@@ -343,8 +347,10 @@ public class DrawingFrame implements
                 _dbgButtons[2].setFace(BtnFace.STOPPED);
                 _dbgButtons[3].setFace(BtnFace.NORMAL);
                 break;
-            }
+            }                
         }
+
+        // Repaint the canvas.
         _canvas.repaint();
 
         // output the current stack trace for all but step() (to give a chance for user-provided text to show in the UI)
