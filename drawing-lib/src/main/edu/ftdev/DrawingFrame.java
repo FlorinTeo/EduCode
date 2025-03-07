@@ -274,48 +274,99 @@ public class DrawingFrame implements
     
     // #region: [Interface] DbgControls overrides
     /**
-     * In "step" mode, this method pauses the execution. It does nothing in any other modes.
-     * @see DbgControls#breakStep()
+     * In "step" mode, this method pauses the execution with a default empty string message.
+     * It does nothing in any other modes.
+     * @see #breakStep(String)
      */
     @Override
     public void breakStep() {
-        step(1, Long.MAX_VALUE);
+        breakStep("");
+    }
+
+    /**
+     * In "step" mode, this method pauses the execution. It does nothing in any other modes.
+     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * @param breakMessage the message labeling the breaking point.
+     * @see DbgControls#breakStep(String)
+     */
+    @Override
+    public void breakStep(String breakMessage) {
+        step(1, Long.MAX_VALUE, breakMessage);
+    }
+
+    /**
+     * In "step" mode, this method delays execution for the given number of
+     * milliseconds with a default empty string message. It does nothing in any other mode.
+     * @param delay - milliseconds to delay execution in "continuous" mode.
+     * @see #breakStep(long)
+     */
+    @Override
+    public void breakStep(long delay) {
+        breakStep(delay, "");
     }
     
     /**
      * In "step" mode, this method delays execution for the given number of
-     * milliseconds. It does nothing in any other mode. 
+     * milliseconds. It does nothing in any other mode.
+     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param delay - milliseconds to delay execution in "continuous" mode.
+     * @param breakMessage the message labeling the breaking point.
      * @see DbgControls#breakStep(long)
      */
     @Override
-    public void breakStep(long delay) {
-        step(1, delay);
+    public void breakStep(long delay, String breakMessage) {
+        step(1, delay, breakMessage);
+    }
+
+    /**
+     * In "step" or "leap" modes, this method pauses the execution until resumed, with a
+     * default empty string message. It does nothing in "jump" or "run" modes. 
+     * @see #breakLeap(String)
+     */
+    @Override
+    public void breakLeap() {
+        breakLeap("");
     }
     
     /**
      * In "step" or "leap" modes, this method pauses the execution until resumed.
-     * It does nothing in "jump" or "run" modes. 
-     * @see DbgControls#breakStep()
-     * @see DbgControls#breakJump()
+     * It does nothing in "jump" or "run" modes.
+     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * @param breakMessage the message labeling the breaking point.
+     * @see DbgControls#breakStep(String)
+     * @see DbgControls#breakJump(String)
      */
     @Override
-    public void breakLeap() {
-        step(2, Long.MAX_VALUE);
+    public void breakLeap(String breakMessage) {
+        step(2, Long.MAX_VALUE, breakMessage);
     }
 
-     /**
-     * In "step", "leap" or "jump" modes, this method pauses the execution until resumed.
+    /**
+     * In "step", "leap" or "jump" modes, this method pauses the execution until resumed,
+     * with a default empty string message
      * It does nothing in "run" mode. 
      * @see DbgControls#breakStep()
      * @see DbgControls#breakLeap()
      */
     @Override
     public void breakJump() {
-        step(3, Long.MAX_VALUE);
+        breakJump("");
+    }
+
+     /**
+     * In "step", "leap" or "jump" modes, this method pauses the execution until resumed.
+     * It does nothing in "run" mode.
+     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * @param breakMessage the message labeling the breaking point.
+     * @see DbgControls#breakStep()
+     * @see DbgControls#breakLeap()
+     */
+    @Override
+    public void breakJump(String breakMessage) {
+        step(3, Long.MAX_VALUE, breakMessage);
     }
     
-    private void step(int level, long delay) {
+    private void step(int level, long delay, String breakMessage) {
         // if the execution mode is at a break level which would not cause an interruption,
         // or mouse custom hooks are in effect and this is the main thread, just return instantly (no-op).
         // if mouse custom hooks are in effect, break controls are expected to be in the hooks. UI
@@ -356,9 +407,11 @@ public class DrawingFrame implements
         // output the current stack trace for all but step() (to give a chance for user-provided text to show in the UI)
         String crtStatusText = _statusText.getText();
         if (crtStatusText.isEmpty()) {
-            StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
-            String dbgLine = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
-            _statusText.setText(dbgLine);
+            if (breakMessage.isEmpty()) {
+                StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
+                breakMessage = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
+            }
+            _statusText.setText(breakMessage);
         }
 
         // call below may block, depending on the step level in code and the last debug action by the user

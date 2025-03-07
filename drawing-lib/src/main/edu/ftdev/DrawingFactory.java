@@ -174,14 +174,28 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * It does nothing in any other modes.
      * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
-     * @see DbgControls#breakStep()
+     * @see #breakStep(String)
      */
     @Override
     public void breakStep() {
+        breakStep("");
+    }
+
+    /**
+     * When running in <i>step</i> mode, this method suspends the execution waiting for an explicit action to continue.
+     * It does nothing in any other modes.
+     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
+     * @param breakMessage the message labeling the breaking point.
+     * @throws IllegalStateException if the DrawingFrame has not been initialized.
+     * @see DbgControls#breakStep()
+     */
+    @Override
+    public void breakStep(String breakMessage) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        _drawingFrame.breakStep();
+        _drawingFrame.breakStep(breakMessage);
     }
 
     /**
@@ -190,14 +204,29 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
      * @param delay milliseconds to delay the execution.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
-     * @see DbgControls#breakStep(long)
+     * @see #breakStep(long, String)
      */
     @Override
     public void breakStep(long delay) {
+        breakStep(delay,"");
+    }
+
+    /**
+     * When running in <i>step</i> mode, this method delays the execution for the given number of milliseconds.
+     * It does nothing in any other mode.
+     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
+     * @param delay milliseconds to delay the execution.
+     * @param breakMessage the message labeling the breaking point.
+     * @throws IllegalStateException if the DrawingFrame has not been initialized.
+     * @see DbgControls#breakStep(long)
+     */
+    @Override
+    public void breakStep(long delay, String breakMessage) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        _drawingFrame.breakStep(delay);
+        _drawingFrame.breakStep(delay, breakMessage);
     }
 
     /**
@@ -209,10 +238,24 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      */
     @Override
     public void breakLeap() {
+        breakLeap("");
+    }
+
+    /**
+     * When running in <i>step</i> or <i>leap</i> modes, this method pauses the execution waiting for an explicit action to continue.
+     * It does nothing in <i>jump</i> or <i>run</i> modes. 
+     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
+     * @param breakMessage the message labeling the breaking point.
+     * @throws IllegalStateException if the DrawingFrame has not been initialized.
+     * @see DbgControls#breakLeap()
+     */
+    @Override
+    public void breakLeap(String breakMessage) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        _drawingFrame.breakLeap();
+        _drawingFrame.breakLeap(breakMessage);
     }
 
      /**
@@ -224,10 +267,25 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      */
     @Override
     public void breakJump() {
+        breakJump("");
+    }
+    // #endregion: [Public] DbgControls overrides
+
+    /**
+     * When running in <i>step</i>, <i>leap</i> or <i>jump</i> modes, this method pauses the execution waiting for an explicit action to continue.
+     * It does nothing in <i>run</i> mode.
+     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
+     * @param breakMessage the message labeling the breaking point.
+     * @throws IllegalStateException if the DrawingFrame has not been initialized.
+     * @see DbgControls#breakJump()
+     */
+    @Override
+    public void breakJump(String breakMessage) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        _drawingFrame.breakJump();
+        _drawingFrame.breakJump(breakMessage);
     }
     // #endregion: [Public] DbgControls overrides 
 }
