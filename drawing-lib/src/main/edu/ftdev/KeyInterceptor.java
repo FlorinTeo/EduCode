@@ -20,14 +20,6 @@ public class KeyInterceptor implements KeyListener {
     // myKeyInterceptor.setKeyTypedHook('S', onSTyped)
 
     /**
-     * Creates a new instance of the KeyInterceptor class.
-     */
-    public KeyInterceptor() {
-        // default constructor
-    }
-
-    // #region: [Private] classes and interfaces
-    /**
      * Functional Interface for a generic key hooking method.
      * Users can instantiate a lambda method that can be registered with the
      * drawing engine such that custom code gets called when specific key is pressed.
@@ -36,13 +28,21 @@ public class KeyInterceptor implements KeyListener {
     public interface KeyHook {
         /**
          * Method called when a registered key event is intercepted.
-         * @param keyEvent - the key event that as detected.
-         * @param args - optional arguments to be passed to the hook when event occurs.
+         * @param keyEvent the key event that as detected.
+         * @param args optional arguments to be passed to the hook when event occurs.
          * @see KeyEvent
          */
         public void keyHook(KeyEvent keyEvent, Object[] args);
     }
 
+    /**
+     * Creates a new instance of the KeyInterceptor class.
+     */
+    public KeyInterceptor() {
+        // default constructor
+    }
+
+    // #region: [Private] classes and interfaces
      /**
      * private class to hold the key hook and the arguments to be passed
      * to the hook when the key event occurs. 
@@ -128,7 +128,7 @@ public class KeyInterceptor implements KeyListener {
     // #region: [Public] KeyListener overrides
     /**
      * Forwards the key typed event to the registered hooks.
-     * @param keyEvent - the key event to be forwarded.
+     * @param keyEvent the key event to be forwarded.
      */
     @Override
     public void keyTyped(KeyEvent keyEvent) {
@@ -165,7 +165,7 @@ public class KeyInterceptor implements KeyListener {
     
     /**
      * Forwards the key pressed event to the registered hooks.
-     * @param keyEvent - the key event to be forwarded.
+     * @param keyEvent the key event to be forwarded.
      */
     @Override
     public void keyPressed(KeyEvent keyEvent) {
@@ -182,7 +182,7 @@ public class KeyInterceptor implements KeyListener {
     
     /**
      * Forwards the key released event to the registered hooks.
-     * @param keyEvent - the key event to be forwarded.
+     * @param keyEvent the key event to be forwarded.
      */
     @Override
     public void keyReleased(KeyEvent keyEvent) {

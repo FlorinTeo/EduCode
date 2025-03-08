@@ -19,14 +19,6 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // myMouseInterceptor.setMouseHook(onMClicked);
 
     /**
-     * Creates a new instance of the MouseInterceptor class.
-     */
-    public MouseInterceptor() {
-        super();
-    }
-
-    // #region: [Private] classes and interfaces
-    /**
      * Functional Interface for a generic mouse hooking method.
      * Users can instantiate a lambda method that can be registered with the
      * drawing engine such that custom code gets called when specific mouse events are detected.
@@ -35,15 +27,23 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     public interface MouseHook {
         /**
          * Method called when a registered mouse event is intercepted.
-         * @param mouseEvent - the mouse event that was detected.
-         * @param args - optional arguments to be passed to the hook when event occurs.
+         * @param mouseEvent the mouse event that was detected.
+         * @param args optional arguments to be passed to the hook when event occurs.
          * @see MouseEvent
          */
         public void mouseHook(MouseEvent mouseEvent, Object[] args);
     }
 
     /**
-     * private class to hold the mouse hook and the arguments to be passed
+     * Creates a new instance of the MouseInterceptor class.
+     */
+    public MouseInterceptor() {
+        super();
+    }
+
+    // #region: [Private] classes and interfaces
+    /**
+     * Private class to hold the mouse hook and the arguments to be passed
      * to the hook when the mouse event occurs. 
      */
     private class MouseHookContext {
@@ -134,10 +134,6 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // #endregion: [Private] Mouse hooking private helpers
 
     // #region: [Internal] Mouse hooking methods
-    MouseHook getHookHook(int mouseEventId) {
-        return null;
-    }
-    
     MouseHook setSysMouseHook(int mouseEventId, MouseHook mouseHook, Object... args) {
             MouseHookContext prevMouseHookContext;
         if (mouseHook != null) {
