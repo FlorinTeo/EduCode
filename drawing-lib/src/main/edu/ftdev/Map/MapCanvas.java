@@ -78,7 +78,7 @@ import edu.ftdev.KeyInterceptor.KeyHook;
  */
 public class MapCanvas extends DrawingFactory {
 
-    // #region: [private] Internal class definitions
+    // #region: [Private] Internal class definitions
     /**
      * Private class used for serialization/deserialization of the
      * metadata associated with an enhanced map image (.jpeg) file.
@@ -103,9 +103,9 @@ public class MapCanvas extends DrawingFactory {
             _routes = new ArrayList<String>();
         }
     }
-    // #endregion: [private] Internal class definitions
+    // #endregion: [Private] Internal class definitions
 
-    // #region: [private] Internal fields
+    // #region: [Private] Internal fields
     // Map metadata (i.e {_name, _mapOverlaysRaw, _centerTL, _centerBR})
     private MapMetadata _mapMetadata;
     // Map<overlay_name, overlay_image> (i.e. {<"AB", imageAB>, <"AC", imageAC>, ..})
@@ -114,9 +114,9 @@ public class MapCanvas extends DrawingFactory {
     private Set<String> _overlays = new HashSet<String>();
     // Map<route_node, routes_from_node> (i.e. {<"A", RouteNodeInfo(["AB", "AC"])>, <"B", RouteNodeInfo(["BA", "BC"])>, ..})
     private HashMap<Character, RouteNodeInfo> _routeInfoMap = new HashMap<Character, RouteNodeInfo>();    
-    // #endregion: [private] Internal fields
+    // #endregion: [Private] Internal fields
     
-    // #region: [private] Routes display on keyboard input
+    // #region: [Private] Routes display on keyboard input
     private void buildRouteInfoMap() {
         Set<String> routes = getRoutes();
         for(String routeName : routes) {
@@ -142,9 +142,9 @@ public class MapCanvas extends DrawingFactory {
         setOverlays(routes);
         repaint();
     }
-    // #endregion [private]: Routes display on keyboard input
+    // #endregion [Private]: Routes display on keyboard input
 
-    // #region: [private] Static helper methods    
+    // #region: [Private] Static helper methods    
     private static String imageToBase64(BufferedImage image) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(image, "png", out);
@@ -167,9 +167,9 @@ public class MapCanvas extends DrawingFactory {
         System.arraycopy(base,0,returnArray,returnArray.length-base.length,base.length);
         return returnArray;
     }
-    // #endregion: [private] Static IO helper methods
+    // #endregion: [Private] Static IO helper methods
 
-    // #region: [private] Instance helper methods
+    // #region: [Private] Instance helper methods
     private BufferedImage loadFromRawBytes(byte[] rawBytes) throws IOException {
         byte[] rawOffset = Arrays.copyOfRange(rawBytes, rawBytes.length-4, rawBytes.length);
         BigInteger offset = new BigInteger(rawOffset);
@@ -245,7 +245,7 @@ public class MapCanvas extends DrawingFactory {
         }
         _drawingFrame.repaint();
     }
-    // #endregion: [private] instance helper methods
+    // #endregion: [Private] instance helper methods
 
     /**
      * Constructs a new MapCanvas object from a map image. The map image can be a .jpg file,
@@ -279,7 +279,7 @@ public class MapCanvas extends DrawingFactory {
         buildRouteInfoMap();
     }
 
-    // #region: [public] MapCanvas API
+    // #region: [Public] MapCanvas API
     /**
      * Gets the name of the map in this MapImage.
      * @return The name of the map.
@@ -381,9 +381,9 @@ public class MapCanvas extends DrawingFactory {
        
         return false;
     }
-    // #endregion: [public] MapCanvas API
+    // #endregion: [Public] MapCanvas API
 
-    // #region: [public] Key hooking methods and lambdas
+    // #region: [Public] Key hooking methods and lambdas
     /**
      * Registers a key hook for the given key. The key hook is a lambda
      * function that will be called whenever the key is pressed.
@@ -440,5 +440,5 @@ public class MapCanvas extends DrawingFactory {
         }
         showRoutes();
     };
-    // #endregion: [public] Key hooking API
+    // #endregion: [Public] Key hooking API
 }
