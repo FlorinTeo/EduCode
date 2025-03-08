@@ -42,6 +42,11 @@ public class DrawingFrame implements
     private TextField _statusText = null;
 
     /**
+     * Flag telling if the frame is opened on the screen
+     */
+    private boolean _isOpened = false;
+
+    /**
      * KeyInterceptor object to intercept key events and trigger custom actions.
      */
     protected KeyInterceptor _keyInterceptor = new KeyInterceptor();
@@ -272,6 +277,14 @@ public class DrawingFrame implements
         return _canvas.yScreenToCanvas(mouseEvent.getY());
     }
     
+    /**
+     * Gets the state of visibility of the drawing frame.
+     * @return true if the drawing frame is currently visible (opened) on the screen.
+     */
+    public boolean isOpened() {
+        return _isOpened;
+    }
+
     // #region: [Interface] DbgControls overrides
     /**
      * In "step" mode, this method pauses the execution with a default empty string message.
@@ -524,6 +537,7 @@ public class DrawingFrame implements
         // set the canvas reference in the drawing to allow subclasses to trigger repaints
         _drawing._drwCanvas = _canvas;
         _frame.setVisible(true);
+        _isOpened = true;
     }
     
     /**
@@ -569,6 +583,7 @@ public class DrawingFrame implements
             _drawing.close();
             _drawing = null;
         }
+        _isOpened = false;
     }
     // #endregion: [Public] FrameControls overrides
 

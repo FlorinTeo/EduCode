@@ -125,8 +125,14 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
+        // attempt to close the drawing frame. If there are custom mouse/keyboard hooks
+        // active on the frame, this operation is a no-op. Subsequent .isOpened() call
+        // tells if that's the case.
         _drawingFrame.close();
-        _drawingFrame = null;
+        // dispense of the _drawingFrame if it was successfully closed.
+        if (!_drawingFrame.isOpened()) {
+            _drawingFrame = null;
+        }
     }
     
     /**
