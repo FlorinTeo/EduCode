@@ -1,6 +1,7 @@
 package edu.ftdev.Map;
 
 import java.awt.Color;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -63,6 +64,24 @@ public class MoonMap extends DrawingFactory {
      */
     public MouseHook setMouseClickedHook(MouseHook mouseHook, Object... args) {
         return _drawingFrame.setMouseClickedHook(mouseHook, args);
+    }
+
+    /**
+     * Gets the row in the image targetted by a mouse event.
+     * @param mouseEvent the mouse event that was intercepted.
+     * @return the corresponding row in the image.
+     */
+    public int getRow(MouseEvent mouseEvent) {
+        return _drawingFrame.getCanvasY(mouseEvent);
+    }
+
+    /**
+     * Gets the column in the image targetted by a mouse event.
+     * @param mouseEvent the mouse event that was intercepted.
+     * @return the corresponding column in the image.
+     */
+    public int getCol(MouseEvent mouseEvent) {
+        return _drawingFrame.getCanvasX(mouseEvent);
     }
     // #endregion: [Public] Key and Mouse hooking methods
 
