@@ -12,6 +12,8 @@ import javax.imageio.ImageIO;
 import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFactory;
 import edu.ftdev.DrawingFrame;
+import edu.ftdev.KeyInterceptor.KeyHook;
+import edu.ftdev.MouseInterceptor.MouseHook;
 
 public class MoonMap extends DrawingFactory {
     /**
@@ -31,7 +33,40 @@ public class MoonMap extends DrawingFactory {
         _drawingFrame = new DrawingFrame(_drawing);
     }
 
-    // #region [Private]
+    // #region: [Public] Key and Mouse hooking methods
+    /**
+     * Registers a key hook for the given key. The key hook is a lambda
+     * function that will be called whenever the key is pressed.
+     * @param key the key to be hooked.
+     * @param hook the lambda function to be called when the key is pressed.
+     * @param args the arguments to be passed to the hook when the key is pressed.
+     */
+    public void setKeyHook(int key, KeyHook hook, Object... args) {
+        _drawingFrame.setKeyPressedHook(key, hook, args);
+    }
+
+    /**
+     * Gets the key hook registered for the given key.
+     * @param key the key for which the hook is requested.
+     * @return The key hook registered for the given key.
+     */
+    public KeyHook getKeyHook(int key) {
+        return _drawingFrame.getKeyPressedHook(key);
+    }
+
+     /**
+     * Sets a mouse hook to be called when the left mouse button is clicked.
+     * @param mouseHook the mouse hook to be called when the button is clicked
+     * or null if the event should not be intercepted.
+     * @param args additional arguments to be passed to the mouse hook when called.
+     * @return the mouse hook previously set for the given event, or null if none exist.
+     */
+    public MouseHook setMouseClickedHook(MouseHook mouseHook, Object... args) {
+        return _drawingFrame.setMouseClickedHook(mouseHook, args);
+    }
+    // #endregion: [Public] Key and Mouse hooking methods
+
+    // #region [Private] Helper methods
     private boolean isValidPixel(int row, int col) {
         return row >= 0 && col >= 0 && row < _drawing.getHeight() && col < _drawing.getWidth();
     }
@@ -41,9 +76,9 @@ public class MoonMap extends DrawingFactory {
             && isValidPixel(row, col)
             && isValidPixel(row + height - 1, col + width - 1);
     }
-    // #endregion [Private]
+    // #endregion [Private] Helper methods
 
-    // #region [Public]
+    // #region [Public] MoonMap APIs
     /**
      * Takes a snapshot of the current map image. A subsequent call to <i>reset</i> will
      * will reload the map image to the most recent snapshot.
@@ -119,5 +154,5 @@ public class MoonMap extends DrawingFactory {
         }
         _drawing.getImage().setRGB(col, row, width, height, rgbArray, 0, width);
     }
-    // #endregion [Public]
+    // #endregion [Public] MoonMap APIs
 }
