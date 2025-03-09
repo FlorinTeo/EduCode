@@ -184,7 +184,7 @@ public class KeyInterceptor extends Thread implements KeyListener {
             prevCustomKeyHook = customKeyHooks.remove(keyEventId);
         } else {
             KeyHookContext newKeyHookContext = new KeyHookContext(keyHook, args);
-            CustomKeyHook newCustomKeyHook = new CustomKeyHook(keyEventId, newKeyHookContext);
+            CustomKeyHook newCustomKeyHook = new CustomKeyHook(keyEventSource, newKeyHookContext);
             prevCustomKeyHook = customKeyHooks.put(keyEventId, newCustomKeyHook);
         }
         return prevCustomKeyHook != null ? prevCustomKeyHook._keyHookContext._keyHook : null;

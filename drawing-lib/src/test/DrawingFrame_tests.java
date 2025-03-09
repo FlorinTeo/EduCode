@@ -116,7 +116,7 @@ public class DrawingFrame_tests {
         drwFrame.breakLeap("Leap before closing");
         drwFrame.close();
         System.out.println("Sleeping 10sec before terminating test.");
-        Thread.sleep(20000);
+        Thread.sleep(10000);
         System.out.println("Test terminated.");
     }
 }
