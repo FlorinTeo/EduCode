@@ -386,22 +386,13 @@ public class MapCanvas extends DrawingFactory {
     // #region: [Public] Key hooking methods and lambdas
     /**
      * Registers a key hook for the given key. The key hook is a lambda
-     * function that will be called whenever the key is pressed.
+     * function that will be called whenever the key is typed.
      * @param key the key to be hooked.
      * @param hook the lambda function to be called when the key is pressed.
      * @param args the arguments to be passed to the hook when the key is pressed.
      */
     public void setKeyHook(int key, KeyHook hook, Object... args) {
-        _drawingFrame.setKeyPressedHook(key, hook, args);
-    }
-
-    /**
-     * Gets the key hook registered for the given key.
-     * @param key the key for which the hook is requested.
-     * @return The key hook registered for the given key.
-     */
-    public KeyHook getKeyHook(int key) {
-        return _drawingFrame.getKeyPressedHook(key);
+        _drawingFrame.setKeyTypedHook(key, hook, args);
     }
 
     /**

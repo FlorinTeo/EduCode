@@ -10,11 +10,12 @@ import org.junit.Test;
 
 import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFrame;
+import edu.ftdev.KeyInterceptor.KeyHook;
 import edu.ftdev.MouseInterceptor.MouseHook;
 
 public class DrawingFrame_tests {
 
-    public static MouseHook _onMouseClick = (e, args) -> {
+    private static MouseHook _onMouseClick = (e, args) -> {
         DrawingFrame drwFrame = (DrawingFrame) args[0];
         int x = e.getX();
         int y = e.getY();
@@ -97,5 +98,25 @@ public class DrawingFrame_tests {
         drwFrame.setStatusMessage("Reset to snapshot (diagonal up).");
         drwFrame.breakJump();
         drwFrame.close();
+    }
+
+    private static KeyHook _onKeyTyped = (keyEvent, args) -> {
+        DrawingFrame drwFrame = (DrawingFrame)args[0];
+        int iteration = (int)args[1];
+        drwFrame.breakLeap(String.format("[%d] Intercepted key '%c'", iteration, keyEvent.getKeyChar()));
+        args[1] = iteration+1;
+    };
+
+    @Test
+    public void keyInterceptorTest() throws IOException, InterruptedException {
+        Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
+        DrawingFrame drwFrame = new DrawingFrame(drw);
+        drwFrame.setKeyTypedHook('X', _onKeyTyped, drwFrame, 0);
+        drwFrame.open();
+        drwFrame.breakLeap("Leap before closing");
+        drwFrame.close();
+        System.out.println("Sleeping 10sec before terminating test.");
+        Thread.sleep(20000);
+        System.out.println("Test terminated.");
     }
 }
