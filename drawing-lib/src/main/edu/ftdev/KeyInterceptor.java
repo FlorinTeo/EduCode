@@ -123,7 +123,7 @@ public class KeyInterceptor extends Thread implements KeyListener {
         }
         
         // handle system hooks
-        if (_sysKeyHooks.containsKey(hookKey)) {
+        if (_sysKeyHooks.containsKey(hookKey) && e.getID() == KeyEvent.KEY_TYPED) {
             KeyHookContext targetSysHook = _sysKeyHooks.get(hookKey);
             if (targetSysHook != null) {
                 try {
