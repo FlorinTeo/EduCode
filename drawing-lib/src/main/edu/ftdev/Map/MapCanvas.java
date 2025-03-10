@@ -403,9 +403,9 @@ public class MapCanvas extends DrawingFactory {
      */
     public void setDemoKeyHooks(boolean enable) {
         for(char key : _routeInfoMap.keySet()) {
-            _drawingFrame.setKeyPressedHook(key, enable ? _onDemoKeyHook : null);
+            _drawingFrame.setKeyTypedHook(key, enable ? _onDemoKeyHook : null);
         }
-        _drawingFrame.setKeyPressedHook('X', enable ? _onDemoKeyHook : null);
+        _drawingFrame.setKeyTypedHook('X', enable ? _onDemoKeyHook : null);
     }
     
     private KeyInterceptor.KeyHook _onDemoKeyHook = (keyEvent, args) -> {

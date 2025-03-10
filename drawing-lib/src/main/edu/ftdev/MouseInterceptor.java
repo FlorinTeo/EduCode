@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Generic MouseInterceptor class, to be used for customized mouse interaction.
  */
-public class MouseInterceptor extends Thread implements MouseListener, MouseMotionListener, MouseWheelListener {
+public class MouseInterceptor implements MouseListener, MouseMotionListener, MouseWheelListener {
     
     // To customize mouse hooks, consuming classes need to define their own
     // functional interface and pass it to one of the setMouse**Hook() method

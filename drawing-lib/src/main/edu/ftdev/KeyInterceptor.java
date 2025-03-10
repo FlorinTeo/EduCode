@@ -11,7 +11,7 @@ import java.util.Map;
  * By default, the interceptor is handling the keys '1', '3', ' ' and &lt;ESC&gt;
  * implementing UI level debugging on 2 levels, Fast-Fwd and Quit.
  */
-public class KeyInterceptor extends Thread implements KeyListener {
+public class KeyInterceptor implements KeyListener {
     
     // To customize key hooks, consuming classes need to define their own
     // functional interface and pass it to one of the setKey**Hook() method
@@ -108,6 +108,7 @@ public class KeyInterceptor extends Thread implements KeyListener {
     
     // #region: [Private] Data fields
     private Object _sync = new Object();
+    private Object _end = new Object();
     private Integer _keyStepLevel = Integer.MIN_VALUE;
     private Map<Integer, KeyHookContext> _sysKeyHooks = new HashMap<Integer, KeyHookContext>();
     private Map<Integer, CustomKeyHook> _customKeyTypedHooks = new HashMap<Integer, CustomKeyHook>();
@@ -158,7 +159,7 @@ public class KeyInterceptor extends Thread implements KeyListener {
     }
 
     KeyHook setCustomKeyHook(int keyEventKind, int keyEventId, Object keyEventSource, KeyHook keyHook, Object... args) {
-        if ( _sysKeyHooks.containsKey(keyEventId)) {
+        if ( keyEventId == KeyEvent.VK_ESCAPE || keyEventId == KeyEvent.VK_END || _sysKeyHooks.containsKey(keyEventId)) {
             throw new IllegalArgumentException("Cannot override system keys!");
         }
 
@@ -259,6 +260,11 @@ public class KeyInterceptor extends Thread implements KeyListener {
     public void keyPressed(KeyEvent keyEvent) {
         synchronized (_sync) {
             switch (keyEvent.getKeyCode()) {
+            case KeyEvent.VK_END:
+                synchronized(_end) {
+                    _end.notifyAll();
+                }
+                break;
             case KeyEvent.VK_ESCAPE:
                 System.exit(0);
                 break;
@@ -303,6 +309,16 @@ public class KeyInterceptor extends Thread implements KeyListener {
                 }
             } catch (InterruptedException e) {
                 //e.printStackTrace();
+            }
+        }
+    }
+
+    void stop() {
+        synchronized(_end) {
+            try {
+                _end.wait();
+            } catch (InterruptedException e) {
+                // e.printStackTrace();
             }
         }
     }

@@ -545,11 +545,12 @@ public class DrawingFrame implements
         // since frame is expected to be closed via UI.
         if (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread
            || _keyInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) {
-            return;
+            _keyInterceptor.stop();
         }
         // close the frame and the drawing - the DrawingFrame should no longer be used after this.
         if (_frame != null) {
             _mouseInterceptor.close();
+            _keyInterceptor.close();
             _frame.removeKeyListener(_keyInterceptor);
             _frame.removeMouseListener(_mouseInterceptor);
             _frame.removeWindowListener(this);
