@@ -103,7 +103,8 @@ public class DrawingFrame_tests {
     private static KeyHook _onXTyped = (keyEvent, args) -> {
         DrawingFrame drwFrame = (DrawingFrame)args[0];
         int iteration = (int)args[1];
-        drwFrame.breakStep(String.format("[%d] Intercepted key '%c'", iteration, keyEvent.getKeyChar()));
+        drwFrame.setStatusMessage(String.format("[%d] intercept on key '%c'", iteration, keyEvent.getKeyChar()));
+        drwFrame.breakStep(String.format("[%d] break on key '%c'", iteration, keyEvent.getKeyChar()));
         args[1] = iteration+1;
     };
 
