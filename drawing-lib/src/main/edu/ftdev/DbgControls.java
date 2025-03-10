@@ -102,7 +102,7 @@ public interface DbgControls {
      * by clicking the corresponding buttons on the top of the DrawingFrame window.
      * The <i>breakMessage</i> can be used by implementors of this interface to help identifying the breaking point.
      * @param breakMessage the message labeling the breaking point.
-     * @@return true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls
      * @see #breakStep(String)
      * @see #breakJump(String)
