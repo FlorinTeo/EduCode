@@ -292,7 +292,7 @@ public class DrawingFrame implements
     /**
      * In "step" mode, this method pauses the execution with a default empty string message.
      * It does nothing in any other modes.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see #breakStep(String)
      */
     @Override
@@ -304,7 +304,7 @@ public class DrawingFrame implements
      * In "step" mode, this method pauses the execution. It does nothing in any other modes.
      * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param breakMessage the message labeling the breaking point.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep(String)
      */
     @Override
@@ -316,7 +316,7 @@ public class DrawingFrame implements
      * In "step" mode, this method delays execution for the given number of
      * milliseconds with a default empty string message. It does nothing in any other mode.
      * @param delay - milliseconds to delay execution in "continuous" mode.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see #breakStep(long)
      */
     @Override
@@ -330,7 +330,7 @@ public class DrawingFrame implements
      * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @param breakMessage the message labeling the breaking point.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep(long)
      */
     @Override
@@ -341,7 +341,7 @@ public class DrawingFrame implements
     /**
      * In "step" or "leap" modes, this method pauses the execution until resumed, with a
      * default empty string message. It does nothing in "jump" or "run" modes.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see #breakLeap(String)
      */
     @Override
@@ -354,7 +354,7 @@ public class DrawingFrame implements
      * It does nothing in "jump" or "run" modes.
      * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param breakMessage the message labeling the breaking point.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep(String)
      * @see DbgControls#breakJump(String)
      */
@@ -367,7 +367,7 @@ public class DrawingFrame implements
      * In "step", "leap" or "jump" modes, this method pauses the execution until resumed,
      * with a default empty string message
      * It does nothing in "run" mode.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep()
      * @see DbgControls#breakLeap()
      */
@@ -381,7 +381,7 @@ public class DrawingFrame implements
      * It does nothing in "run" mode.
      * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param breakMessage the message labeling the breaking point.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep()
      * @see DbgControls#breakLeap()
      */

@@ -38,7 +38,7 @@ package edu.ftdev;
 public interface DbgControls {
     /**
      * Suspends the execution according to {@link #breakStep(String)} rules, with a default empty string for the <i>breakMessage</i>.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls
      * @see #breakStep(String)
      * @see #breakLeap()
@@ -52,7 +52,7 @@ public interface DbgControls {
      * by clicking the corresponding buttons on the top of the DrawingFrame window.
      * The <i>breakMessage</i> can be used by implementors of this interface to help identifying the breaking point.
      * @param breakMessage the message labeling the breaking point.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls
      * @see #breakLeap(String)
      * @see #breakJump(String)
@@ -62,7 +62,7 @@ public interface DbgControls {
     /**
      * Suspends the execution according to {@link #breakStep(long, String)} rules, with a default empty string for the <i>breakMessage</i>.
      * @param delay - milliseconds to delay execution in "continuous" mode.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls
      * @see #breakStep(long, String)
      * @see #breakLeap()
@@ -78,7 +78,7 @@ public interface DbgControls {
      * The <i>breakMessage</i> can be used by implementors of this interface to help identifying the breaking point.
      * @param breakMessage the message labeling the breaking point.
      * @param delay - milliseconds to delay execution in "continuous" mode.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls
      * @see #breakLeap()
      * @see #breakJump()
@@ -87,7 +87,7 @@ public interface DbgControls {
     
     /**
      * Suspends the execution according to {@link #breakLeap(String)} rules, with a default empty string for the <i>breakMessage</i>.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see #breakLeap(String)
      * @see DbgControls
      * @see #breakStep()
@@ -102,7 +102,7 @@ public interface DbgControls {
      * by clicking the corresponding buttons on the top of the DrawingFrame window.
      * The <i>breakMessage</i> can be used by implementors of this interface to help identifying the breaking point.
      * @param breakMessage the message labeling the breaking point.
-     * @returns true if execution was suspended, false otherwise.
+     * @@return true if execution was suspended, false otherwise.
      * @see DbgControls
      * @see #breakStep(String)
      * @see #breakJump(String)
@@ -111,7 +111,7 @@ public interface DbgControls {
 
      /**
      * Suspends the execution according to {@link #breakJump(String)} rules, with a default empty string for the <i>breakMessage</i>.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls
      * @see #breakStep()
      * @see #breakLeap()
@@ -125,7 +125,7 @@ public interface DbgControls {
      * by clicking the corresponding buttons on the top of the DrawingFrame window.
      * The <i>breakMessage</i> can be used by implementors of this interface to help identifying the breaking point.
      * @param breakMessage the message labeling the breaking point.
-     * @returns true if execution was suspended, false otherwise.
+     * @return true if execution was suspended, false otherwise.
      * @see DbgControls
      * @see #breakStep(String)
      * @see #breakLeap(String)
