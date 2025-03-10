@@ -57,8 +57,8 @@ jobs:
           mkdir -p ./.build/DrawingLib/res
           cp -r ./drawing-lib/target/site/apidocs/* ./.build/DrawingLib/
           cp -r ./drawing-lib/src/res/* ./.build/DrawingLib/res/
-          cp ./drawing-lib/target/drawing-lib-1.0-shaded.jar ./.build/DrawingLib/
-          cp ./drawing-lib/target/drawing-lib-1.0.jar ./.build/DrawingLib/
+          cp ./drawing-lib/target/drawing-lib-*-shaded.jar ./.build/DrawingLib/
+          cp ./drawing-lib/target/drawing-lib-*.jar ./.build/DrawingLib/
 
     # List build content
       - name: List build content
