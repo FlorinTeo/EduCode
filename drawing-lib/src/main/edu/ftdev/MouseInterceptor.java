@@ -6,11 +6,12 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Generic MouseInterceptor class, to be used for customized mouse interaction.
  */
-public class MouseInterceptor extends Thread implements MouseListener, MouseMotionListener, MouseWheelListener {
+public class MouseInterceptor implements MouseListener, MouseMotionListener, MouseWheelListener {
     
     // To customize mouse hooks, consuming classes need to define their own
     // functional interface and pass it to one of the setMouse**Hook() method
@@ -105,8 +106,8 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
     // #endregion: [Private] classes and interfaces
 
     // #region: [Private] Data fields
-    private HashMap<Integer, MouseHookContext> _sysMouseHooks = new HashMap<Integer, MouseHookContext>();
-    private HashMap<Integer, CustomMouseHook> _customMouseHooks = new HashMap<Integer, CustomMouseHook>();
+    private Map<Integer, MouseHookContext> _sysMouseHooks = new HashMap<Integer, MouseHookContext>();
+    private Map<Integer, CustomMouseHook> _customMouseHooks = new HashMap<Integer, CustomMouseHook>();
     // #endregion: [Private] Data fields
     
     // #region: [Private] Mouse hooking private helpers
@@ -135,7 +136,7 @@ public class MouseInterceptor extends Thread implements MouseListener, MouseMoti
 
     // #region: [Internal] Mouse hooking methods
     MouseHook setSysMouseHook(int mouseEventId, MouseHook mouseHook, Object... args) {
-            MouseHookContext prevMouseHookContext;
+        MouseHookContext prevMouseHookContext;
         if (mouseHook != null) {
             // wire the given event to the new, non-null hook
             MouseHookContext newSysHook = new MouseHookContext(mouseHook, args);

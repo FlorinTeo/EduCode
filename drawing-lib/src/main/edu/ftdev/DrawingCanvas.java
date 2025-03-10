@@ -17,11 +17,12 @@ public class DrawingCanvas extends Canvas {
         // check if resizing is needed such that entire image is shown on the screen.
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension screenSize = toolkit.getScreenSize();
-        double maxWidth = screenSize.getWidth() * 2 / 3;
-        double maxHeight = screenSize.getHeight() * 2 / 3;
-        double scaleFactor = Math.min(maxWidth / _drwImage.getWidth(), maxHeight / _drwImage.getHeight());
+        double maxWidth = screenSize.getWidth() * 3 / 4;
+        double maxHeight = screenSize.getHeight() * 3 / 4;
+        double scaleFactor = Math.min((double)maxWidth / _drwImage.getWidth(), (double)maxHeight / _drwImage.getHeight());
         if (scaleFactor < 1) {
             _drwImage.resize(scaleFactor);
+            _drwImage.snapshot();
         }
         
         setBounds(

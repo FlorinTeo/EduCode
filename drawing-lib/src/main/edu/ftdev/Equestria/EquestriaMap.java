@@ -43,8 +43,13 @@ public class EquestriaMap extends DrawingFactory {
             InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/Equestria/equestria_map.jpg");
             BufferedImage img = ImageIO.read(input);
             _drawing = new Drawing(img);
+            int origWidth = _drawing.getWidth();
+            int origHeight = _drawing.getHeight();
             _drawingFrame = new DrawingFrame(_drawing);
             _drawingFrame.open();
+            int scaledWidth = _drawing.getWidth();
+            int scaledHeight = _drawing.getHeight();
+            _scale = Math.min((double)scaledWidth/origWidth, (double) scaledHeight/origHeight);
         } catch (IOException e) {
             // can't happen - resource is in the JAR
             e.printStackTrace();
@@ -76,13 +81,14 @@ public class EquestriaMap extends DrawingFactory {
     private BasicStroke _strokeLine = new BasicStroke(4);
     private int _lastX = 0;
     private int _lastY = 0;
+    private double _scale = 1.0;
 
     private int transX(int x) {
-        return _XGRID[x];
+        return (int)(_scale * _XGRID[x]);
     }
 
     private int transY(int y) {
-        return _YGRID[y];
+        return (int)(_scale * _YGRID[y]);
     }
     // #endregion: Members and methods internal to the class
 

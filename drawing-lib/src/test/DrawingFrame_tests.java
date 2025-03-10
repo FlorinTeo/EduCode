@@ -10,11 +10,12 @@ import org.junit.Test;
 
 import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFrame;
+import edu.ftdev.KeyInterceptor.KeyHook;
 import edu.ftdev.MouseInterceptor.MouseHook;
 
 public class DrawingFrame_tests {
 
-    public static MouseHook _onMouseClick = (e, args) -> {
+    private static MouseHook _onMouseClick = (e, args) -> {
         DrawingFrame drwFrame = (DrawingFrame) args[0];
         int x = e.getX();
         int y = e.getY();
@@ -96,6 +97,37 @@ public class DrawingFrame_tests {
         drw.reset();
         drwFrame.setStatusMessage("Reset to snapshot (diagonal up).");
         drwFrame.breakJump();
+        drwFrame.close();
+    }
+
+    private static KeyHook _onXTyped = (keyEvent, args) -> {
+        DrawingFrame drwFrame = (DrawingFrame)args[0];
+        int iteration = (int)args[1];
+        drwFrame.setStatusMessage(String.format("[%d] intercept on key '%c'", iteration, keyEvent.getKeyChar()));
+        drwFrame.breakStep(String.format("[%d] break on key '%c'", iteration, keyEvent.getKeyChar()));
+        args[1] = iteration+1;
+    };
+
+    @Test
+    public void keyInterceptorTest() throws IOException, InterruptedException {
+        Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
+        DrawingFrame drwFrame = new DrawingFrame(drw);
+        drwFrame.open();
+        System.out.println("breakLeap.");
+        drwFrame.breakLeap();
+        System.out.println("setKeyTyepdHook('X' -> _onXTyped).");
+        drwFrame.setKeyTypedHook('X', _onXTyped, drwFrame, 0);
+        System.out.println("breakLeap before sleep");
+        drwFrame.breakLeap();
+        System.out.println("sleep 10sec");
+        Thread.sleep(10000);
+        System.out.println("breakJump before setKeyTypedHook('X' -> null)");
+        drwFrame.breakLeap();
+        System.out.println("setKeyTypedHook('X' -> null)");
+        drwFrame.setKeyTypedHook('X', null);
+        System.out.println("breakJump before closing");
+        drwFrame.breakJump("Closing the window!");
+        System.out.println("close()");
         drwFrame.close();
     }
 }

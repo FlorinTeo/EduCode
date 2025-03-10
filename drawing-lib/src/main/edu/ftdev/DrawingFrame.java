@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.TextField;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -23,7 +25,7 @@ import edu.ftdev.MouseInterceptor.MouseHook;
  * in the program, in an interactive manner.
  */
 public class DrawingFrame implements 
-    WindowListener, DbgControls, FrameControls {
+    WindowListener, WindowFocusListener, DbgControls, FrameControls {
     
     private Thread _mainThread = null;
     private String _title = "Drawing Framework GUI";
@@ -59,25 +61,25 @@ public class DrawingFrame implements
     private KeyInterceptor.KeyHook _onKeyInterceptorCtrl = (keyEvent, args) -> {
         char ch = Character.toUpperCase(keyEvent.getKeyChar());
         switch (ch) {
-        case '1': // break on {step}
+        case KeyEvent.VK_1: // break on {step}
             _dbgButtons[0].setFace(BtnFace.CLICKED);
             _dbgButtons[1].setFace(BtnFace.NORMAL);
             _dbgButtons[2].setFace(BtnFace.NORMAL);
             _dbgButtons[3].setFace(BtnFace.NORMAL);
             break;
-        case '2': // break on {.leap.}
+        case KeyEvent.VK_2: // break on {.leap.}
             _dbgButtons[0].setFace(BtnFace.NORMAL);
             _dbgButtons[1].setFace(BtnFace.CLICKED);
             _dbgButtons[2].setFace(BtnFace.NORMAL);
             _dbgButtons[3].setFace(BtnFace.NORMAL);
             break;
-        case '3': // break on {.jump.}
+        case KeyEvent.VK_3: // break on {.jump.}
             _dbgButtons[0].setFace(BtnFace.NORMAL);
             _dbgButtons[1].setFace(BtnFace.NORMAL);
             _dbgButtons[2].setFace(BtnFace.CLICKED);
             _dbgButtons[3].setFace(BtnFace.NORMAL);
             break;
-        case ' ': // run >ffwd
+        case KeyEvent.VK_SPACE: // run >ffwd
             _dbgButtons[0].setFace(BtnFace.NORMAL);
             _dbgButtons[1].setFace(BtnFace.NORMAL);
             _dbgButtons[2].setFace(BtnFace.NORMAL);
@@ -127,7 +129,7 @@ public class DrawingFrame implements
 
         try {
             _dbgButtons[0] = new DbgButton(
-                '1',
+                KeyEvent.VK_1,
                 xAnchor,
                 yAnchor,
                 "edu/ftdev/res/step_0.png", "edu/ftdev/res/step_1.png", "edu/ftdev/res/step_2.png");
@@ -135,21 +137,21 @@ public class DrawingFrame implements
             xAnchor += _dbgButtons[0].getWidth();
     
             _dbgButtons[1] = new DbgButton(
-                '2',
+                KeyEvent.VK_2,
                 xAnchor,
                 yAnchor,
                 "edu/ftdev/res/leap_0.png", "edu/ftdev/res/leap_1.png", "edu/ftdev/res/leap_2.png");
             xAnchor += _dbgButtons[1].getWidth();
     
             _dbgButtons[2] = new DbgButton(
-                '3',
+                KeyEvent.VK_3,
                 xAnchor,
                 yAnchor,
                 "edu/ftdev/res/jump_0.png", "edu/ftdev/res/jump_1.png", "edu/ftdev/res/jump_2.png");
             xAnchor += _dbgButtons[2].getWidth();
     
             _dbgButtons[3] = new DbgButton(
-                ' ',
+                KeyEvent.VK_SPACE,
                 xAnchor,
                 yAnchor,
                 "edu/ftdev/res/run_0.png", "edu/ftdev/res/run_1.png", "edu/ftdev/res/run_2.png");
@@ -195,10 +197,10 @@ public class DrawingFrame implements
         _mainThread = Thread.currentThread();
 
         // setup callback methods for keyInterceptor control keys
-        _keyInterceptor.setKeyTypedHook('1', _onKeyInterceptorCtrl);
-        _keyInterceptor.setKeyTypedHook('2', _onKeyInterceptorCtrl);
-        _keyInterceptor.setKeyTypedHook('3', _onKeyInterceptorCtrl);
-        _keyInterceptor.setKeyTypedHook(' ', _onKeyInterceptorCtrl);
+        _keyInterceptor.setSysKeyHook(KeyEvent.VK_1, _onKeyInterceptorCtrl);
+        _keyInterceptor.setSysKeyHook(KeyEvent.VK_2, _onKeyInterceptorCtrl);
+        _keyInterceptor.setSysKeyHook(KeyEvent.VK_3, _onKeyInterceptorCtrl);
+        _keyInterceptor.setSysKeyHook(KeyEvent.VK_SPACE, _onKeyInterceptorCtrl);
         // setup callback methods for mouseInterceptor events
         _mouseInterceptor.setSysMouseHook(MouseEvent.MOUSE_CLICKED, _onMouseClicked);
         _mouseInterceptor.setSysMouseHook(MouseEvent.MOUSE_DRAGGED, _onMouseDragged);
@@ -257,6 +259,7 @@ public class DrawingFrame implements
         // add the listeners
         _frame.addKeyListener(_keyInterceptor);
         _frame.addWindowListener(this);
+        _frame.addWindowFocusListener(this);
     }
     
     /**
@@ -385,7 +388,9 @@ public class DrawingFrame implements
         // if mouse custom hooks are in effect, break controls are expected to be in the hooks. UI
         // actions would be ambiguous if both main thread and hook thread breaks were active, so
         // we give priority to the ones in the hooks and inhibit the ones in the main thread.
-        if (!_keyInterceptor.blocksOnLevel(level) || (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread)) {
+        if (!_keyInterceptor.blocksOnLevel(level) 
+            || (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) 
+            || (_keyInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread)) {
             return;
         }
 
@@ -419,12 +424,11 @@ public class DrawingFrame implements
 
         // output the current stack trace for all but step() (to give a chance for user-provided text to show in the UI)
         String crtStatusText = _statusText.getText();
-        if (crtStatusText.isEmpty()) {
-            if (breakMessage.isEmpty()) {
-                StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
-                breakMessage = String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber());
-            }
+        if (!breakMessage.isEmpty()) {
             _statusText.setText(breakMessage);
+        } else if (crtStatusText.isEmpty()) {
+            StackTraceElement stackFrame = new Throwable().getStackTrace()[1];
+            _statusText.setText(String.format("%s @ %d",stackFrame.getFileName(), stackFrame.getLineNumber()));
         }
 
         // call below may block, depending on the step level in code and the last debug action by the user
@@ -437,15 +441,6 @@ public class DrawingFrame implements
     
     // #region: [Public] Key hooking methods
     /**
-     * Gets the key hook currently set to intercept the given key typed event.
-     * @param keyEvent - the key type event being inquired.
-     * @return the key hook currently set for the given event, or null if none exist.
-     */
-    public KeyHook getKeyTypedHook(int keyEvent) {
-        return _keyInterceptor.getKeyTypedHook(keyEvent);
-    }
-    
-    /**
      * Sets a key hook to be called when a given key is typed.
      * @param keyEvent - the key type event to be intercepted.
      * @param keyHook - the key hook to be called when the key is typed.
@@ -453,16 +448,7 @@ public class DrawingFrame implements
      * @return - the key hook previously set for the given event, or null if none exist.
      */
     public KeyHook setKeyTypedHook(int keyEvent, KeyHook keyHook, Object... args) {
-        return _keyInterceptor.setKeyTypedHook(keyEvent, keyHook, args);
-    }
-    
-    /**
-     * Gets the key hook currently set to intercept the given key pressed event.
-     * @param keyEvent - the key pressed event being inquired.
-     * @return the key hook currently set for the given event, or null if none exist.
-     */
-    public KeyHook getKeyPressedHook(int keyEvent) {
-        return _keyInterceptor.getKeyPressedHook(keyEvent);
+        return _keyInterceptor.setCustomKeyHook(KeyEvent.KEY_TYPED, keyEvent, null, keyHook, args);
     }
     
     /**
@@ -473,16 +459,7 @@ public class DrawingFrame implements
      * @return - the key hook previously set for the given event, or null if none exist.
      */
     public KeyHook setKeyPressedHook(int keyEvent, KeyHook keyHook, Object... args) {
-        return _keyInterceptor.setKeyPressedHook(keyEvent, keyHook, args);
-    }
-    
-    /**
-     * Gets the key hook currently set to intercept the given key released event.
-     * @param keyEvent - the key released event being inquired.
-     * @return the key hook currently set for the given event, or null if none exist.
-     */
-    public KeyHook getKeyReleasedHook(int keyEvent) {
-        return _keyInterceptor.getKeyReleasedHook(keyEvent);
+        return _keyInterceptor.setCustomKeyHook(KeyEvent.KEY_PRESSED, keyEvent, null, keyHook, args);
     }
     
     /**
@@ -493,7 +470,7 @@ public class DrawingFrame implements
      * @return the key hook previously set for the given event, or null if none exist.
      */
     public KeyHook setKeyReleasedHook(int keyEvent, KeyHook keyHook, Object... args) {
-        return _keyInterceptor.setKeyReleasedHook(keyEvent, keyHook, args);
+        return _keyInterceptor.setCustomKeyHook(KeyEvent.KEY_RELEASED, keyEvent, null, keyHook, args);
     }
     // #endregion: [Public] Key hooking methods
  
@@ -566,12 +543,14 @@ public class DrawingFrame implements
     public void close() {
         // close is disabled on main thread if there are mouse custom hooks in effect
         // since frame is expected to be closed via UI.
-        if (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) {
-            return;
+        if (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread
+           || _keyInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) {
+            _keyInterceptor.stop();
         }
         // close the frame and the drawing - the DrawingFrame should no longer be used after this.
         if (_frame != null) {
             _mouseInterceptor.close();
+            _keyInterceptor.close();
             _frame.removeKeyListener(_keyInterceptor);
             _frame.removeMouseListener(_mouseInterceptor);
             _frame.removeWindowListener(this);
@@ -618,4 +597,15 @@ public class DrawingFrame implements
     public void windowDeactivated(WindowEvent e) {
     }
     // #endregion: [Interface] WindowListener overrides
+
+    // #region: [Interface] WindowFocusListener overrides
+    @Override
+    public void windowGainedFocus(WindowEvent e) {
+        _canvas.requestFocus();
+    }
+
+    @Override
+    public void windowLostFocus(WindowEvent e) {
+    }
+    // #endregion: [Interface] WindowFocusListener overrides
 }
