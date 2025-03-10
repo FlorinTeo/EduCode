@@ -249,7 +249,9 @@ public class MapCanvas extends DrawingFactory {
 
     /**
      * Constructs a new MapCanvas object from a map image. The map image can be a .jpg file,
-     * a directory containing the map image and its overlays, or a resource path. 
+     * a directory containing the map image and its overlays, or a resource path from within this package.
+     * The map images embedded with the package are: <i>"Woodlawn.jpg"</i>, <i>"Ravenna.jpg"</i>, 
+     * <i>"Sheridan.jpg"</i> and <i>"Loyal.jpg"</i>.
      * @param mapImagePath path to the image file, directory or resource.
      * @throws IOException if the map image cannot be located at the given path.
      */
@@ -281,7 +283,7 @@ public class MapCanvas extends DrawingFactory {
 
     // #region: [Public] MapCanvas API
     /**
-     * Gets the name of the map in this MapImage.
+     * Gets the name of the map in this MapCanvas object.
      * @return The name of the map.
      */
     public String getMapName() {
@@ -289,7 +291,7 @@ public class MapCanvas extends DrawingFactory {
     }
     
     /**
-     * Gets the set of all the routes, given by name, embedded in this map.
+     * Gets the set of all the routes, given by their two-letter names, embedded in this map.
      * @return The names of all the routes embedded with this map.<br>
      * e.g.: {"AB", "AC", "AD", "BA", "BC", "BD", ...}
      */
@@ -311,7 +313,7 @@ public class MapCanvas extends DrawingFactory {
     
     /**
      * Sets the routes to be overlaid on the map. This is expected
-     * to be a subset of all the routes embedded in this map.
+     * to be a subset of all the routes embedded in this map. Each route is identified by its two-letters name.
      * @param routes var arg array with the routes to be overlaid on the map.
      * @see #getOverlays()
      * @see #getRoutes()
@@ -322,7 +324,7 @@ public class MapCanvas extends DrawingFactory {
     
     /**
      * Sets the routes to be overlaid on the map. This is expected
-     * to be a subset of all the routes embedded in this map.
+     * to be a subset of all the routes embedded in this map. Each route is identified by its two-letters name.
      * @param routes collection (List, or Set) with the routes to be overlaid on the map.
      * @see #getOverlays()
      * @see #getRoutes()
@@ -397,8 +399,8 @@ public class MapCanvas extends DrawingFactory {
 
     /**
      * Registers a set of demo key hooks. When enabled, typing the keys
-     * corresponding to the route endpoints will cycle through the routes originating
-     * at that endpoint and overlay them on the map. Typing 'X' performs a collision test on the overlayed routes.
+     * corresponding to the route endpoints (i.e. 'A', 'B', 'C', ...) will cycle through the routes originating
+     * at that endpoint, overlaying them on the map. Typing 'X' performs a collision test on the overlayed routes.
      * @param enable true to enable the demo key hooks, false to disable.
      */
     public void setDemoKeyHooks(boolean enable) {
