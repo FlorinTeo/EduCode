@@ -183,8 +183,8 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see #breakStep(String)
      */
     @Override
-    public void breakStep() {
-        breakStep("");
+    public boolean breakStep() {
+        return breakStep("");
     }
 
     /**
@@ -197,11 +197,11 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see DbgControls#breakStep()
      */
     @Override
-    public void breakStep(String breakMessage) {
+    public boolean breakStep(String breakMessage) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        _drawingFrame.breakStep(breakMessage);
+        return _drawingFrame.breakStep(breakMessage);
     }
 
     /**
@@ -213,8 +213,8 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see #breakStep(long, String)
      */
     @Override
-    public void breakStep(long delay) {
-        breakStep(delay,"");
+    public boolean breakStep(long delay) {
+        return breakStep(delay,"");
     }
 
     /**
@@ -228,11 +228,11 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see DbgControls#breakStep(long)
      */
     @Override
-    public void breakStep(long delay, String breakMessage) {
+    public boolean breakStep(long delay, String breakMessage) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        _drawingFrame.breakStep(delay, breakMessage);
+        return _drawingFrame.breakStep(delay, breakMessage);
     }
 
     /**
@@ -243,8 +243,8 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see DbgControls#breakLeap()
      */
     @Override
-    public void breakLeap() {
-        breakLeap("");
+    public boolean breakLeap() {
+        return breakLeap("");
     }
 
     /**
@@ -257,11 +257,11 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see DbgControls#breakLeap()
      */
     @Override
-    public void breakLeap(String breakMessage) {
+    public boolean breakLeap(String breakMessage) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        _drawingFrame.breakLeap(breakMessage);
+        return _drawingFrame.breakLeap(breakMessage);
     }
 
      /**
@@ -272,8 +272,8 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see DbgControls#breakJump()
      */
     @Override
-    public void breakJump() {
-        breakJump("");
+    public boolean breakJump() {
+        return breakJump("");
     }
     // #endregion: [Public] DbgControls overrides
 
@@ -287,11 +287,11 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * @see DbgControls#breakJump()
      */
     @Override
-    public void breakJump(String breakMessage) {
+    public boolean breakJump(String breakMessage) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        _drawingFrame.breakJump(breakMessage);
+        return _drawingFrame.breakJump(breakMessage);
     }
     // #endregion: [Public] DbgControls overrides 
 }

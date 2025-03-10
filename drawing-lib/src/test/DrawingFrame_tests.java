@@ -1,4 +1,8 @@
 import java.awt.image.BufferedImage;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.File;
@@ -129,5 +133,21 @@ public class DrawingFrame_tests {
         drwFrame.breakJump("Closing the window!");
         System.out.println("close()");
         drwFrame.close();
+    }
+
+    @Test
+    public void breakReturnsTest() throws IOException {
+        Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
+        DrawingFrame drwFrame = new DrawingFrame(drw);
+        assertFalse(drwFrame.breakJump("Not breaking due to frame not being opened"));
+        drwFrame.open();
+        assertTrue(drwFrame.breakStep("Breaking in step!"));
+        drwFrame.setKeyTypedHook('X', _onXTyped);
+        assertFalse(drwFrame.breakStep("Not breaking due to custom key hook!"));
+        drwFrame.setKeyTypedHook('X', null);
+        assertTrue(drwFrame.breakLeap("Breaking due to custom key hook removed!!"));
+        drwFrame.close();
+        assertFalse(drwFrame.breakJump("Not breaking due to frame being closed!"));
+        System.out.println("Program terminated!");
     }
 }

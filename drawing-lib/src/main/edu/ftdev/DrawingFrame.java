@@ -292,33 +292,36 @@ public class DrawingFrame implements
     /**
      * In "step" mode, this method pauses the execution with a default empty string message.
      * It does nothing in any other modes.
+     * @returns true if execution was suspended, false otherwise.
      * @see #breakStep(String)
      */
     @Override
-    public void breakStep() {
-        breakStep("");
+    public boolean breakStep() {
+        return breakStep("");
     }
 
     /**
      * In "step" mode, this method pauses the execution. It does nothing in any other modes.
      * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param breakMessage the message labeling the breaking point.
+     * @returns true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep(String)
      */
     @Override
-    public void breakStep(String breakMessage) {
-        step(1, Long.MAX_VALUE, breakMessage);
+    public boolean breakStep(String breakMessage) {
+        return step(1, Long.MAX_VALUE, breakMessage);
     }
 
     /**
      * In "step" mode, this method delays execution for the given number of
      * milliseconds with a default empty string message. It does nothing in any other mode.
      * @param delay - milliseconds to delay execution in "continuous" mode.
+     * @returns true if execution was suspended, false otherwise.
      * @see #breakStep(long)
      */
     @Override
-    public void breakStep(long delay) {
-        breakStep(delay, "");
+    public boolean breakStep(long delay) {
+        return breakStep(delay, "");
     }
     
     /**
@@ -327,21 +330,23 @@ public class DrawingFrame implements
      * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @param breakMessage the message labeling the breaking point.
+     * @returns true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep(long)
      */
     @Override
-    public void breakStep(long delay, String breakMessage) {
-        step(1, delay, breakMessage);
+    public boolean breakStep(long delay, String breakMessage) {
+        return step(1, delay, breakMessage);
     }
 
     /**
      * In "step" or "leap" modes, this method pauses the execution until resumed, with a
-     * default empty string message. It does nothing in "jump" or "run" modes. 
+     * default empty string message. It does nothing in "jump" or "run" modes.
+     * @returns true if execution was suspended, false otherwise.
      * @see #breakLeap(String)
      */
     @Override
-    public void breakLeap() {
-        breakLeap("");
+    public boolean breakLeap() {
+        return breakLeap("");
     }
     
     /**
@@ -349,24 +354,26 @@ public class DrawingFrame implements
      * It does nothing in "jump" or "run" modes.
      * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param breakMessage the message labeling the breaking point.
+     * @returns true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep(String)
      * @see DbgControls#breakJump(String)
      */
     @Override
-    public void breakLeap(String breakMessage) {
-        step(2, Long.MAX_VALUE, breakMessage);
+    public boolean breakLeap(String breakMessage) {
+        return step(2, Long.MAX_VALUE, breakMessage);
     }
 
     /**
      * In "step", "leap" or "jump" modes, this method pauses the execution until resumed,
      * with a default empty string message
-     * It does nothing in "run" mode. 
+     * It does nothing in "run" mode.
+     * @returns true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep()
      * @see DbgControls#breakLeap()
      */
     @Override
-    public void breakJump() {
-        breakJump("");
+    public boolean breakJump() {
+        return breakJump("");
     }
 
      /**
@@ -374,24 +381,26 @@ public class DrawingFrame implements
      * It does nothing in "run" mode.
      * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param breakMessage the message labeling the breaking point.
+     * @returns true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep()
      * @see DbgControls#breakLeap()
      */
     @Override
-    public void breakJump(String breakMessage) {
-        step(3, Long.MAX_VALUE, breakMessage);
+    public boolean breakJump(String breakMessage) {
+        return step(3, Long.MAX_VALUE, breakMessage);
     }
     
-    private void step(int level, long delay, String breakMessage) {
+    private boolean step(int level, long delay, String breakMessage) {
         // if the execution mode is at a break level which would not cause an interruption,
         // or mouse custom hooks are in effect and this is the main thread, just return instantly (no-op).
         // if mouse custom hooks are in effect, break controls are expected to be in the hooks. UI
         // actions would be ambiguous if both main thread and hook thread breaks were active, so
         // we give priority to the ones in the hooks and inhibit the ones in the main thread.
-        if (!_keyInterceptor.blocksOnLevel(level) 
+        if (!_isOpened
+            || !_keyInterceptor.blocksOnLevel(level) 
             || (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) 
             || (_keyInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread)) {
-            return;
+            return false;
         }
 
         // From here on, we know execution is affected: either suspended or delayed.
@@ -436,6 +445,8 @@ public class DrawingFrame implements
 
         // restore the status text after potential blocking stop
         _statusText.setText(crtStatusText);
+
+        return true;
     }
     // #endregion: [Interface] DbgControls overrides
     
