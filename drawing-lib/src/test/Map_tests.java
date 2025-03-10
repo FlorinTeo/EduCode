@@ -20,7 +20,7 @@ public class Map_tests {
     };
 
     @Test
-    public void routesTest() throws IOException {
+    public void routesTest() throws IOException, InterruptedException {
         // loads an intersection image file and displays it in a map frame.
         _mapCanvas = new MapCanvas("Ravenna.jpg");
         // registers the key T with the method _onKeyT
@@ -32,10 +32,11 @@ public class Map_tests {
         _mapCanvas.breakJump();
         // close the window and terminate the program
         _mapCanvas.close();
+        Thread.sleep(300000);
     }
 
     @Test
-    public void collisionTest() throws IOException {
+    public void collisionTest() throws IOException, InterruptedException {
         // opens the GUI window
         _mapCanvas = new MapCanvas("Woodlawn.jpg");
         _mapCanvas.open();
@@ -49,16 +50,18 @@ public class Map_tests {
         _mapCanvas.setStatusMessage(_mapCanvas.collide("AD", "CE") ? "Collide" : "Not collide");
         _mapCanvas.breakJump();
         _mapCanvas.close();
+        Thread.sleep(10000);
     }
 
     @Test
-    public void demoKeyHooksTest() throws IOException {
+    public void demoKeyHooksTest() throws IOException, InterruptedException {
         _mapCanvas = new MapCanvas("Loyal.jpg");
         _mapCanvas.setOverlays();
         _mapCanvas.open();
         _mapCanvas.setStatusMessage("demo key hooks enabled");
         _mapCanvas.setDemoKeyHooks(true);
         _mapCanvas.breakJump();
+        Thread.sleep(100000);
         _mapCanvas.setStatusMessage("demo key hooks disabled");
         _mapCanvas.setDemoKeyHooks(false);
         _mapCanvas.breakJump();
@@ -74,13 +77,14 @@ public class Map_tests {
     };
 
     @Test
-    public void docCodeTest() throws IOException {
+    public void docCodeTest() throws IOException, InterruptedException {
         MapCanvas mp = new MapCanvas("Woodlawn.jpg");
         mp.open();
         Queue<String> routes = new LinkedList<String>(mp.getRoutes());
         mp.setKeyHook(KeyEvent.VK_TAB, onTab, mp, routes);
         mp.breakLeap();
         mp.close();
+        Thread.sleep(10000);
     }
 
     private KeyHook onDKey = (keyEvent, args) -> {
@@ -91,13 +95,14 @@ public class Map_tests {
     };
     
     @Test
-    public void demoCodeTest() throws IOException {
+    public void demoCodeTest() throws IOException, InterruptedException {
         MapCanvas mp = new MapCanvas("Woodlawn.jpg");
         mp.open();
         mp.setDemoKeyHooks(true);
         mp.setKeyHook(KeyEvent.VK_D, onDKey, mp, 0);
         mp.breakJump();
         mp.close();
+        Thread.sleep(10000);
     }
 
     @Test
