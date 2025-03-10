@@ -100,10 +100,10 @@ public class DrawingFrame_tests {
         drwFrame.close();
     }
 
-    private static KeyHook _onKeyTyped = (keyEvent, args) -> {
+    private static KeyHook _onXTyped = (keyEvent, args) -> {
         DrawingFrame drwFrame = (DrawingFrame)args[0];
         int iteration = (int)args[1];
-        drwFrame.breakLeap(String.format("[%d] Intercepted key '%c'", iteration, keyEvent.getKeyChar()));
+        drwFrame.breakStep(String.format("[%d] Intercepted key '%c'", iteration, keyEvent.getKeyChar()));
         args[1] = iteration+1;
     };
 
@@ -111,12 +111,22 @@ public class DrawingFrame_tests {
     public void keyInterceptorTest() throws IOException, InterruptedException {
         Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
         DrawingFrame drwFrame = new DrawingFrame(drw);
-        drwFrame.setKeyTypedHook('X', _onKeyTyped, drwFrame, 0);
         drwFrame.open();
-        drwFrame.breakLeap("Leap before closing");
-        drwFrame.close();
-        System.out.println("Sleeping 10sec before terminating test.");
+        System.out.println("breakLeap.");
+        drwFrame.breakLeap();
+        System.out.println("setKeyTyepdHook('X' -> _onXTyped).");
+        drwFrame.setKeyTypedHook('X', _onXTyped, drwFrame, 0);
+        System.out.println("breakLeap before sleep");
+        drwFrame.breakLeap();
+        System.out.println("sleep 10sec");
         Thread.sleep(10000);
-        System.out.println("Test terminated.");
+        System.out.println("breakJump before setKeyTypedHook('X' -> null)");
+        drwFrame.breakLeap();
+        System.out.println("setKeyTypedHook('X' -> null)");
+        drwFrame.setKeyTypedHook('X', null);
+        System.out.println("breakJump before closing");
+        drwFrame.breakJump("Closing the window!");
+        System.out.println("close()");
+        drwFrame.close();
     }
 }

@@ -137,7 +137,7 @@ public class KeyInterceptor extends Thread implements KeyListener {
         // handle custom hooks
         if (customKeyHooks != null) {
             CustomKeyHook customHook = customKeyHooks.get(hookKey);
-            if (customHook != null && customHook._keyEventSource == e.getSource()) {
+            if (customHook != null && (customHook._keyEventSource == null || customHook._keyEventSource == e.getSource())) {
                 customHook.start(e);
             }
         }
@@ -310,10 +310,10 @@ public class KeyInterceptor extends Thread implements KeyListener {
     void simulateKeyTyped(Component source, int keyEventKey) {
         KeyEvent keyEvent = new KeyEvent(
                 source,
+                KeyEvent.KEY_TYPED,
                 0,
                 0,
-                0,
-                keyEventKey,
+                KeyEvent.VK_UNDEFINED,
                 (char)keyEventKey);
         keyTyped(keyEvent);
     }
