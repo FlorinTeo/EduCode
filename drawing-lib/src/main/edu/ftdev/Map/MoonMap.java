@@ -51,10 +51,9 @@ public class MoonMap extends DrawingFactory {
      * @param mouseHook the mouse hook to be called when the button is clicked
      * or null if the event should not be intercepted.
      * @param args additional arguments to be passed to the mouse hook when called.
-     * @return the mouse hook previously set for the given event, or null if none exist.
      */
-    public MouseHook setMouseHook(MouseHook mouseHook, Object... args) {
-        return _drawingFrame.setMouseClickedHook(mouseHook, args);
+    public void setMouseHook(MouseHook mouseHook, Object... args) {
+        _drawingFrame.setMouseClickedHook(mouseHook, args);
     }
 
     /**
