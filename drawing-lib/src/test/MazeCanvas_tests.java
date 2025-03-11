@@ -130,12 +130,12 @@ public class MazeCanvas_tests {
                     mazeCanvas.drawPath(r, c, Side.Top, Color.RED);
                     mazeCanvas.drawPath(r, c, Side.Bottom, Color.RED);
                     mazeCanvas.drawPath(r, c, Side.Center, Color.RED);
+                    // when drawing middle cells, step at every step, or delay if leaping
+                    mazeCanvas.breakStep(10);
                 }
             }
             if (r == 0 || r == (mazeCanvas.getRows() - 1)) {
                 mazeCanvas.breakLeap();
-            } else {
-                mazeCanvas.breakStep();
             }
         }
         mazeCanvas.breakJump();

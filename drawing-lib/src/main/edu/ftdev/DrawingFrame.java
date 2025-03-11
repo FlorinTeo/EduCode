@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import edu.ftdev.DbgButton.BtnFace;
+import edu.ftdev.KeyInterceptor.DbgLevel;
 import edu.ftdev.KeyInterceptor.KeyHook;
 import edu.ftdev.MouseInterceptor.MouseHook;
 
@@ -309,12 +310,13 @@ public class DrawingFrame implements
      */
     @Override
     public boolean breakStep(String breakMessage) {
-        return step(1, Long.MAX_VALUE, breakMessage);
+        return step(DbgLevel.STEP.value(), Long.MAX_VALUE, breakMessage);
     }
 
     /**
-     * In "step" mode, this method delays execution for the given number of
-     * milliseconds with a default empty string message. It does nothing in any other mode.
+     * In "step" mode, this method pauses the execution. In "leap" mode, it delays the execution
+     * for the given number of milliseconds, with a default empty string message.
+     * It does nothing in any other mode.
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @return true if execution was suspended, false otherwise.
      * @see #breakStep(long)
@@ -325,9 +327,9 @@ public class DrawingFrame implements
     }
     
     /**
-     * In "step" mode, this method delays execution for the given number of
-     * milliseconds. It does nothing in any other mode.
-     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * In "step" mode, this method pauses the execution. In "leap" mode, it delays the execution
+     * for the given number of milliseconds.
+     * When execution is paused or delayed, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @param breakMessage the message labeling the breaking point.
      * @return true if execution was suspended, false otherwise.
@@ -335,7 +337,7 @@ public class DrawingFrame implements
      */
     @Override
     public boolean breakStep(long delay, String breakMessage) {
-        return step(1, delay, breakMessage);
+        return step(DbgLevel.STEP.value(), delay, breakMessage);
     }
 
     /**
@@ -360,7 +362,7 @@ public class DrawingFrame implements
      */
     @Override
     public boolean breakLeap(String breakMessage) {
-        return step(2, Long.MAX_VALUE, breakMessage);
+        return step(DbgLevel.LEAP.value(), Long.MAX_VALUE, breakMessage);
     }
 
     /**
@@ -387,7 +389,7 @@ public class DrawingFrame implements
      */
     @Override
     public boolean breakJump(String breakMessage) {
-        return step(3, Long.MAX_VALUE, breakMessage);
+        return step(DbgLevel.JUMP.value(), Long.MAX_VALUE, breakMessage);
     }
     
     private boolean step(int level, long delay, String breakMessage) {
@@ -397,7 +399,7 @@ public class DrawingFrame implements
         // actions would be ambiguous if both main thread and hook thread breaks were active, so
         // we give priority to the ones in the hooks and inhibit the ones in the main thread.
         if (!_isOpened
-            || !_keyInterceptor.blocksOnLevel(level) 
+            || (!_keyInterceptor.blocksOnLevel(level) && !_keyInterceptor.sleepOnLevel(delay, level))
             || (_mouseInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread) 
             || (_keyInterceptor.hasCustomHooks() && Thread.currentThread() == _mainThread)) {
             return false;

@@ -20,6 +20,23 @@ public class KeyInterceptor implements KeyListener {
     // KeyIterceptor.KeyHook onSTyped = (KeyEvent keyEvent) -> {..}
     // myKeyInterceptor.setKeyTypedHook('S', onSTyped)
 
+    enum DbgLevel {
+        STEP(1),
+        LEAP(2),
+        JUMP(3),
+        RUN(Integer.MAX_VALUE);
+
+        private final int _level;
+
+        DbgLevel(int level) {
+            _level = level;
+        }
+
+        int value() {
+            return _level;
+        }
+    };
+
     /**
      * Functional Interface for a generic key hooking method.
      * Users can instantiate a lambda method that can be registered with the
@@ -221,27 +238,27 @@ public class KeyInterceptor implements KeyListener {
             case KeyEvent.VK_1:
                 // Continue execution. Ignore all step(0) or lesser,
                 // break on next step(1) or greater. 
-                _keyStepLevel = 1;
+                _keyStepLevel = DbgLevel.STEP.value();
                 _sync.notifyAll();
                 forwardKeyEvent(keyEvent, null);
                 break;
             case KeyEvent.VK_2:
                 // Continue execution. Ignore all step(1) or lesser,
                 // break on next step(2) or greater. 
-                _keyStepLevel = 2;
+                _keyStepLevel = DbgLevel.LEAP.value();
                 _sync.notifyAll();
                 forwardKeyEvent(keyEvent, null);
                 break;
             case KeyEvent.VK_3:
                 // Continue execution. Ignore all step(1) or lesser,
                 // break on next step(2) or greater. 
-                _keyStepLevel = 3;
+                _keyStepLevel = DbgLevel.JUMP.value();
                 _sync.notifyAll();
                 forwardKeyEvent(keyEvent, null);
                 break;
             case KeyEvent.VK_SPACE:
                 // Fast-forward the execution, ignore all code step() calls. 
-                _keyStepLevel = Integer.MAX_VALUE;
+                _keyStepLevel = DbgLevel.RUN.value();
                 _sync.notifyAll();
                 forwardKeyEvent(keyEvent, null);
                 break;
@@ -289,6 +306,12 @@ public class KeyInterceptor implements KeyListener {
         return (level >= _keyStepLevel) && (_keyStepLevel != Integer.MAX_VALUE);
     }
 
+    boolean sleepOnLevel(long delay, int level) {
+        return (delay != Long.MAX_VALUE)
+            && (level == DbgLevel.STEP.value())
+            && (_keyStepLevel == DbgLevel.LEAP.value());
+    }
+
     void step(int level) {
         step(level, Long.MAX_VALUE);
     }
@@ -298,14 +321,11 @@ public class KeyInterceptor implements KeyListener {
             try {
                 // if the level of the step says we should block..
                 if (blocksOnLevel(level)) {
-                    // ..if is definite pause..
-                    if (delay == Long.MAX_VALUE) {
-                        // ..wait for user action..
-                        _sync.wait();
-                    } else {
-                        // ..otherwise just delay..
-                        Thread.sleep(delay);
-                    }
+                    // ..wait for user action..
+                    _sync.wait();
+                } else if (sleepOnLevel(delay, level)){
+                    // ..otherwise just delay..
+                    Thread.sleep(delay);
                 }
             } catch (InterruptedException e) {
                 //e.printStackTrace();
