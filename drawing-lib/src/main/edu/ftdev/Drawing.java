@@ -110,7 +110,7 @@ public class Drawing implements AutoCloseable {
     }
 
     /**
-     * Takes a snapshot of the current state of the drawing image. Subsequent reset operations
+     * Takes a snapshot of the current state of the drawing image. Subsequent restore operations
      * will reload the image to this state.
      * @see #restore()
      */
@@ -123,7 +123,7 @@ public class Drawing implements AutoCloseable {
     }
 
     /**
-     * Restores the drawing image to from the default snapshot. If the drawing was created from a file,
+     * Restores the drawing from the default snapshot. If the drawing was created from a file,
      * this method restores it to the file image. If the drawing was created as a blank canvas,
      * this method clears the canvas to its original blank state.
      * @see #snapshot()
