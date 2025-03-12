@@ -111,27 +111,52 @@ public class Drawing implements AutoCloseable {
     }
 
     /**
-     * Takes a snapshot of the current state of the drawing image. Subsequent restore operations
-     * will reload the image to this state.
+     * Takes a snapshot of the image currently loaded the drawing object, and saves it internally
+     * under the given <i>name</i>. If a previous snapshot with an identical <i>name</i> exists,
+     * it will be overwritten. The same image can be restored later by using
+     * the {@link #restore(String)} method
      * @see #restore()
      */
-    public void snapshot() {
+    public void snapshot(String name) {
         BufferedImage snapshot  = new BufferedImage(_image.getWidth(), _image.getHeight(), _image.getType());
         Graphics2D g = snapshot.createGraphics();
         g.drawImage(_image, 0, 0, null);
         g.dispose();
-        _snapshots.put(_DEFAULT_SNAPSHOT, snapshot);
+        _snapshots.put(name, snapshot);
     }
 
     /**
-     * Restores the drawing from the default snapshot. If the drawing was created from a file,
+     * Takes a snapshot of the image currently loaded in the drawing object and saves it internally.
+     * Subsequent calls to {@link #restore()} method will restore this image into the drawing.
+     * @see #restore()
+     */
+    public void snapshot() {
+        snapshot(_DEFAULT_SNAPSHOT);
+    }
+
+    /**
+     * Restores the drawing from a previous snapshot. If the drawing was created from a file,
      * this method restores it to the file image. If the drawing was created as a blank canvas,
      * this method clears the canvas to its original blank state.
      * @see #snapshot()
      */
     public void restore() {
+        restore(_DEFAULT_SNAPSHOT);
+    }
+
+    /**
+     * Restores the drawing from a previous snapshot, given by its <i>name</i>.
+     * If no such snapshot can be located, an exception is thrown.  
+     * @see #snapshot(String)
+     * @throws IllegalArgumentException if the snapshot cannot be located.
+     */
+    public void restore(String name) {
+        BufferedImage snapshotImage = _snapshots.get(name);
+        if (snapshotImage == null) {
+            throw new IllegalArgumentException("No such snapshot!");
+        }
         Graphics2D g = _image.createGraphics();
-        g.drawImage(_snapshots.get(_DEFAULT_SNAPSHOT), 0, 0, null);
+        g.drawImage(_snapshots.get(name), 0, 0, null);
         g.dispose();
     }
 
