@@ -90,16 +90,16 @@ public class DrawingFrame_tests {
         g.drawLine(0, 0, drw.getWidth(), drw.getHeight());
         drwFrame.setStatusMessage("Diagonal down drawn.");
         drwFrame.breakStep();
-        drw.reset();
-        drwFrame.setStatusMessage("Image reset to initial state.");
+        drw.restore();
+        drwFrame.setStatusMessage("Image restored to default snapshot.");
         drwFrame.breakStep();
         g.drawLine(0, drw.getHeight(), drw.getWidth(), 0);
         drw.snapshot();
         g.drawLine(0, 0, drw.getWidth(), drw.getHeight());
         drwFrame.setStatusMessage("Diagonal up > snapshot > Diagonal down.");
         drwFrame.breakStep();
-        drw.reset();
-        drwFrame.setStatusMessage("Reset to snapshot (diagonal up).");
+        drw.restore();
+        drwFrame.setStatusMessage("Restore to default snapshot (diagonal up).");
         drwFrame.breakJump();
         drwFrame.close();
     }

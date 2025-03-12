@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -14,6 +16,10 @@ import javax.imageio.ImageIO;
  * In return, the object can be used for accessing and modifying the image at pixel level.
  */
 public class Drawing implements AutoCloseable {
+    /**
+     * The name (internal to the package) of the default snapshot.
+     */
+    static final String _DEFAULT_SNAPSHOT = "";
     
     /**
      * Internal reference to the drawing canvas hosting this image.
@@ -26,10 +32,13 @@ public class Drawing implements AutoCloseable {
      */
     protected BufferedImage _image = null;
     /**
-     * Internal reference to the original image file from which this drawing was created.
-     * This is used to reset the image to its original state.
+     * Internal reference to the a map of named snapshot images of this drawing. Snapshots can be
+     * captured and restored at any time. The map contains at least one <i>default</i> snapshot
+     * (named with an empty string) taken at the moment of the drawing creation.
+     * @see #snapshot()
+     * @see #restore()
      */
-    protected BufferedImage _origImage = null;
+    protected Map<String, BufferedImage> _snapshots = new HashMap<String, BufferedImage>();
     /**
      * Internal reference to the Graphics2D object associated with the drawing image.
      */
@@ -101,26 +110,27 @@ public class Drawing implements AutoCloseable {
     }
 
     /**
-     * Resets the drawing image to its original state. If the image was created from a file,
-     * this method will reload the image from the file. If the image was created as a blank canvas,
-     * this method will clear the canvas to its original blank state.
-     * @see snapshot
+     * Takes a snapshot of the current state of the drawing image. Subsequent reset operations
+     * will reload the image to this state.
+     * @see #restore()
      */
-    public void reset() {
-        Graphics2D g = _image.createGraphics();
-        g.drawImage(_origImage, 0, 0, null);
+    public void snapshot() {
+        BufferedImage snapshot  = new BufferedImage(_image.getWidth(), _image.getHeight(), _image.getType());
+        Graphics2D g = snapshot.createGraphics();
+        g.drawImage(_image, 0, 0, null);
         g.dispose();
+        _snapshots.put(_DEFAULT_SNAPSHOT, snapshot);
     }
 
     /**
-     * Takes a snapshot of the current state of the drawing image. Subsequent reset operations
-     * will reload the image to this state.
-     * @see reset
+     * Restores the drawing image to from the default snapshot. If the drawing was created from a file,
+     * this method restores it to the file image. If the drawing was created as a blank canvas,
+     * this method clears the canvas to its original blank state.
+     * @see #snapshot()
      */
-    public void snapshot() {
-        _origImage = new BufferedImage(_image.getWidth(), _image.getHeight(), _image.getType());
-        Graphics2D g = _origImage.createGraphics();
-        g.drawImage(_image, 0, 0, null);
+    public void restore() {
+        Graphics2D g = _image.createGraphics();
+        g.drawImage(_snapshots.get(_DEFAULT_SNAPSHOT), 0, 0, null);
         g.dispose();
     }
 

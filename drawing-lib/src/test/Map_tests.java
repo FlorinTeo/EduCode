@@ -109,8 +109,7 @@ public class Map_tests {
     public void moonMapTest() throws IOException {
         MoonMap mc = new MoonMap("moon.jpg");
         mc.open();
-        mc.setStatusMessage("Moon map opened!");
-        mc.breakJump();
+        mc.breakJump("Moon map opened!");
         Color[][] areaColors = mc.getArea(0, 0, 50, 50);
         for(int r = 0; r < areaColors.length; r++) {
             for (int c = 0; c < areaColors[r].length; c++) {
@@ -118,11 +117,8 @@ public class Map_tests {
                 areaColors[r][c] = new Color(255 - orig.getRed(), 255 - orig.getGreen(), 255-orig.getBlue());
             }
         }
-        mc.setStatusMessage("Area fetched and negated");
-        mc.breakJump();
         mc.setArea(0, 0, areaColors);
-        mc.setStatusMessage("Area updated");
-        mc.breakJump();
+        mc.breakJump("Area fetched and negated");
         mc.close();
     }
 }

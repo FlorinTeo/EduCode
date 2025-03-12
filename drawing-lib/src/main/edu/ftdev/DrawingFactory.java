@@ -139,13 +139,13 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * Resets the Drawing back to its original state, when it was creating, removing any subsequent overlays that
      * may have been added to it.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
-     * @see Drawing#reset()
+     * @see Drawing#restore()
      */
     public void clear() {
         if (_drawing == null || _drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        _drawing.reset();
+        _drawing.restore();
         _drawingFrame.repaint();
     }
 

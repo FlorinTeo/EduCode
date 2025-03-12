@@ -331,7 +331,7 @@ import java.awt.Color;
      * of the values originally pinned.
      */
     public void reset() {
-        _drawing.reset();
+        _drawing.restore();
         for(SudokuCell[] boardRow : _board) {
             for (SudokuCell cell : boardRow) {
                 if (!cell._isPinned) {

@@ -236,7 +236,7 @@ public class MapCanvas extends DrawingFactory {
     }
 
     private void refresh() {
-        _drawing.reset();
+        _drawing.restore();
         Graphics2D g=_drawing.getGraphics();
         for (String overlay : _overlays) {
             if (_mapOverlays.containsKey(overlay)) {
