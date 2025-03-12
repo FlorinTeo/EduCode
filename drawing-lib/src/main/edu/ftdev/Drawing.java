@@ -17,30 +17,31 @@ import javax.imageio.ImageIO;
  */
 public class Drawing implements AutoCloseable {
     /**
-     * The name (internal to the package) of the default snapshot.
+     * The name of the predefined, default snapshot.
      */
-    static final String _DEFAULT_SNAPSHOT = "";
+    protected static final String _DEFAULT_SNAPSHOT = "";
     
     /**
-     * Internal reference to the drawing canvas hosting this image.
-     * This is directly set by the DrawingFrame when the drawing is loaded into the canvas, is intended
-     * to be used by subclasses doing heavier graphics, in order trigger a canvas repaint.
+     * The drawing canvas hosting this image. This is directly set by the DrawingFrame
+     * when the drawing is loaded into the canvas, is intended to be used by subclasses doing
+     * heavier graphics, in order trigger a canvas repaint.
      */
     protected DrawingCanvas _drwCanvas = null;
     /**
-     * Internal reference to the image file path from which this drawing was created.
+     * The image file path from which this drawing was created.
      */
     protected BufferedImage _image = null;
     /**
-     * Internal reference to the a map of named snapshot images of this drawing. Snapshots can be
+     * The map of named snapshot images taken from this drawing. Snapshots can be
      * captured and restored at any time. The map contains at least one <i>default</i> snapshot
-     * (named with an empty string) taken at the moment of the drawing creation.
+     * taken at the moment of the drawing creation.
+     * @see #_DEFAULT_SNAPSHOT
      * @see #snapshot()
      * @see #restore()
      */
     protected Map<String, BufferedImage> _snapshots = new HashMap<String, BufferedImage>();
     /**
-     * Internal reference to the Graphics2D object associated with the drawing image.
+     * The Graphics2D object associated with the drawing image.
      */
     protected Graphics2D _g2d = null;
     
