@@ -37,13 +37,13 @@ public class MoonMap extends DrawingFactory {
     // #region: [Public] Key and Mouse hooking methods
     /**
      * Registers a key hook for the given key. The key hook is a lambda
-     * function that will be called whenever the key is typed.
+     * function that will be called whenever the key is pressed.
      * @param key the key to be hooked.
      * @param hook the lambda function to be called when the key is pressed.
      * @param args the arguments to be passed to the hook when the key is pressed.
      */
     public void setKeyHook(int key, KeyHook hook, Object... args) {
-        _drawingFrame.setKeyTypedHook(key, hook, args);
+        _drawingFrame.setKeyPressedHook(key, hook, args);
     }
 
      /**

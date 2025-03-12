@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -149,5 +150,22 @@ public class DrawingFrame_tests {
         drwFrame.close();
         assertFalse(drwFrame.breakJump("Not breaking due to frame being closed!"));
         System.out.println("Program terminated!");
+    }
+
+    private KeyHook onKey = (keyEvent, args) -> {
+        DrawingFrame frame = (DrawingFrame)args[0];
+        int number = (int)args[1];
+        number++;
+        frame.setStatusMessage(String.format("Key pressed %d times", number));
+        args[1] = number;
+    };
+
+    @Test
+    public void blockingCloseTest() throws IOException {
+        Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
+        DrawingFrame drwFrame = new DrawingFrame(drw);
+        drwFrame.open();
+        drwFrame.setKeyPressedHook(KeyEvent.VK_DOWN, onKey, drwFrame, 0);
+        drwFrame.close();
     }
 }
