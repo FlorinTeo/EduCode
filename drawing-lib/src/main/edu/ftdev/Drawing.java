@@ -111,6 +111,15 @@ public class Drawing implements AutoCloseable {
     }
 
     /**
+     * Takes a snapshot of the image currently loaded in the drawing object and saves it internally.
+     * Subsequent calls to {@link #restore()} method will restore this image into the drawing.
+     * @see #restore()
+     */
+    public void snapshot() {
+        snapshot(_DEFAULT_SNAPSHOT);
+    }
+
+    /**
      * Takes a snapshot of the image currently loaded the drawing object, and saves it internally
      * under the given <i>name</i>. If a previous snapshot with an identical <i>name</i> exists,
      * it will be overwritten. The same image can be restored later by using
@@ -123,15 +132,6 @@ public class Drawing implements AutoCloseable {
         g.drawImage(_image, 0, 0, null);
         g.dispose();
         _snapshots.put(name, snapshot);
-    }
-
-    /**
-     * Takes a snapshot of the image currently loaded in the drawing object and saves it internally.
-     * Subsequent calls to {@link #restore()} method will restore this image into the drawing.
-     * @see #restore()
-     */
-    public void snapshot() {
-        snapshot(_DEFAULT_SNAPSHOT);
     }
 
     /**

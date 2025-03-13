@@ -28,8 +28,6 @@ public class Map_tests {
         // opens the GUI window
         _mapCanvas.open();
         _mapCanvas.setStatusMessage("Press T to display the routes");
-        // stops, waiting for user action
-        _mapCanvas.breakJump();
         // close the window and terminate the program
         _mapCanvas.close();
         System.out.println("Done!");
@@ -83,19 +81,18 @@ public class Map_tests {
         Queue<String> routes = new LinkedList<String>(mp.getRoutes());
         mp.setStatusMessage("Press TAB to view test action.");
         mp.setKeyHook(KeyEvent.VK_TAB, onTab, mp, routes);
-        mp.breakLeap();
         mp.close();
     }
 
     private KeyHook onDKey = (keyEvent, args) -> {
         MapCanvas mp = (MapCanvas) args[0];
         int i = (int)args[1];
-        mp.setStatusMessage("Key D pressed " + i);
+        mp.setStatusMessage("Key D pressed %d times", i);
         args[1] = i + 1;
     };
     
     @Test
-    public void demoCodeTest() throws IOException {
+    public void demoKeyOverrideTest() throws IOException {
         MapCanvas mp = new MapCanvas("Woodlawn.jpg");
         mp.open();
         mp.setStatusMessage("Press Demo keys {A, B, ..., X} and see overidden 'D' key for this test.");
@@ -110,15 +107,21 @@ public class Map_tests {
         MoonMap mc = new MoonMap("moon.jpg");
         mc.open();
         mc.breakJump("Moon map opened!");
-        Color[][] areaColors = mc.getArea(0, 0, 50, 50);
+        int areaWidth = 50;
+        int areaHeight = 50;
+        int areaR = 2;
+        int areaC = 5;
+        Color[][] areaColors = mc.getArea(areaC * areaHeight, areaR * areaWidth, areaWidth, areaHeight);
         for(int r = 0; r < areaColors.length; r++) {
             for (int c = 0; c < areaColors[r].length; c++) {
                 Color orig = areaColors[r][c];
                 areaColors[r][c] = new Color(255 - orig.getRed(), 255 - orig.getGreen(), 255-orig.getBlue());
             }
         }
-        mc.setArea(0, 0, areaColors);
-        mc.breakJump("Area fetched and negated");
+        mc.setArea(areaC * areaHeight, areaR * areaWidth, areaColors);
+        mc.breakJump("Map has %d x %d areas. Area at (row:%d, col:%d) negated.",
+            mc.getHeight() / areaWidth + 1, mc.getWidth() / areaWidth + 1,
+            areaR, areaC);
         mc.close();
     }
 }

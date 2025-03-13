@@ -19,7 +19,7 @@ import edu.ftdev.MouseInterceptor.MouseHook;
 public class MoonMap extends DrawingFactory {
     /**
      * Constructs a new MoonMap object from an image file. The image is loaded either
-     * from the disk or from within the resources of this package.
+     * from the disk or from within the resources of this package (i.e. "moon.jpg").
      * @param mapImagePath path to the image file, directory or resource.
      * @throws IOException if the map image cannot be located at the given path.
      */
@@ -57,58 +57,83 @@ public class MoonMap extends DrawingFactory {
     }
 
     /**
-     * Gets the row in the image targetted by a mouse event.
+     * Gets the X-coordinate of the point in the image targeted by a mouse event.
      * @param mouseEvent the mouse event that was intercepted.
-     * @return the corresponding row in the image.
+     * @return the X coordinate of the mouse pointer.
      */
-    public int getRow(MouseEvent mouseEvent) {
-        return _drawingFrame.getCanvasY(mouseEvent);
+    public int getX(MouseEvent mouseEvent) {
+        return _drawingFrame.getCanvasX(mouseEvent);
     }
 
     /**
-     * Gets the column in the image targetted by a mouse event.
+     * Gets the Y-coordiante of the point in the image targeted by a mouse event.
      * @param mouseEvent the mouse event that was intercepted.
-     * @return the corresponding column in the image.
+     * @return the Y-coordiante of the mouse pointer.
      */
-    public int getCol(MouseEvent mouseEvent) {
-        return _drawingFrame.getCanvasX(mouseEvent);
+    public int getY(MouseEvent mouseEvent) {
+        return _drawingFrame.getCanvasY(mouseEvent);
     }
     // #endregion: [Public] Key and Mouse hooking methods
 
     // #region [Private] Helper methods
-    private boolean isValidPixel(int row, int col) {
-        return row >= 0 && col >= 0 && row < _drawing.getHeight() && col < _drawing.getWidth();
+    private boolean isValidPixel(int x, int y) {
+        return x >= 0 && y >= 0 && x < _drawing.getWidth() && y < _drawing.getHeight();
     }
 
-    private boolean isValidArea(int row, int col, int width, int height) {
+    private boolean isValidArea(int x, int y, int width, int height) {
         return width > 0 && height > 0
-            && isValidPixel(row, col)
-            && isValidPixel(row + height - 1, col + width - 1);
+            && isValidPixel(x, y)
+            && isValidPixel(x + width - 1, y + height - 1);
     }
     // #endregion [Private] Helper methods
 
-    // #region [Public] MoonMap APIs
+    // #region [Public] Surfaced methods from inner Drawing/DrawingFramework
     /**
-     * Takes a snapshot of the current map image. A subsequent call to <i>restore</i> 
-     * will reload the map image to the most recent snapshot.
-     * @see restore()
+     * Takes a snapshot of the current MoonMap image and saves it internally.
+     * Subsequent calls to {@link #restore()} method will restore this image into the map.
+     * @see #restore()
      */
     public void snapshot() {
         _drawing.snapshot();
     }
 
     /**
-     * Restores the current map image to the most recent default snapshot.
+     * Takes a snapshot of the current MoonMap and saves it internally, under the given <i>name</i>.
+     * If a previous snapshot with an identical <i>name</i> exists it will be overwritten.
+     * The same image can be restored later by using the {@link #restore(String)} method
+     * @see #restore()
+     */
+    public void snapshot(String name) {
+        _drawing.snapshot(name);
+    }
+
+    /**
+     * Restores the image from the most recently taken snapshot. By default, a snapshot is taken at the
+     * creation of the MoonMap image.
+     * @see #snapshot()
      */
     public void restore() {
         _drawing.restore();
     }
+
+    /**
+     * Restores the image of the most recently taken snapshot, labeled with <i>name</i>.
+     * If no such snapshot can be located, an exception is thrown.  
+     * @see #snapshot(String)
+     * @throws IllegalArgumentException if the snapshot cannot be located.
+     */
+    public void restore(String name) {
+        _drawing.restore(name);
+    }
+    // #endregion [Public] Surfaced methods from inner Drawing/DrawingFramework
+
+    // #region [Public] MoonMap APIs
     /**
      * Gets the colors of each pixel in a specific rectangular area of the map. The area is identified
      * by the row and col coordinates of its top-left corner and its width and height, in pixels.
      * This method expects the entire area to be contained within the image bounds.
-     * @param row the row of the top-left corner of the area.
-     * @param col the column of the top-left corner of the area.
+     * @param x the X-coordinate of the top-left corner of the area.
+     * @param y the Y-coordinate of the top-left corner of the area.
      * @param width the width of the area, in pixels.
      * @param height the height of the area, in pixels.
      * @return a two dimensional array of Color objects, each identifying the color of the
@@ -116,12 +141,12 @@ public class MoonMap extends DrawingFactory {
      * of the target area.
      * @throws IllegalArgumentException if any of the parameters are invalid.
      */
-    public Color[][] getArea(int row, int col, int width, int height) {
-        if (!isValidArea(row, col, width, height)) {
+    public Color[][] getArea(int x, int y, int width, int height) {
+        if (!isValidArea(x, y, width, height)) {
             throw new IllegalArgumentException("Coordinates out of range");
         }
         int[] rgbArray = new int[width * height];
-        _drawing.getImage().getRGB(col, row, width, height, rgbArray, 0, width); 
+        _drawing.getImage().getRGB(x, y, width, height, rgbArray, 0, width); 
         Color[][] area = new Color[height][width];
         int i = 0;
         for (int r = 0; r < height; r++) {
@@ -138,18 +163,18 @@ public class MoonMap extends DrawingFactory {
      * and <i>height</i> pixels matching the number of rows and columns in the matrix.
      * The top-left corner of the area is located at (<i>row</i>, <i>col</i>) coordinate.
      * This method expects the entire area to be contained within the image bounds. 
-     * @param row the row top-left corner of the area.
-     * @param col the column of the top-left corner of the area.
+     * @param x the X-coordinate of the top-left corner of the area.
+     * @param y the Y-coordinate of the top-left corner of the area.
      * @param colors the matrix of col
      * @throws IllegalArgumentException if any of the parameters are invalid.
      */
-    public void setArea(int row, int col, Color[][] colors) {
+    public void setArea(int x, int y, Color[][] colors) {
         if (colors == null || colors.length == 0 || colors[0].length == 0) {
             throw new IllegalArgumentException("The colors matrix is invalid");
         }
         int height = colors.length;
         int width = colors[0].length;
-        if (!isValidArea(row, col, width, height)) {
+        if (!isValidArea(x, y, width, height)) {
             throw new IllegalArgumentException("Coordinates out of range");
         }
         int[] rgbArray = new int[width * height];
@@ -159,7 +184,7 @@ public class MoonMap extends DrawingFactory {
                 rgbArray[i++] = colors[r][c].getRGB();
             }
         }
-        _drawing.getImage().setRGB(col, row, width, height, rgbArray, 0, width);
+        _drawing.getImage().setRGB(x, y, width, height, rgbArray, 0, width);
     }
     // #endregion [Public] MoonMap APIs
 }
