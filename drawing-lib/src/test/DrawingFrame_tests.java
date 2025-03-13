@@ -4,7 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -79,30 +78,55 @@ public class DrawingFrame_tests {
         drwFrame2.close();
     }
 
+    private KeyHook onKeyLeft = (keyEvent, args) -> {
+        Drawing drw = (Drawing)args[0];
+        DrawingFrame drwFrame = (DrawingFrame)args[1];
+        int state = (int)args[2];
+        switch(state) {
+            case 0:
+                drw.restore();
+                break;
+            case 1:
+                drw.restore("negative");
+                break;
+            case 2:
+                drw.restore("grayscale");
+                break;
+        }
+        drwFrame.setStatusMessage(String.format("Snapshot %d applied!", state));
+        drwFrame.repaint();
+        state = (state + 1) % 3;
+        args[2] = state;
+    };
+
     @Test
     public void snapshotTest() throws IOException {
         Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
         DrawingFrame drwFrame = new DrawingFrame(drw);
         drwFrame.open();
-        drwFrame.setStatusMessage("Frame opened.");
-        drwFrame.breakStep();
-        Graphics2D g = drw.getGraphics();
-        g.setColor(Color.BLACK);
-        g.drawLine(0, 0, drw.getWidth(), drw.getHeight());
-        drwFrame.setStatusMessage("Diagonal down drawn.");
-        drwFrame.breakStep();
+        drwFrame.breakStep("Frame opened.");
+        for (int x = 0; x < drw.getWidth(); x++) {
+            for (int y = 0; y < drw.getHeight(); y++) {
+                int origRGB = drw.getImage().getRGB(x, y);
+                drw.getImage().setRGB(x, y, ~origRGB);
+            }
+        }
+        drw.snapshot("negative");
+        drwFrame.breakStep("Negative snapshot taken!");
         drw.restore();
-        drwFrame.setStatusMessage("Image restored to default snapshot.");
-        drwFrame.breakStep();
-        g.drawLine(0, drw.getHeight(), drw.getWidth(), 0);
-        drw.snapshot();
-        g.drawLine(0, 0, drw.getWidth(), drw.getHeight());
-        drwFrame.setStatusMessage("Diagonal up > snapshot > Diagonal down.");
-        drwFrame.breakStep();
-        drw.restore();
-        drwFrame.setStatusMessage("Restore to default snapshot (diagonal up).");
-        drwFrame.breakJump();
+        for (int x = 0; x < drw.getWidth(); x++) {
+            for (int y = 0; y < drw.getHeight(); y++) {
+                Color origCol = new Color(drw.getImage().getRGB(x, y));
+                int avg = (origCol.getRed() + origCol.getGreen() + origCol.getBlue()) / 3;
+                Color newCol = new Color(avg, avg, avg);
+                drw.getImage().setRGB(x, y, newCol.getRGB());
+            }
+        }
+        drw.snapshot("grayscale");
+        drwFrame.breakStep("Grayscale snapshot taken");
+        drwFrame.setKeyPressedHook(KeyEvent.VK_LEFT, onKeyLeft, drw, drwFrame, 0);
         drwFrame.close();
+        System.out.println("Snapshot test terminated");
     }
 
     private static KeyHook _onXTyped = (keyEvent, args) -> {
