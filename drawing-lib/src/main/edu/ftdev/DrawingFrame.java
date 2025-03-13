@@ -291,7 +291,7 @@ public class DrawingFrame implements
 
     // #region: [Interface] DbgControls overrides
     /**
-     * In "step" mode, this method pauses the execution with a default empty string message.
+     * In <i><b>step</b></i> mode, this method suspends the execution with a default empty string message.
      * It does nothing in any other modes.
      * @return true if execution was suspended, false otherwise.
      * @see #breakStep(String, Object...)
@@ -302,8 +302,8 @@ public class DrawingFrame implements
     }
 
     /**
-     * In "step" mode, this method pauses the execution. It does nothing in any other modes.
-     * When execution is paused, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
+     * In <i><b>step</b></i> mode, this method suspends the execution. It does nothing in any other modes.
+     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
      * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
      * @param format the format of the message string labeling the breaking point.
      * @param args the arguments for the format of the message string.
@@ -317,7 +317,7 @@ public class DrawingFrame implements
     }
 
     /**
-     * In "step" mode, this method pauses the execution. In "leap" mode, it delays the execution
+     * In <i><b>step</b></i> mode, this method suspends the execution. In <i><b>leap</b></i> mode, it delays the execution
      * for the given number of milliseconds, with a default empty string message.
      * It does nothing in any other mode.
      * @param delay - milliseconds to delay execution in "continuous" mode.
@@ -330,24 +330,26 @@ public class DrawingFrame implements
     }
     
     /**
-     * In "step" mode, this method pauses the execution. In "leap" mode, it delays the execution
+     * In <i><b>step</b></i>, this method suspends the execution. In <i><b>leap</b></i> mode, it delays the execution
      * for the given number of milliseconds.
-     * When execution is paused or delayed, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
+     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
      * @param delay - milliseconds to delay execution in "continuous" mode.
-     * @param breakMessage the message labeling the breaking point.
+     * @param format the format of the message string labeling the breaking point.
+     * @param args the arguments for the format of the message string.
      * @return true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep(long)
      */
     @Override
-    public boolean breakStep(long delay, String breakMessage) {
-        return step(DbgLevel.STEP.value(), delay, breakMessage);
+    public boolean breakStep(long delay, String format, Object... args) {
+        return step(DbgLevel.STEP.value(), delay, format, args);
     }
 
     /**
-     * In "step" or "leap" modes, this method pauses the execution until resumed, with a
-     * default empty string message. It does nothing in "jump" or "run" modes.
+     * In <i><b>step</b></i> or <i><b>leap</b></i> modes, this method suspends the execution until resumed, with a
+     * default empty string message. It does nothing in <i><b>jump</b></i> or <i><b>run</b></i> modes.
      * @return true if execution was suspended, false otherwise.
-     * @see #breakLeap(String)
+     * @see #breakLeap(String, Object...)
      */
     @Override
     public boolean breakLeap() {
@@ -355,23 +357,25 @@ public class DrawingFrame implements
     }
     
     /**
-     * In "step" or "leap" modes, this method pauses the execution until resumed.
-     * It does nothing in "jump" or "run" modes.
-     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
-     * @param breakMessage the message labeling the breaking point.
+     * In <i><b>step</b></i> or <i><b>leap</b></i> modes, this method suspends the execution until resumed.
+     * It does nothing in <i><b>jump</b></i> or <i><b>run</b></i> modes.
+     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
+     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
+     * @param format the format of the message string labeling the breaking point.
+     * @param args the arguments for the format of the message string.
      * @return true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep(String, Object...)
-     * @see DbgControls#breakJump(String)
+     * @see DbgControls#breakJump(String, Object...)
      */
     @Override
-    public boolean breakLeap(String breakMessage) {
-        return step(DbgLevel.LEAP.value(), Long.MAX_VALUE, breakMessage);
+    public boolean breakLeap(String format, Object... args) {
+        return step(DbgLevel.LEAP.value(), Long.MAX_VALUE, format, args);
     }
 
     /**
-     * In "step", "leap" or "jump" modes, this method pauses the execution until resumed,
+     * In <i><b>step</b></i>, <i><b>leap</b></i> or <i><b>jump</b></i> modes, this method suspends the execution until resumed,
      * with a default empty string message
-     * It does nothing in "run" mode.
+     * It does nothing in <i><b>run</b></i> mode.
      * @return true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep()
      * @see DbgControls#breakLeap()
@@ -382,20 +386,22 @@ public class DrawingFrame implements
     }
 
      /**
-     * In "step", "leap" or "jump" modes, this method pauses the execution until resumed.
-     * It does nothing in "run" mode.
-     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
-     * @param breakMessage the message labeling the breaking point.
+     * In <i><b>step</b></i>, <i><b>leap</b></i> or <i><b>jump</b></i> modes, this method suspends the execution until resumed.
+     * It does nothing in <i><b>run</b></i> mode.
+     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
+     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
+     * @param format the format of the message string labeling the breaking point.
+     * @param args the arguments for the format of the message string.
      * @return true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep()
      * @see DbgControls#breakLeap()
      */
     @Override
-    public boolean breakJump(String breakMessage) {
-        return step(DbgLevel.JUMP.value(), Long.MAX_VALUE, breakMessage);
+    public boolean breakJump(String format, Object... args) {
+        return step(DbgLevel.JUMP.value(), Long.MAX_VALUE, format, args);
     }
     
-    private boolean step(int level, long delay, String breakMessage) {
+    private boolean step(int level, long delay, String format, Object... args) {
         // if the execution mode is at a break level which would not cause an interruption,
         // or mouse custom hooks are in effect and this is the main thread, just return instantly (no-op).
         // if mouse custom hooks are in effect, break controls are expected to be in the hooks. UI
@@ -437,6 +443,7 @@ public class DrawingFrame implements
         _canvas.repaint();
 
         // output the current stack trace for all but step() (to give a chance for user-provided text to show in the UI)
+        String breakMessage = String.format(format, args);
         String crtStatusText = _statusText.getText();
         if (!breakMessage.isEmpty()) {
             _statusText.setText(breakMessage);

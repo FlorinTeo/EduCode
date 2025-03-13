@@ -182,6 +182,7 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * It does nothing in any other modes.
      * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
+     * @see DbgControls#breakStep()
      * @see #breakStep(String, Object...)
      */
     @Override
@@ -190,14 +191,16 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
     }
 
     /**
-     * When running in <i>step</i> mode, this method suspends the execution waiting for an explicit action to continue.
-     * It does nothing in any other modes. To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
+     * When running in <i><b>step</b></i> mode, this method suspends the execution waiting for an explicit action to continue.
+     * It does nothing in any other modes.
      * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
      * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
+     * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
      * @param format the format of the message string labeling the breaking point.
      * @param args the arguments for the format of the message string.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
-     * @see DbgControls#breakStep()
+     * @see DbgControls#breakStep(String, Object...)
+     * @see #breakStep(long, String, Object...)
      */
     @Override
     public boolean breakStep(String format, Object... args) {
@@ -208,12 +211,14 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
     }
 
     /**
-     * When running in <i>step</i> mode, this method delays the execution for the given number of milliseconds.
-     * It does nothing in any other mode.
+     * In <i><b>step</b></i> mode, this method suspends the execution. In <i><b>leap</b></i> mode, it delays the execution
+     * for the given number of milliseconds, with a default empty string message. It does nothing in any other mode.
      * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
-     * @param delay milliseconds to delay the execution.
+     * @param delay - milliseconds to delay execution in "continuous" mode.
+     * @return true if execution was suspended, false otherwise.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
-     * @see #breakStep(long, String)
+     * @see DbgControls#breakStep(long)
+     * @see #breakStep(long, String, Object...)
      */
     @Override
     public boolean breakStep(long delay) {
@@ -221,29 +226,36 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
     }
 
     /**
-     * When running in <i>step</i> mode, this method delays the execution for the given number of milliseconds.
-     * It does nothing in any other mode.
-     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * In <i><b>step</b></i>, this method suspends the execution. In <i><b>leap</b></i> mode, it delays the execution
+     * for the given number of milliseconds.
+     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
+     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
      * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
-     * @param delay milliseconds to delay the execution.
-     * @param breakMessage the message labeling the breaking point.
+     * @param delay - milliseconds to delay execution in "continuous" mode.
+     * @param format the format of the message string labeling the breaking point.
+     * @param args the arguments for the format of the message string.
+     * @return true if execution was suspended, false otherwise.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
-     * @see DbgControls#breakStep(long)
+     * @see DbgControls#breakStep(long, String, Object...)
+     * @see #breakLeap()
      */
     @Override
-    public boolean breakStep(long delay, String breakMessage) {
+    public boolean breakStep(long delay, String format, Object... args) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        return _drawingFrame.breakStep(delay, breakMessage);
+        return _drawingFrame.breakStep(delay, format, args);
     }
 
     /**
-     * When running in <i>step</i> or <i>leap</i> modes, this method pauses the execution waiting for an explicit action to continue.
-     * It does nothing in <i>jump</i> or <i>run</i> modes. 
+     * In <i><b>step</b></i> or <i><b>leap</b></i> modes, this method suspends the execution until resumed, with a
+     * default empty string message. It does nothing in <i><b>jump</b></i> or <i><b>run</b></i> modes.
      * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
+     * @return true if execution was suspended, false otherwise.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
      * @see DbgControls#breakLeap()
+     * @see #breakLeap(String, Object...)
+     * 
      */
     @Override
     public boolean breakLeap() {
@@ -251,50 +263,59 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
     }
 
     /**
-     * When running in <i>step</i> or <i>leap</i> modes, this method pauses the execution waiting for an explicit action to continue.
-     * It does nothing in <i>jump</i> or <i>run</i> modes. 
-     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * In <i><b>step</b></i> or <i><b>leap</b></i> modes, this method suspends the execution until resumed.
+     * It does nothing in <i><b>jump</b></i> or <i><b>run</b></i> modes.
+     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
+     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
      * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
-     * @param breakMessage the message labeling the breaking point.
+     * @param format the format of the message string labeling the breaking point.
+     * @param args the arguments for the format of the message string.
+     * @return true if execution was suspended, false otherwise.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
-     * @see DbgControls#breakLeap()
+     * @see DbgControls#breakLeap(String, Object...)
+     * @see #breakJump()
      */
     @Override
-    public boolean breakLeap(String breakMessage) {
+    public boolean breakLeap(String format, Object... args) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        return _drawingFrame.breakLeap(breakMessage);
+        return _drawingFrame.breakLeap(format, args);
     }
 
      /**
-     * When running in <i>step</i>, <i>leap</i> or <i>jump</i> modes, this method pauses the execution waiting for an explicit action to continue.
-     * It does nothing in <i>run</i> mode.
+     * In <i><b>step</b></i>, <i><b>leap</b></i> or <i><b>jump</b></i> modes, this method suspends the execution until resumed,
+     * with a default empty string message
+     * It does nothing in <i><b>run</b></i> mode.
      * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
+     * @return true if execution was suspended, false otherwise.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
      * @see DbgControls#breakJump()
+     * @see #breakJump(String, Object...)
      */
     @Override
     public boolean breakJump() {
         return breakJump("");
     }
-    // #endregion: [Public] DbgControls overrides
 
     /**
-     * When running in <i>step</i>, <i>leap</i> or <i>jump</i> modes, this method pauses the execution waiting for an explicit action to continue.
-     * It does nothing in <i>run</i> mode.
-     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
+     * In <i><b>step</b></i>, <i><b>leap</b></i> or <i><b>jump</b></i> modes, this method suspends the execution until resumed.
+     * It does nothing in <i><b>run</b></i> mode.
+     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
+     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
      * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
-     * @param breakMessage the message labeling the breaking point.
+     * @param format the format of the message string labeling the breaking point.
+     * @param args the arguments for the format of the message string.
+     * @return true if execution was suspended, false otherwise.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
-     * @see DbgControls#breakJump()
+     * @see DbgControls#breakJump(String, Object...)
      */
     @Override
-    public boolean breakJump(String breakMessage) {
+    public boolean breakJump(String format, Object... args) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        return _drawingFrame.breakJump(breakMessage);
+        return _drawingFrame.breakJump(format, args);
     }
     // #endregion: [Public] DbgControls overrides 
 }
