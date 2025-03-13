@@ -291,8 +291,7 @@ public class DrawingFrame implements
 
     // #region: [Interface] DbgControls overrides
     /**
-     * In <i><b>step</b></i> mode, this method suspends the execution with a default empty string message.
-     * It does nothing in any other modes.
+     * Suspends the execution if the program runs in <i><b>step</b></i> mode. It does nothing in any other modes.
      * @return true if execution was suspended, false otherwise.
      * @see #breakStep(String, Object...)
      */
@@ -302,9 +301,9 @@ public class DrawingFrame implements
     }
 
     /**
-     * In <i><b>step</b></i> mode, this method suspends the execution. It does nothing in any other modes.
-     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
-     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
+     * Suspends the execution if the program runs in <i><b>step</b></i> mode.
+     * When execution is suspended, the <i>format</i> and <i>args</i> parameters are used to compose a message which is shown in the lower-right status bar. 
+     * The message is formatted according to syntax described in {@link String#format(String, Object...)} documentation.
      * @param format the format of the message string labeling the breaking point.
      * @param args the arguments for the format of the message string.
      * @return true if execution was suspended, false otherwise.
@@ -317,8 +316,7 @@ public class DrawingFrame implements
     }
 
     /**
-     * In <i><b>step</b></i> mode, this method suspends the execution. In <i><b>leap</b></i> mode, it delays the execution
-     * for the given number of milliseconds, with a default empty string message.
+     * Suspends the execution if the program runs in <i><b>step</b></i> mode, delays it for a number of milliseconds in <i><b>leap</b></i> mode.
      * It does nothing in any other mode.
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @return true if execution was suspended, false otherwise.
@@ -330,10 +328,10 @@ public class DrawingFrame implements
     }
     
     /**
-     * In <i><b>step</b></i>, this method suspends the execution. In <i><b>leap</b></i> mode, it delays the execution
-     * for the given number of milliseconds.
-     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
-     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
+     * Suspends the execution if the program runs in <i><b>step</b></i> mode, delays it for a number of milliseconds in <i><b>leap</b></i> mode.
+     * It does nothing in any other mode.
+     * When execution is suspended, the <i>format</i> and <i>args</i> parameters are used to compose a message which is shown in the lower-right status bar. 
+     * The message is formatted according to syntax described in {@link String#format(String, Object...)} documentation.
      * @param delay - milliseconds to delay execution in "continuous" mode.
      * @param format the format of the message string labeling the breaking point.
      * @param args the arguments for the format of the message string.
@@ -346,8 +344,8 @@ public class DrawingFrame implements
     }
 
     /**
-     * In <i><b>step</b></i> or <i><b>leap</b></i> modes, this method suspends the execution until resumed, with a
-     * default empty string message. It does nothing in <i><b>jump</b></i> or <i><b>run</b></i> modes.
+     * Suspends the execution if the program runs in <i><b>step</b></i> or <i><b>leap</b></i> modes.
+     * It does nothing in <i><b>jump</b></i> or <i><b>run</b></i> modes.
      * @return true if execution was suspended, false otherwise.
      * @see #breakLeap(String, Object...)
      */
@@ -357,10 +355,10 @@ public class DrawingFrame implements
     }
     
     /**
-     * In <i><b>step</b></i> or <i><b>leap</b></i> modes, this method suspends the execution until resumed.
+     * Suspends the execution if the program runs in <i><b>step</b></i> or <i><b>leap</b></i> modes.
      * It does nothing in <i><b>jump</b></i> or <i><b>run</b></i> modes.
-     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
-     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
+     * When execution is suspended, the <i>format</i> and <i>args</i> parameters are used to compose a message which is shown in the lower-right status bar. 
+     * The message is formatted according to syntax described in {@link String#format(String, Object...)} documentation.
      * @param format the format of the message string labeling the breaking point.
      * @param args the arguments for the format of the message string.
      * @return true if execution was suspended, false otherwise.
@@ -373,8 +371,7 @@ public class DrawingFrame implements
     }
 
     /**
-     * In <i><b>step</b></i>, <i><b>leap</b></i> or <i><b>jump</b></i> modes, this method suspends the execution until resumed,
-     * with a default empty string message
+     * Suspends the execution if the program runs in <i><b>step</b></i>, <i><b>leap</b></i> or <i><b>jump</b></i> modes.
      * It does nothing in <i><b>run</b></i> mode.
      * @return true if execution was suspended, false otherwise.
      * @see DbgControls#breakStep()
@@ -386,10 +383,10 @@ public class DrawingFrame implements
     }
 
      /**
-     * In <i><b>step</b></i>, <i><b>leap</b></i> or <i><b>jump</b></i> modes, this method suspends the execution until resumed.
+     * Suspends the execution if the program runs in <i><b>step</b></i>, <i><b>leap</b></i> or <i><b>jump</b></i> modes.
      * It does nothing in <i><b>run</b></i> mode.
-     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
-     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
+     * When execution is suspended, the <i>format</i> and <i>args</i> parameters are used to compose a message which is shown in the lower-right status bar. 
+     * The message is formatted according to syntax described in {@link String#format(String, Object...)} documentation.
      * @param format the format of the message string labeling the breaking point.
      * @param args the arguments for the format of the message string.
      * @return true if execution was suspended, false otherwise.
