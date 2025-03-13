@@ -189,6 +189,7 @@ public class DrawingFrame_tests {
         Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
         DrawingFrame drwFrame = new DrawingFrame(drw);
         drwFrame.open();
+        drwFrame.setStatusMessage("Press arrow down while waiting to close!");
         drwFrame.setKeyPressedHook(KeyEvent.VK_DOWN, onKey, drwFrame, 0);
         drwFrame.close();
     }
