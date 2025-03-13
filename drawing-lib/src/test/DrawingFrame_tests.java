@@ -93,7 +93,7 @@ public class DrawingFrame_tests {
                 drw.restore("grayscale");
                 break;
         }
-        drwFrame.setStatusMessage(String.format("Snapshot %d applied!", state));
+        drwFrame.setStatusMessage("Snapshot %d applied!", state);
         drwFrame.repaint();
         state = (state + 1) % 3;
         args[2] = state;

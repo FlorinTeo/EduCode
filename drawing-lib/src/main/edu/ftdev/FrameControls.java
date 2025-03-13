@@ -22,11 +22,13 @@ public interface FrameControls extends Closeable {
     public void repaint();
 
     /**
-     * Prints out the given message in the status bar area, the lower right corner
-     * of the drawing frame.
-     * @param message - message to be printed in the status bar area.
+     * Prints out the given message in the status bar area, the lower right corner of
+     * the drawing frame. The message is composed by <i>format</i> and <i>args</i>,
+     * their usage is defined in {@link String#format(String, Object...)} documentation.
+     * @param format the format of the message string.
+     * @param args the arguments for the format of the message string.
      */
-    public void setStatusMessage(String message);
+    public void setStatusMessage(String format, Object... args);
 
     /**
      * Closes the drawing window.

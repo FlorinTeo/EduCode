@@ -294,7 +294,7 @@ public class DrawingFrame implements
      * In "step" mode, this method pauses the execution with a default empty string message.
      * It does nothing in any other modes.
      * @return true if execution was suspended, false otherwise.
-     * @see #breakStep(String)
+     * @see #breakStep(String, Object...)
      */
     @Override
     public boolean breakStep() {
@@ -303,13 +303,16 @@ public class DrawingFrame implements
 
     /**
      * In "step" mode, this method pauses the execution. It does nothing in any other modes.
-     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
-     * @param breakMessage the message labeling the breaking point.
+     * When execution is paused, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
+     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
+     * @param format the format of the message string labeling the breaking point.
+     * @param args the arguments for the format of the message string.
      * @return true if execution was suspended, false otherwise.
-     * @see DbgControls#breakStep(String)
+     * @see DbgControls#breakStep(String, Object...)
      */
     @Override
-    public boolean breakStep(String breakMessage) {
+    public boolean breakStep(String format, Object... args) {
+        String breakMessage = String.format(format, args);
         return step(DbgLevel.STEP.value(), Long.MAX_VALUE, breakMessage);
     }
 
@@ -357,7 +360,7 @@ public class DrawingFrame implements
      * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
      * @param breakMessage the message labeling the breaking point.
      * @return true if execution was suspended, false otherwise.
-     * @see DbgControls#breakStep(String)
+     * @see DbgControls#breakStep(String, Object...)
      * @see DbgControls#breakJump(String)
      */
     @Override
@@ -541,12 +544,14 @@ public class DrawingFrame implements
     
     /**
      * Prints out the given message in the status bar area, the lower right corner of
-     * the drawing window.
-     * @param message - message to be printed in the status bar area.
+     * the drawing window. The message is composed by <i>format</i> and <i>args</i>,
+     * their usage is defined in {@link String#format(String, Object...)} documentation.
+     * @param format the format of the message string.
+     * @param args the arguments for the format of the message string.
      */
     @Override
-    public void setStatusMessage(String message) {
-        _statusText.setText(message);
+    public void setStatusMessage(String format, Object... args) {
+        _statusText.setText(String.format(format, args));
     }
     
     /**

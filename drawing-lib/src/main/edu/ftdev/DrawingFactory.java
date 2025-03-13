@@ -104,16 +104,18 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
 
     /**
      * Prints out the given message in the status bar area, the lower right corner of
-     * the drawing window.
-     * @param message message to be printed in the status bar area.
+     * the drawing frame. The message is composed by <i>format</i> and <i>args</i>,
+     * their usage is defined in {@link String#format(String, Object...)} documentation.
+     * @param format the format of the message string.
+     * @param args the arguments for the format of the message string.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
      */
     @Override
-    public void setStatusMessage(String message) {
+    public void setStatusMessage(String format, Object... args) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        _drawingFrame.setStatusMessage(message);
+        _drawingFrame.setStatusMessage(format, args);
     }
 
     /**
@@ -180,7 +182,7 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
      * It does nothing in any other modes.
      * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
-     * @see #breakStep(String)
+     * @see #breakStep(String, Object...)
      */
     @Override
     public boolean breakStep() {
@@ -189,19 +191,20 @@ public abstract class DrawingFactory implements DbgControls, FrameControls {
 
     /**
      * When running in <i>step</i> mode, this method suspends the execution waiting for an explicit action to continue.
-     * It does nothing in any other modes.
-     * When execution is paused, <i>breakMessage</i> is shown in the lower-right status bar. 
-     * To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
-     * @param breakMessage the message labeling the breaking point.
+     * It does nothing in any other modes. To resume, press any of the '1', '2', '3' or '&lt;space&gt;' keys or click on the the corresponding button on the DrawingFrame.
+     * When execution is suspended, a message composed by <i>format</i> and <i>args</i> is shown in the lower-right status bar. 
+     * The <i>format</i> and <i>args</i> syntax is defined in {@link String#format(String, Object...)} documentation.
+     * @param format the format of the message string labeling the breaking point.
+     * @param args the arguments for the format of the message string.
      * @throws IllegalStateException if the DrawingFrame has not been initialized.
      * @see DbgControls#breakStep()
      */
     @Override
-    public boolean breakStep(String breakMessage) {
+    public boolean breakStep(String format, Object... args) {
         if (_drawingFrame == null) {
             throw new IllegalStateException("Drawing window not initialized.");
         }
-        return _drawingFrame.breakStep(breakMessage);
+        return _drawingFrame.breakStep(format, args);
     }
 
     /**
