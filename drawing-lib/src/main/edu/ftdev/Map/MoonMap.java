@@ -18,7 +18,7 @@ import edu.ftdev.MouseInterceptor.MouseHook;
 
 public class MoonMap extends DrawingFactory {
     /**
-     * Constructs a new MoonMap object from an image file. The image is loaded either
+     * Create a new MoonMap object from an image file. The image is loaded either
      * from the disk or from within the resources of this package (i.e. "moon.jpg").
      * @param mapImagePath path to the image file, directory or resource.
      * @throws IOException if the map image cannot be located at the given path.
@@ -36,7 +36,7 @@ public class MoonMap extends DrawingFactory {
 
     // #region: [Public] Key and Mouse hooking methods
     /**
-     * Registers a key hook for the given key. The key hook is a lambda
+     * Register a key hook for the given key. The key hook is a lambda
      * function that will be called whenever the key is pressed.
      * @param key the key to be hooked.
      * @param hook the lambda function to be called when the key is pressed.
@@ -47,7 +47,7 @@ public class MoonMap extends DrawingFactory {
     }
 
      /**
-     * Sets a mouse hook to be called when the left mouse button is clicked.
+     * Set a mouse hook to be called when the left mouse button is clicked.
      * @param mouseHook the mouse hook to be called when the button is clicked
      * or null if the event should not be intercepted.
      * @param args additional arguments to be passed to the mouse hook when called.
@@ -57,7 +57,7 @@ public class MoonMap extends DrawingFactory {
     }
 
     /**
-     * Gets the X-coordinate of the point in the image targeted by a mouse event.
+     * Get the X-coordinate of the point in the image targeted by a mouse event.
      * @param mouseEvent the mouse event that was intercepted.
      * @return the X coordinate of the mouse pointer.
      */
@@ -66,7 +66,7 @@ public class MoonMap extends DrawingFactory {
     }
 
     /**
-     * Gets the Y-coordiante of the point in the image targeted by a mouse event.
+     * Get the Y-coordiante of the point in the image targeted by a mouse event.
      * @param mouseEvent the mouse event that was intercepted.
      * @return the Y-coordiante of the mouse pointer.
      */
@@ -89,8 +89,8 @@ public class MoonMap extends DrawingFactory {
 
     // #region [Public] Surfaced methods from inner Drawing/DrawingFramework
     /**
-     * Takes a snapshot of the current MoonMap image and saves it internally.
-     * Subsequent calls to {@link #restore()} method will restore this image into the map.
+     * Take a snapshot of the current MoonMap image. Snapshot is saved internally in the MoonMap object and can be restored later 
+     * with subsequent calls to the {@link #restore()} method
      * @see #restore()
      */
     public void snapshot() {
@@ -98,17 +98,16 @@ public class MoonMap extends DrawingFactory {
     }
 
     /**
-     * Takes a snapshot of the current MoonMap and saves it internally, under the given <i>name</i>.
-     * If a previous snapshot with an identical <i>name</i> exists it will be overwritten.
-     * The same image can be restored later by using the {@link #restore(String)} method
-     * @see #restore()
+     * Take a named snapshot of the current MoonMap. Snapshot is saved internally in the MoonMap object and can be restored later
+     * with subsequent calls to the {@link #restore(String)} method. If a previous snapshot with an identical <i>name</i> exists it will be overwritten.
+     * @see #restore(String)
      */
     public void snapshot(String name) {
         _drawing.snapshot(name);
     }
 
     /**
-     * Restores the image from the most recently taken snapshot. By default, a snapshot is taken at the
+     * Restore the image from the most recently taken snapshot. By default, a snapshot is taken at the
      * creation of the MoonMap image.
      * @see #snapshot()
      */
@@ -117,8 +116,7 @@ public class MoonMap extends DrawingFactory {
     }
 
     /**
-     * Restores the image of the most recently taken snapshot, labeled with <i>name</i>.
-     * If no such snapshot can be located, an exception is thrown.  
+     * Restores the image of the most recently taken named snapshot. If no such snapshot can be located, an exception is thrown.  
      * @see #snapshot(String)
      * @throws IllegalArgumentException if the snapshot cannot be located.
      */
@@ -129,8 +127,8 @@ public class MoonMap extends DrawingFactory {
 
     // #region [Public] MoonMap APIs
     /**
-     * Gets the colors of each pixel in a specific rectangular area of the map. The area is identified
-     * by the row and col coordinates of its top-left corner and its width and height, in pixels.
+     * Get a matrix of pixels from a specific rectangular area of the map. The area is identified
+     * by the <i>x</i> and <i>y</i> coordinates of its top-left corner and its <i>width</i> and <i>height</i>, in pixels.
      * This method expects the entire area to be contained within the image bounds.
      * @param x the X-coordinate of the top-left corner of the area.
      * @param y the Y-coordinate of the top-left corner of the area.
@@ -158,10 +156,9 @@ public class MoonMap extends DrawingFactory {
     }
 
     /**
-     * Sets the colors of each pixel in a specific rectangular area of the map. The colors are
-     * fetched from a two dimensional matrix. The pixels are copied in an area of <i>width</i>
-     * and <i>height</i> pixels matching the number of rows and columns in the matrix.
-     * The top-left corner of the area is located at (<i>row</i>, <i>col</i>) coordinate.
+     * Set a matrix of pixels to a specific rectangular area of the map. The pixels are copied in an
+     * area of <i>width</i> and <i>height</i> pixels, matching the number of rows and columns in the matrix.
+     * The top-left corner of the area is located at (<i>x</i> and <i>y</i>) coordinate.
      * This method expects the entire area to be contained within the image bounds. 
      * @param x the X-coordinate of the top-left corner of the area.
      * @param y the Y-coordinate of the top-left corner of the area.
