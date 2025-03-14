@@ -111,7 +111,9 @@ public class DrawingFrame_tests {
                 drw.getImage().setRGB(x, y, ~origRGB);
             }
         }
+        assertFalse(drw.hasSnapshot("negative"));
         drw.snapshot("negative");
+        assertTrue(drw.hasSnapshot("negative"));
         drwFrame.breakStep("Negative snapshot taken!");
         drw.restore();
         for (int x = 0; x < drw.getWidth(); x++) {
@@ -123,8 +125,10 @@ public class DrawingFrame_tests {
             }
         }
         drw.snapshot("grayscale");
+        assertTrue(drw.hasSnapshot("grayscale"));
         drwFrame.breakStep("Grayscale snapshot taken");
         drwFrame.setKeyPressedHook(KeyEvent.VK_LEFT, onKeyLeft, drw, drwFrame, 0);
+        drwFrame.setStatusMessage("Press left arrow to flip through snapshots!");
         drwFrame.close();
         System.out.println("Snapshot test terminated");
     }

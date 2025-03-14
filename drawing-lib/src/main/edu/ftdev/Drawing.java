@@ -135,6 +135,15 @@ public class Drawing implements AutoCloseable {
     }
 
     /**
+     * Indicates whether a snapshot with the given <i>name</i> had been previously taken.
+     * @param name the name of the snapshot to check.
+     * @return true if the snapshot exists, false otherwise.
+     */
+    public boolean hasSnapshot(String name) {
+        return _snapshots.containsKey(name);
+    }
+
+    /**
      * Restores the drawing from a previous snapshot. If the drawing was created from a file,
      * this method restores it to the file image. If the drawing was created as a blank canvas,
      * this method clears the canvas to its original blank state.

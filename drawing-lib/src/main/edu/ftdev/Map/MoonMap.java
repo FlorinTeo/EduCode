@@ -107,6 +107,15 @@ public class MoonMap extends DrawingFactory {
     }
 
     /**
+     * Indicates whether a snapshot with the given <i>name</i> had been previously taken.
+     * @param name the name of the snapshot to check.
+     * @return true if the snapshot exists, false otherwise.
+     */
+    public boolean hasSnapshot(String name) {
+        return _drawing.hasSnapshot(name);
+    }
+
+    /**
      * Restore the image from the most recently taken snapshot. By default, a snapshot is taken at the
      * creation of the MoonMap image.
      * @see #snapshot()
