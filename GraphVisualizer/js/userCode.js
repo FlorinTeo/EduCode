@@ -478,8 +478,10 @@ export class UserCode extends CoreCode {
      */
     async run() {
         console.outln("---- Starting user-defined code! ----");
-        let selection = console.getSelection();
-        switch(selection.toLowerCase()) {
+        let selection = console.getSelection().split(/\s+/);
+        let cmd = selection.shift();
+        let args = selection;
+        switch(cmd.toLowerCase()) {
             case 'loadtree':
                 await this.loadGraph("exprTree.txt");
                 break;
@@ -509,7 +511,12 @@ export class UserCode extends CoreCode {
                 }
                 break;
             case 'loadgraph':
-                await this.loadGraph("graph.txt");
+                if (args.length == 0) {
+                    await this.loadGraph("graph.txt");
+                } else {
+                    await this.loadGraph(`unit5/${args[0]}.txt`);
+                    console.outln(`loadGraph ${args[0]}`);
+                }
                 break;
             case 'spanningtree':
                 console.outln("Run Spanning Tree algo.");
