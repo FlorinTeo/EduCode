@@ -282,6 +282,45 @@ export class UserCode extends CoreCode {
     //#endregion tree algorithms
 
     //#region graph algorithms
+    async runPartitioning() {
+        let crtPartition = 0;
+        queue.clear();
+        graph.nodes.forEach(n => { queue.enqueue(n); });
+        await this.step(this.#delay());
+        while(queue.size() > 0) {
+            graph.nodes.forEach(n => { n.marker = 0;});
+            crtPartition++;
+            let node = queue.dequeue();
+            node.traverse(n => { 
+                n.state = crtPartition;
+                n.colorIndex = (crtPartition == ColorIndex.length) ? 1 : crtPartition + 1;});
+            await this.step(this.#delay());
+            let again;
+            do {
+                again = false;
+                for(let i = queue.size(); i > 0; i--) {
+                    let node2 = queue.dequeue();
+                    if (node2.state != 0) {
+                        continue;
+                    }
+                    let isTouching = false;
+                    node2.neighbors.forEach(n => { if (n.state != 0) { isTouching = true; }});
+                    if (isTouching) {
+                        node2.traverse(n => {
+                            n.state = crtPartition;
+                            n.colorIndex = (crtPartition == ColorIndex.length) ? 1 : crtPartition + 1;});
+                        again = true;
+                    } else {
+                        queue.enqueue(node2);
+                    }
+                }
+            } while(again);
+            await this.step(this.#delay());
+        }
+        await this.step(this.#delay());
+        return crtPartition;
+    }
+    
     async runSpanningTree() {
         // pick up inputs in the algo
         if (!await this.setup("root")) {
@@ -518,6 +557,10 @@ export class UserCode extends CoreCode {
                     console.outln(`loadGraph ${args[0]}`);
                 }
                 break;
+            case 'partition':
+                console.outln("Run the Partitioning algo.");
+                await this.runPartitioning();
+                break;
             case 'spanningtree':
                 console.outln("Run Spanning Tree algo.");
                 await this.runSpanningTree();
@@ -544,6 +587,7 @@ export class UserCode extends CoreCode {
                 console.outln("    avlCheck     : checks AVL search and balance properties of a tree.");
                 console.outln("  --------------");
                 console.outln("  loadGraph  : loads a sample graph.");
+                console.outln("    partition    : runs the graph partitioning algo..");
                 console.outln("    spanningTree : runs the Spanning tree algo.");
                 console.outln("    bfs          : runs Breath-First-Search algo.");
                 console.outln("    dijkstra     : runs Dijkstra algo.");
