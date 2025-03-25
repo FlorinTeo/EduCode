@@ -285,7 +285,10 @@ export class UserCode extends CoreCode {
     async runPartitioning() {
         let crtPartition = 0;
         queue.clear();
-        graph.nodes.forEach(n => { queue.enqueue(n); });
+        graph.nodes.forEach(n => {
+            n.colorIndex = ColorIndex.Gray;
+            n.state = 0;
+            queue.enqueue(n); });
         await this.step(this.#delay());
         while(queue.size() > 0) {
             crtPartition++;
@@ -317,9 +320,7 @@ export class UserCode extends CoreCode {
                     }
                 }
             } while(again);
-            await this.step(this.#delay());
         }
-        await this.step(this.#delay());
         return crtPartition;
     }
     
