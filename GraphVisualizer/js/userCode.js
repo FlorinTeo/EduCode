@@ -288,12 +288,12 @@ export class UserCode extends CoreCode {
         graph.nodes.forEach(n => { queue.enqueue(n); });
         await this.step(this.#delay());
         while(queue.size() > 0) {
-            graph.nodes.forEach(n => { n.marker = 0;});
             crtPartition++;
             let node = queue.dequeue();
-            node.traverse(n => { 
+            graph.traverse(n => { 
                 n.state = crtPartition;
-                n.colorIndex = (crtPartition == ColorIndex.length) ? 1 : crtPartition + 1;});
+                n.colorIndex = (crtPartition == ColorIndex.length) ? 1 : crtPartition + 1;},
+                node);
             await this.step(this.#delay());
             let again;
             do {
@@ -306,9 +306,10 @@ export class UserCode extends CoreCode {
                     let isTouching = false;
                     node2.neighbors.forEach(n => { if (n.state != 0) { isTouching = true; }});
                     if (isTouching) {
-                        node2.traverse(n => {
+                        graph.traverse(n => {
                             n.state = crtPartition;
-                            n.colorIndex = (crtPartition == ColorIndex.length) ? 1 : crtPartition + 1;});
+                            n.colorIndex = (crtPartition == ColorIndex.length) ? 1 : crtPartition + 1;},
+                            node2);
                         again = true;
                     } else {
                         queue.enqueue(node2);

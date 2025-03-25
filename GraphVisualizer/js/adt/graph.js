@@ -99,25 +99,31 @@ export class Graph {
         }
     }
 
-    traverse(lambda) {
+    traverse(lambda, startNode) {
         // reset all the node markers
         for (const node of this.nodes) {
             node.marker = 0;
         }
-        // repeteadly ...
-        let done = false;
-        while (!done) {
-            done = true;
-            // look for an un-marked node
-            for (const node of this.nodes) {
-                // and if found, traverse the node and do it all over again
-                if (node.marker == 0) {
-                    node.traverse(lambda);
-                    done = false;
-                    break;
+        // if startNode is provided, traverse graph starting only from it
+        if (startNode) {
+            startNode.traverse(lambda);
+        } else {
+            // otherwise traverse from each unmarked node, until all nodes are visited.
+            let done = false;
+            while (!done) {
+                done = true;
+                // look for an un-marked node
+                for (const node of this.nodes) {
+                    // and if found, traverse the node and do it all over again
+                    if (node.marker == 0) {
+                        node.traverse(lambda);
+                        done = false;
+                        break;
+                    }
                 }
             }
         }
+
     }
 
     reLabel(node, newLabel) {
