@@ -311,6 +311,7 @@ export class UserCode extends CoreCode {
                             n.colorIndex = (crtPartition == ColorIndex.length) ? 1 : crtPartition + 1;},
                             node2);
                         again = true;
+                        await this.step(this.#delay());
                     } else {
                         queue.enqueue(node2);
                     }
