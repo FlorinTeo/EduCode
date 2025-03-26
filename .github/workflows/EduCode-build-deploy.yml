@@ -71,7 +71,7 @@ jobs:
           name: build-drop
           path: ./.build/
 
-#------- Deploy the generated builkd artifact to github-pages
+#------- Deploy the generated build artifact to github-pages
   deploy:
     runs-on: ubuntu-latest
     environment:
