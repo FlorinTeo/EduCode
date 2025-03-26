@@ -673,14 +673,17 @@ public class MazeCanvas extends DrawingFactory {
     private static final double PLATE_PADDING_MM = 0.5;
     private static final double PLATE_HEIGHT_MM = 0.5;
 
+    private static final double MAX_CELL_WIDTH_MM = 4.0;
+
     /**
      * The ground level of the STL model, where the maze is placed.
      */
     public static final double STL_GROUND_LEVEL = BASE_HEIGHT_MM + PLATE_HEIGHT_MM;
 
     public STLModel createSTLModel() {
-        double widthMM = _nCols * _cellWidth;
-        double lengthMM = _nRows * _cellWidth;
+        double cellWidth = Math.min(MAX_CELL_WIDTH_MM, _cellWidth);
+        double widthMM = _nCols * cellWidth;
+        double lengthMM = _nRows * cellWidth;
         if (widthMM > STLModel.MAX_WIDTH_MM || lengthMM > STLModel.MAX_LENGTH_MM) {
             double mazeRatio = widthMM / lengthMM;
             double modelRatio = STLModel.MAX_WIDTH_MM / STLModel.MAX_LENGTH_MM;
