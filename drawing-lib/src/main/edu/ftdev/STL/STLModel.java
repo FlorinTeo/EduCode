@@ -12,8 +12,7 @@ public class STLModel {
     private List<STLPrism> _prisms;
    
     /**
-     * Constructs a new empty model with the given list of prisms.
-     * @param prisms The list of prisms that compose the model.
+     * Constructs a new empty STLModel.
      */
     public STLModel() {
         _prisms = new ArrayList<STLPrism>();
