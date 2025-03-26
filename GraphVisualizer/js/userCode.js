@@ -282,6 +282,29 @@ export class UserCode extends CoreCode {
     //#endregion tree algorithms
 
     //#region graph algorithms
+    async runTraversal() {
+        // pick up inputs in the algo
+        if (!await this.setup("root")) {
+            return;
+        }
+        let root = this.#startNode;
+        queue.clear();
+        queue.enqueue(root);
+        while(queue.size() != 0){
+            let node = queue.dequeue();
+            node.colorIndex=ColorIndex.Red;
+            for(const n of node.neighbors){
+                if(n.colorIndex == ColorIndex.Gray){
+                    n.colorIndex = ColorIndex.Green;
+                    queue.enqueue(n);
+                    await this.step(this.#delay());
+                }
+            }
+            node.colorIndex=ColorIndex.Green;
+            await this.step(this.#delay());
+        }
+    }
+
     async runPartitioning() {
         let crtPartition = 0;
         queue.clear();
@@ -560,6 +583,10 @@ export class UserCode extends CoreCode {
                     console.outln(`loadGraph ${args[0]}`);
                 }
                 break;
+            case 'traverse':
+                console.outln("Run the Traversal(root) algo.");
+                await this.runTraversal();
+                break;
             case 'partition':
                 console.outln("Run the Partitioning algo.");
                 await this.runPartitioning();
@@ -590,8 +617,9 @@ export class UserCode extends CoreCode {
                 console.outln("    avlCheck     : checks AVL search and balance properties of a tree.");
                 console.outln("  --------------");
                 console.outln("  loadGraph  : loads a sample graph.");
+                console.outln("    traverse     : runs the Traversal algo.");
                 console.outln("    partition    : runs the graph partitioning algo..");
-                console.outln("    spanningTree : runs the Spanning tree algo.");
+                console.outln("    spanningTree : runs the Spanning algo.");
                 console.outln("    bfs          : runs Breath-First-Search algo.");
                 console.outln("    dijkstra     : runs Dijkstra algo.");
                 console.outln("    astar        : runs the A* algo.");
