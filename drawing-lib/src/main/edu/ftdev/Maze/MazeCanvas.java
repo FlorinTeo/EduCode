@@ -667,11 +667,16 @@ public class MazeCanvas extends DrawingFactory {
     }
 
     // #region: [Public] STL model generation methods
-    private static final double BASE_PADDING_MM = 2;
+    public static final double BASE_PADDING_MM = 2;
     private static final double BASE_HEIGHT_MM = 1;
     
     private static final double PLATE_PADDING_MM = 0.5;
     private static final double PLATE_HEIGHT_MM = 0.5;
+
+    /**
+     * The ground level of the STL model, where the maze is placed.
+     */
+    public static final double STL_GROUND_LEVEL = BASE_HEIGHT_MM + PLATE_HEIGHT_MM;
 
     public STLModel createSTLModel() {
         double widthMM = _nCols * _cellWidth;
