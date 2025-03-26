@@ -1,7 +1,5 @@
 package edu.ftdev.STL;
 
-import javafx.geometry.Point3D;
-
 /**
  * A class representing a prism in the 3D space, with a rectangular base and height.
  * The prism can be serialized in an STL file, which is a common format for 3D printing.
@@ -13,10 +11,10 @@ public class STLPrism {
 
         // Internal class modeling a single triangular facet of the face.
         private class _STLFacet {
-            private Point3D _normal;
-            private Point3D[] _vertices;
+            private STLPoint _normal;
+            private STLPoint[] _vertices;
             
-            public _STLFacet(Point3D... vertices) {
+            public _STLFacet(STLPoint... vertices) {
                 if (vertices.length != 3) {
                     throw new IllegalArgumentException("Facet must have exactly 3 vertices");
                 }
@@ -24,9 +22,9 @@ public class STLPrism {
                 _normal = calculateNormal();
             }
     
-            private Point3D calculateNormal() {
-                Point3D v1 = _vertices[1].subtract(_vertices[0]);
-                Point3D v2 = _vertices[2].subtract(_vertices[0]);
+            private STLPoint calculateNormal() {
+                STLPoint v1 = _vertices[1].subtract(_vertices[0]);
+                STLPoint v2 = _vertices[2].subtract(_vertices[0]);
                 return v1.crossProduct(v2).normalize();
             }
 
@@ -41,7 +39,7 @@ public class STLPrism {
                 String output = "";
                 output += String.format("  facet normal %f %f %f\n", _normal.getX(), _normal.getY(), _normal.getZ());
                 output += "    outer loop\n";
-                for (Point3D vertex : _vertices) {
+                for (STLPoint vertex : _vertices) {
                     output += String.format("      vertex %f %f %f\n", vertex.getX(), vertex.getY(), vertex.getZ());
                 }
                 output += "    endloop\n";
@@ -52,7 +50,7 @@ public class STLPrism {
             @Override
             public String toString() {
                 String output = "";
-                for (Point3D vertex : _vertices) {
+                for (STLPoint vertex : _vertices) {
                     output += String.format("     STLFacet: %5.1f %5.1f %5.1f\n", vertex.getX(), vertex.getY(), vertex.getZ());
                 }
                 return output;
@@ -61,7 +59,7 @@ public class STLPrism {
     
         private _STLFacet[] _facets;
 
-        public _STLFace(Point3D... vertices) {
+        public _STLFace(STLPoint... vertices) {
             if (vertices.length != 4) {
                 throw new IllegalArgumentException("Face must have exactly 4 vertices");
             }
@@ -101,7 +99,7 @@ public class STLPrism {
         }
     }
 
-    private Point3D _origin;
+    private STLPoint _origin;
     private int _length;
     private int _width;
     private int _height;
@@ -114,7 +112,7 @@ public class STLPrism {
      * @param length The length of the prism in the y direction.
      * @param height The height of the prism in the z direction.
      */
-    public STLPrism(Point3D origin, int width, int length, int height) {
+    public STLPrism(STLPoint origin, int width, int length, int height) {
         _origin = origin;
         _width = width;
         _length = length;
