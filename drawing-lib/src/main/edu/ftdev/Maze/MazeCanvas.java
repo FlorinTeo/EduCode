@@ -12,6 +12,9 @@ import java.util.Set;
 import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFactory;
 import edu.ftdev.DrawingFrame;
+import edu.ftdev.STL.STLModel;
+import edu.ftdev.STL.STLPrism;
+import edu.ftdev.STL.STLPoint;
 
 /**
  * MazeCanvas provides the basic building blocks for generating and displaying mazes.
@@ -661,6 +664,42 @@ public class MazeCanvas extends DrawingFactory {
     */
     public boolean eraseShade(int row, int col) {
         return drawShade(row, col, Color.WHITE);
+    }
+
+    // #region: [Public] STL model generation methods
+    private static final double BASE_PADDING_MM = 2;
+    private static final double BASE_HEIGHT_MM = 1;
+    
+    private static final double PLATE_PADDING_MM = 0.5;
+    private static final double PLATE_HEIGHT_MM = 0.5;
+
+    public STLModel createSTLModel() {
+        double widthMM = _nCols * _cellWidth;
+        double lengthMM = _nRows * _cellWidth;
+        if (widthMM > STLModel.MAX_WIDTH_MM || lengthMM > STLModel.MAX_LENGTH_MM) {
+            double mazeRatio = widthMM / lengthMM;
+            double modelRatio = STLModel.MAX_WIDTH_MM / STLModel.MAX_LENGTH_MM;
+            double shrinkRatio = (mazeRatio > modelRatio) 
+                ? STLModel.MAX_WIDTH_MM / widthMM
+                : STLModel.MAX_LENGTH_MM / lengthMM;
+                widthMM *= shrinkRatio;
+                lengthMM *= shrinkRatio;
+        }
+
+        STLModel model = new STLModel(widthMM, lengthMM);
+
+        model.add(
+            new STLPrism(
+                new STLPoint(-BASE_PADDING_MM, -BASE_PADDING_MM, 0),
+                widthMM + 2 * BASE_PADDING_MM,
+                lengthMM + 2 * BASE_PADDING_MM,
+                BASE_HEIGHT_MM),
+            new STLPrism(
+                new STLPoint(-PLATE_PADDING_MM, -PLATE_PADDING_MM, BASE_HEIGHT_MM),
+                widthMM + 2 * PLATE_PADDING_MM,
+                lengthMM + 2 * PLATE_PADDING_MM,
+                PLATE_HEIGHT_MM));
+        return model;
     }
     // #endregion: [Public] methods
 }

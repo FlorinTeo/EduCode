@@ -7,11 +7,10 @@ import edu.ftdev.STL.STLPoint;
 public class STL_tests {
     @Test
     public void basicTest() {
-        STLModel model = new STLModel();
+        STLModel model = new STLModel(150, 100);
         model.add(
-            new STLPrism(new STLPoint(-5, -5, 0), 30, 40, 20),
-            new STLPrism(new STLPoint(0, 0, 20), 20, 30, 10));
+            new STLPrism(new STLPoint(-2, -2, 0), 84, 64, 5),
+            new STLPrism(new STLPoint(0, 0, 5), 80, 60, 2));
         System.out.println(model.serialize());
     }
-    
 }

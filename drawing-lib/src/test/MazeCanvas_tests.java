@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import edu.ftdev.Maze.MazeCanvas;
 import edu.ftdev.Maze.MazeCanvas.Side;
+import edu.ftdev.STL.STLModel;
 
 public class MazeCanvas_tests {
     @Test
@@ -140,5 +141,12 @@ public class MazeCanvas_tests {
         }
         mazeCanvas.breakJump();
         mazeCanvas.close();
+    }
+
+    @Test
+    public void stlTest() {
+        MazeCanvas mc = new MazeCanvas(40, 80, 10);
+        STLModel model = mc.createSTLModel();
+        System.out.println(model.serialize());
     }
 }

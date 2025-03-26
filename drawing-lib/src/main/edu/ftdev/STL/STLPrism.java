@@ -7,10 +7,10 @@ package edu.ftdev.STL;
 public class STLPrism {
 
     // Internal class modeling a single rectangular face of the prism.
-    private class _STLFace {
+    class _STLFace {
 
         // Internal class modeling a single triangular facet of the face.
-        private class _STLFacet {
+        class _STLFacet {
             private STLPoint _normal;
             private STLPoint[] _vertices;
             
@@ -99,11 +99,12 @@ public class STLPrism {
         }
     }
 
-    private STLPoint _origin;
-    private int _length;
-    private int _width;
-    private int _height;
-    private _STLFace[] _faces;
+    // Internal fields of the prism.
+    STLPoint _origin;
+    double _length;
+    double _width;
+    double _height;
+    _STLFace[] _faces;
 
     /**
      * Constructs a new prism with the given origin, width, length, and height.
@@ -112,7 +113,7 @@ public class STLPrism {
      * @param length The length of the prism in the y direction.
      * @param height The height of the prism in the z direction.
      */
-    public STLPrism(STLPoint origin, int width, int length, int height) {
+    public STLPrism(STLPoint origin, double width, double length, double height) {
         _origin = origin;
         _width = width;
         _length = length;
