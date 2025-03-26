@@ -27,7 +27,7 @@ jobs:
             mvn clean
             mvn compile
             mvn package
-            mvn install -Djavafx.platform=linux
+            mvn install
             mvn site
         working-directory: ./drawing-lib
 
