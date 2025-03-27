@@ -22,9 +22,9 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 
 /**
- * SudokuBoard class is providing a framework for interacting with a <a href="https://en.wikipedia.org/wiki/Sudoku" target="_blank">Sudoku puzzle</a>.
- * A Sudoku puzzle is a 9x9 grid, with the top-left corner at position (0,0). The grid is pre-populated with a few numerical digits (values 1 to 9),
- * each occuring only once in:
+ * SudokuBoard class is providing a framework for interacting with a <a href="https://en.wikipedia.org/wiki/Sudoku" target="_blank"><b>Sudoku</b></a>
+ * puzzle. A Sudoku puzzle is a nine-by-nine grid, with the top-left corner at position (0,0). The grid is pre-populated with a few numerical digits
+ * (values 1 to 9), each occuring exactly once in:
  * <ul>
  * <li>the row,</li>
  * <li>the column,</li>
@@ -35,8 +35,10 @@ import java.awt.Color;
  * instance provides methods for determining if a position is set or pinned. The following image shows a sample SudokuBoard: </p>
  * <p> <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Sudoku/SudokuBoard-spec.jpg" alt="SudokuBoard-spec.jpg" width="320">
  * </p>
- * This board is loaded from a text file, "sudoku3.txt". The numbers in black are pinned, as the starting state of the puzzle.
- * The numbers in red were added as demonstrated in the code below:
+ * This board is loaded from a text file,
+ * <a href="https://github.com/FlorinTeo/EduCode/blob/main/drawing-lib/src/res/Sudoku/Sudoku3.txt" target="_blank"><i>sudoku3.txt</i></a>,
+ * provided in the package. The digits in black are pinned (pre-filled), as the starting state of the puzzle.
+ * The digits in red were added as demonstrated by the following code snippet:
  * <pre>
  * SudokuBoard board = new SudokuBoard("sudoku3.txt");
  * board.open();
@@ -51,7 +53,7 @@ import java.awt.Color;
  * board.getValue(8, 8);  // returns 0
  * board.getValue(8, 7);  // returns 3
  * </pre>
- * The SudokuBoard is a subclass of DrawingFactory, which provides methods for interacting with the window frame, 
+ * The SudokuBoard is a subclass of {@link DrawingFactory}, which provides methods for interacting with the window frame, 
  * and for pausing and resuming the execution of the program in any specific code locations.
   */
  public class SudokuBoard extends DrawingFactory {
