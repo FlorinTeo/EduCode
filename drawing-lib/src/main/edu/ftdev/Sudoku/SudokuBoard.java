@@ -31,7 +31,7 @@ import java.awt.Color;
  * <li>the 3x3 subgrid it is placed in.</li>
  * </ul>
  * The puzzle is solved when all the remaining open positions are filled in, such that the above rules hold true.
- * <p> A puzzle can be loaded in a SudokuBoard instance which can be used to read or set any value at any position. In addition, the
+ * <p> A puzzle can be loaded in a SudokuBoard instance which can be used to read or set any digit at any position. In addition, the
  * instance provides methods for determining if a position is set or pinned. The following image shows a sample SudokuBoard: </p>
  * <p> <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Sudoku/SudokuBoard-spec.jpg" alt="SudokuBoard-spec.jpg" width="320">
  * </p>
@@ -57,11 +57,11 @@ import java.awt.Color;
  public class SudokuBoard extends DrawingFactory {
     // #region [Private] SudokuCell class
     private class SudokuCell {
-        private int _value;
+        private int _digit;
         private boolean _isPinned;
 
-        public SudokuCell(int value, boolean isPinned) {
-            _value = value;
+        public SudokuCell(int digit, boolean isPinned) {
+            _digit = digit;
             _isPinned = isPinned;
         }
     }
@@ -233,7 +233,7 @@ import java.awt.Color;
                 g.fillRect(
                     xOrigin + CELL_BORDER, yOrigin + CELL_BORDER,
                     CELL_SIZE - 2 * CELL_BORDER, CELL_SIZE - 2 * CELL_BORDER);
-                // finally fill the cell with the value
+                // finally fill the cell with the digit
                 writeCell(row, col);
             }
         }
@@ -255,16 +255,16 @@ import java.awt.Color;
 
         g.setColor(isPinned(row, col) ? Color.BLACK : _TEXT_COLOR);
         g.setFont(_TEXT_FONT);
-        if (cell._value != 0) {
+        if (cell._digit != 0) {
 
             // Get the FontMetrics to calculate text dimensions
             FontMetrics fm = g.getFontMetrics();
-            int textWidth = fm.stringWidth(Integer.toString(cell._value));
+            int textWidth = fm.stringWidth(Integer.toString(cell._digit));
             int textHeight = fm.getAscent();
 
             // Draw the string
             g.drawString(
-                Integer.toString(cell._value),
+                Integer.toString(cell._digit),
                 xOrigin + CELL_SIZE / 2 - (textWidth / 2),
                 yOrigin + CELL_SIZE / 2 + (textHeight / 2) - 2);
         }
@@ -280,7 +280,7 @@ import java.awt.Color;
     
     // #region: [Public] Board methods
     /**
-     * Determines if a grid position contains a pinned number.
+     * Determines if a grid position contains a pinned digit.
      * @param row the row of the grid position to be tested.
      * @param col the column of the grid position to be tested.
      * @return true if the grid position is pinned.
@@ -291,46 +291,47 @@ import java.awt.Color;
     }
 
     /**
-     * Determines if a grid position is filled in with a valid number.
+     * Determines if a grid position is set with a valid one-digit value in the 1-9 range.
+     * Note that no check is made for the uniqueness of the digit in the row, column or subgrid.
      * @param row the row of the grid position to be tested.
      * @param col the column of the grid position to be tested.
      * @return true if the grid position is set.
      */
     public boolean isSet(int row, int col) {
         SudokuCell cell = getCell(row, col);
-        return (cell._value != 0);
+        return (cell._digit != 0);
     }
 
     /**
-     * Gives the value at a given position in the grid.
+     * Gives the digit at a given position in the grid. A digit of 0 means the position is not set.
      * @param row the row of the grid position to be fetched.
      * @param col the column of the grid position to be fetched.
-     * @return the value in the given grid position or 0 if non was set.
+     * @return the digit in the given grid position or 0 if non was set.
      */
     public int getValue(int row, int col) {
         SudokuCell cell = getCell(row, col);
-        return cell._value;
+        return cell._digit;
     }
 
     /**
-     * Sets a value at a given grid position.
+     * Sets a digit at a given grid position. Setting a digit of 0 means the position is cleared.
      * @param row the row of the grid position to be set.
      * @param col the column of the grid position to be set.
-     * @param value the value to be set in the given grid position.
-     * @return the previous value in the given grid position.
-     * @throws InvalidParameterException if either the grid position is out of range or the value is outside the 1-9 range.
-     * @throws IllegalStateException if the position to be set already contains a pinned number (which cannot be changed).
+     * @param digit the digit to be set in the given grid position.
+     * @return the previous digit in the given grid position.
+     * @throws InvalidParameterException if either the grid position is out of range or the digit is outside the 1-9 range.
+     * @throws IllegalStateException if the position to be set already contains a pinned digit (which cannot be changed).
      */
-    public int setValue(int row, int col, int value) {
+    public int setValue(int row, int col, int digit) {
         SudokuCell cell = getCell(row, col);
-        if (value < 0 || value > 9) {
-            throw new InvalidParameterException(String.format("Invalid board value: %d", value));
+        if (digit < 0 || digit > 9) {
+            throw new InvalidParameterException(String.format("Invalid board digit: %d", digit));
         }
         if (cell._isPinned) {
-            throw new IllegalStateException(String.format("Can't modify value of pinned cell: (%d, %d)", row, col));
+            throw new IllegalStateException(String.format("Can't modify digit of pinned cell: (%d, %d)", row, col));
         }
-        int prev = cell._value;
-        cell._value = value;
+        int prev = cell._digit;
+        cell._digit = digit;
         writeCell(row, col);
         return prev;
     }
@@ -344,7 +345,7 @@ import java.awt.Color;
         for(SudokuCell[] boardRow : _board) {
             for (SudokuCell cell : boardRow) {
                 if (!cell._isPinned) {
-                    cell._value = 0;
+                    cell._digit = 0;
                 }
             }
         }
