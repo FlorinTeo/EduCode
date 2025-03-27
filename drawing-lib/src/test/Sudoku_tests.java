@@ -44,14 +44,14 @@ public class Sudoku_tests {
         exc = assertThrows(InvalidParameterException.class, ()->{
             board.set(2, 2, 10);
         });
-        assertEquals("Invalid board value: 10", exc.getMessage());
+        assertEquals("Invalid board digit: 10", exc.getMessage());
         board.breakStep();
 
         board.setStatusMessage("Test illegal writing pinned value");
         exc = assertThrows(IllegalStateException.class, ()->{
             board.set(0, 0, 3);
         });
-        assertEquals("Can't modify value of pinned cell: (0, 0)", exc.getMessage());
+        assertEquals("Can't modify digit of pinned cell: (0, 0)", exc.getMessage());
         board.breakJump();
         board.close();
     }
