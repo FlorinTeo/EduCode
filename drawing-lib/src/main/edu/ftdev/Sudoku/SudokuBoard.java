@@ -22,12 +22,14 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 
 /**
- * SudokuBoard class is providing a framework for interacting with a <a href="https://en.wikipedia.org/wiki/Sudoku">Sudoku puzzle</a>.
+ * SudokuBoard class is providing a framework for interacting with a <a href="https://en.wikipedia.org/wiki/Sudoku" target="_blank">Sudoku puzzle</a>.
  * A Sudoku puzzle is a 9x9 grid, with the top-left corner at position (0,0). The grid is pre-populated with a few numerical digits (values 1 to 9),
  * each occuring only once in:
+ * <ul>
  * <li>the row,</li>
  * <li>the column,</li>
  * <li>the 3x3 subgrid it is placed in.</li>
+ * </ul>
  * The puzzle is solved when all the remaining open positions are filled in, such that the above rules hold true.
  * <p> A puzzle can be loaded in a SudokuBoard instance which can be used to read or set any value at any position. In addition, the
  * instance provides methods for determining if a position is set or pinned. The following image shows a sample SudokuBoard: </p>
