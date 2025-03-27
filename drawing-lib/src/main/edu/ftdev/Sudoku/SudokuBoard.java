@@ -23,14 +23,13 @@ import java.awt.Color;
 
 /**
  * SudokuBoard class is providing a framework for interacting with a <a href="https://en.wikipedia.org/wiki/Sudoku">Sudoku puzzle</a>.
- * A Sudoku board is a 9x9 grid of numbers, with the top-left corner at position (0,0). Each number is in the range
- * 1-9. The puzzle is pre-populated with a few numbers, each occuring only once in their row, column and  
- * the 3x3 subgrid it is placed in. The puzzle is solved when each open position is filled in such that the above rules hold true.
- * A puzzle can be loaded in a SudokuBoard instance which can be used to read or set any value at any position. In addition, the
+ * A Sudoku puzzle is a 9x9 grid, with the top-left corner at position (0,0). The grid is pre-populated with a few numbers, each occuring
+ * only once in the row, column and the 3x3 subgrid it is placed in. Each number is in the range
+ * 1-9. The puzzle is solved when the remaining open positions are filled in, such that the above rules hold true.
+ * <p> A puzzle can be loaded in a SudokuBoard instance which can be used to read or set any value at any position. In addition, the
  * instance provides methods for determining if a position is set or pinned.
- * <p> The following image shows a sample SudokuBoard: </p>
- * <p>
- * <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Sudoku/SudokuBoard-spec.jpg" alt="SudokuBoard-spec.jpg" width="320">
+ * The following image shows a sample SudokuBoard: </p>
+ * <p> <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Sudoku/SudokuBoard-spec.jpg" alt="SudokuBoard-spec.jpg" width="320">
  * </p>
  * This board is loaded from a text file, "sudoku3.txt". The numbers in black are pinned, as the starting state of the puzzle.
  * The numbers in red were added as demonstrated in the code below:
