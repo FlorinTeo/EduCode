@@ -23,12 +23,14 @@ import java.awt.Color;
 
 /**
  * SudokuBoard class is providing a framework for interacting with a <a href="https://en.wikipedia.org/wiki/Sudoku">Sudoku puzzle</a>.
- * A Sudoku puzzle is a 9x9 grid, with the top-left corner at position (0,0). The grid is pre-populated with a few numbers, each occuring
- * only once in the row, column and the 3x3 subgrid it is placed in. Each number is in the range
- * 1-9. The puzzle is solved when the remaining open positions are filled in, such that the above rules hold true.
+ * A Sudoku puzzle is a 9x9 grid, with the top-left corner at position (0,0). The grid is pre-populated with a few numerical digits (values 1 to 9),
+ * each occuring only once in:
+ * <li>the row,</li>
+ * <li>the column,</li>
+ * <li>the 3x3 subgrid it is placed in.</li>
+ * The puzzle is solved when all the remaining open positions are filled in, such that the above rules hold true.
  * <p> A puzzle can be loaded in a SudokuBoard instance which can be used to read or set any value at any position. In addition, the
- * instance provides methods for determining if a position is set or pinned.
- * The following image shows a sample SudokuBoard: </p>
+ * instance provides methods for determining if a position is set or pinned. The following image shows a sample SudokuBoard: </p>
  * <p> <img src="https://florinteo.github.io/EduCode/DrawingLib/res/Sudoku/SudokuBoard-spec.jpg" alt="SudokuBoard-spec.jpg" width="320">
  * </p>
  * This board is loaded from a text file, "sudoku3.txt". The numbers in black are pinned, as the starting state of the puzzle.
@@ -83,7 +85,7 @@ import java.awt.Color;
      * Constructs a new SudokuBoard from a text file containing the specification of a puzzle. The format
      * of the specification file is demonstrated in the five puzzles preloaded in this package, which can
      * be viewed <a href="https://github.com/FlorinTeo/EduCode/tree/main/drawing-lib/src/res/Sudoku" target="_blank">here</a>.
-     * Any custom puzzle can be loaded as long as the <i>filePath</i> leads to a text file with a valid puzzle format.
+     * Any other custom puzzle can be loaded as long as the <i>filePath</i> leads to a text file with a valid puzzle format.
      * @param filePath the path to the text file containing the Sudoku board spec.
      * @throws IOException if the Sudoku board spec file cannot be located or loaded.
      */
