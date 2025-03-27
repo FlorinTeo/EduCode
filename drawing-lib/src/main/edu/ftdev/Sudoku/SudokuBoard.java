@@ -57,6 +57,18 @@ import java.awt.Color;
  * and for pausing and resuming the execution of the program in any specific code locations.
   */
  public class SudokuBoard extends DrawingFactory {
+
+    // #region [Public] Class constants
+    /**
+     * Number of rows in the Sudoku puzzle board. The value is 9.
+     */
+    public int NROWS = 9;
+    /**
+     * Number of columns in the Sudoku puzzle board. The value is 9.
+     */
+    public int NCOLS = 9;
+    // #endregion [Public] Class constants
+
     // #region [Private] SudokuCell class
     private class SudokuCell {
         private int _digit;
@@ -310,7 +322,7 @@ import java.awt.Color;
      * @param col the column of the grid position to be fetched.
      * @return the digit in the given grid position or 0 if non was set.
      */
-    public int getValue(int row, int col) {
+    public int get(int row, int col) {
         SudokuCell cell = getCell(row, col);
         return cell._digit;
     }
@@ -324,7 +336,7 @@ import java.awt.Color;
      * @throws InvalidParameterException if either the grid position is out of range or the digit is outside the 1-9 range.
      * @throws IllegalStateException if the position to be set already contains a pinned digit (which cannot be changed).
      */
-    public int setValue(int row, int col, int digit) {
+    public int set(int row, int col, int digit) {
         SudokuCell cell = getCell(row, col);
         if (digit < 0 || digit > 9) {
             throw new InvalidParameterException(String.format("Invalid board digit: %d", digit));
