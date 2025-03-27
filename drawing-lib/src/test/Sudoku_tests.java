@@ -65,6 +65,12 @@ public class Sudoku_tests {
         board.setValue(4, 4, 1);
         board.setValue(6, 6, 4);
         board.breakStep();
+        assertFalse(board.isPinned(2, 2));
+        assertTrue(board.isSet(7, 5));
+        assertTrue(board.isPinned(7, 5));
+        assertFalse(board.isSet(8, 8));
+        assertEquals(0, board.getValue(8, 8));
+        assertEquals(3, board.getValue(8, 7));
         board.reset();
         assertFalse(board.isSet(2, 2));
         assertFalse(board.isSet(4, 4));

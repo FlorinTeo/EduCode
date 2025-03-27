@@ -24,9 +24,9 @@ import java.awt.Color;
 /**
  * SudokuBoard class is providing a framework for interacting with a <a href="https://en.wikipedia.org/wiki/Sudoku">Sudoku puzzle</a>.
  * A Sudoku board is a 9x9 grid of numbers, with the top-left corner at position (0,0). Each number is in the range
- * 1-9. The puzzle is pre-populated with a few pinned numbers, each occuring once in the row, column and  
- * the 3x3 subgrid it is placed in. The puzzle is solved when each open position is filled in, such that the above rules stand true.
- * A puzzle can be loaded in a SudokuBoard instance which can be used to read or set any valid value at any valid position. In addition, the
+ * 1-9. The puzzle is pre-populated with a few numbers, each occuring only once in their row, column and  
+ * the 3x3 subgrid it is placed in. The puzzle is solved when each open position is filled in such that the above rules hold true.
+ * A puzzle can be loaded in a SudokuBoard instance which can be used to read or set any value at any position. In addition, the
  * instance provides methods for determining if a position is set or pinned.
  * <p> The following image shows a sample SudokuBoard: </p>
  * <p>
@@ -41,6 +41,12 @@ import java.awt.Color;
  * board.setValue(4, 4, 1);
  * board.setValue(6, 6, 4);
  * board.breakStep();
+ * board.isPinned(2, 2);  // returns false
+ * board.isSet(7, 5);     // returns true
+ * board.isPinnned(7, 5); // returns true
+ * board.isSet(8, 8);     // returns false
+ * board.getValue(8, 8);  // returns 0
+ * board.getValue(8, 7);  // returns 3
  * </pre>
  * The SudokuBoard is a subclass of DrawingFactory, which provides methods for interacting with the window frame, 
  * and for pausing and resuming the execution of the program in any specific code locations.
