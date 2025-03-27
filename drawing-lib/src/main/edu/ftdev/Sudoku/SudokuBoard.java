@@ -42,16 +42,16 @@ import java.awt.Color;
  * <pre>
  * SudokuBoard board = new SudokuBoard("sudoku3.txt");
  * board.open();
- * board.setValue(2, 2, 8);
- * board.setValue(4, 4, 1);
- * board.setValue(6, 6, 4);
+ * board.set(2, 2, 8);
+ * board.set(4, 4, 1);
+ * board.set(6, 6, 4);
  * board.breakStep();
  * board.isPinned(2, 2);  // returns false
  * board.isSet(7, 5);     // returns true
  * board.isPinnned(7, 5); // returns true
  * board.isSet(8, 8);     // returns false
- * board.getValue(8, 8);  // returns 0
- * board.getValue(8, 7);  // returns 3
+ * board.get(8, 8);  // returns 0
+ * board.get(8, 7);  // returns 3
  * </pre>
  * The SudokuBoard is a subclass of {@link DrawingFactory}, which provides methods for interacting with the window frame, 
  * and for pausing and resuming the execution of the program in any specific code locations.
@@ -100,7 +100,7 @@ import java.awt.Color;
     /**
      * Constructs a new SudokuBoard from a text file containing the specification of a puzzle. The format
      * of the specification file is demonstrated in the five puzzles preloaded in this package, which can
-     * be viewed <a href="https://github.com/FlorinTeo/EduCode/tree/main/drawing-lib/src/res/Sudoku" target="_blank">here</a>.
+     * be viewed <a href="https://github.com/FlorinTeo/EduCode/tree/main/drawing-lib/src/res/Sudoku" target="_blank"><b>here</b></a>.
      * Any other custom puzzle can be loaded as long as the <i>filePath</i> leads to a text file with a valid puzzle format.
      * @param filePath the path to the text file containing the Sudoku board spec.
      * @throws IOException if the Sudoku board spec file cannot be located or loaded.
