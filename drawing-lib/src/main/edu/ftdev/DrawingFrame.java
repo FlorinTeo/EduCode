@@ -413,7 +413,7 @@ public class DrawingFrame implements
 
         // From here on, we know execution is affected: either suspended or delayed.
         // If suspended, change the face of the corresponding button.
-        if (delay == Long.MAX_VALUE) {
+        if (_keyInterceptor.blocksOnLevel(level)) {
             switch(level) {
             case 1: // step()
                 _dbgButtons[0].setFace(BtnFace.STOPPED);
