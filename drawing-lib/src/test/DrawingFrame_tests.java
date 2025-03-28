@@ -197,4 +197,19 @@ public class DrawingFrame_tests {
         drwFrame.setKeyPressedHook(KeyEvent.VK_DOWN, onKey, drwFrame, 0);
         drwFrame.close();
     }
+
+    @Test
+    public void testDebugButtons() throws InterruptedException {
+        DrawingFrame frame = new DrawingFrame(new Drawing(240, 100, Color.white));
+        frame.open();
+        for (int i = 1; i <= 1000; i++) {
+            if (i % 100 == 0) {
+                frame.breakLeap("Leap %d", i);
+            } else {
+                frame.breakStep(10, "Step %d w/ 10ms delay", i);
+            }
+            Thread.sleep(0);
+        }
+        frame.close();
+    }
 }

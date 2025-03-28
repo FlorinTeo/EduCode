@@ -411,31 +411,6 @@ public class DrawingFrame implements
             return false;
         }
 
-        // From here on, we know execution is affected: either suspended or delayed.
-        // If suspended, change the face of the corresponding button.
-        if (_keyInterceptor.blocksOnLevel(level)) {
-            switch(level) {
-            case 1: // step()
-                _dbgButtons[0].setFace(BtnFace.STOPPED);
-                _dbgButtons[1].setFace(BtnFace.NORMAL);
-                _dbgButtons[2].setFace(BtnFace.NORMAL);
-                _dbgButtons[3].setFace(BtnFace.NORMAL);
-                break;
-            case 2: // leap()
-                _dbgButtons[0].setFace(BtnFace.NORMAL);
-                _dbgButtons[1].setFace(BtnFace.STOPPED);
-                _dbgButtons[2].setFace(BtnFace.NORMAL);
-                _dbgButtons[3].setFace(BtnFace.NORMAL);
-                break;
-            case 3: // jump()
-                _dbgButtons[0].setFace(BtnFace.NORMAL);
-                _dbgButtons[1].setFace(BtnFace.NORMAL);
-                _dbgButtons[2].setFace(BtnFace.STOPPED);
-                _dbgButtons[3].setFace(BtnFace.NORMAL);
-                break;
-            }                
-        }
-
         // Repaint the canvas.
         _canvas.repaint();
 
@@ -450,7 +425,29 @@ public class DrawingFrame implements
         }
 
         // call below may block, depending on the step level in code and the last debug action by the user
-        _keyInterceptor.step(level, delay);
+        // If it blocks, the Runnable passed as last parameter will be executed right before the blocking wait.
+        _keyInterceptor.step(level, delay, () -> {
+            switch(level) {
+                case 1: // step()
+                    _dbgButtons[0].setFace(BtnFace.STOPPED);
+                    _dbgButtons[1].setFace(BtnFace.NORMAL);
+                    _dbgButtons[2].setFace(BtnFace.NORMAL);
+                    _dbgButtons[3].setFace(BtnFace.NORMAL);
+                    break;
+                case 2: // leap()
+                    _dbgButtons[0].setFace(BtnFace.NORMAL);
+                    _dbgButtons[1].setFace(BtnFace.STOPPED);
+                    _dbgButtons[2].setFace(BtnFace.NORMAL);
+                    _dbgButtons[3].setFace(BtnFace.NORMAL);
+                    break;
+                case 3: // jump()
+                    _dbgButtons[0].setFace(BtnFace.NORMAL);
+                    _dbgButtons[1].setFace(BtnFace.NORMAL);
+                    _dbgButtons[2].setFace(BtnFace.STOPPED);
+                    _dbgButtons[3].setFace(BtnFace.NORMAL);
+                    break;
+                }
+        });
 
         // restore the status text after potential blocking stop
         _statusText.setText(crtStatusText);

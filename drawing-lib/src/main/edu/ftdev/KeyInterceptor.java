@@ -313,15 +313,18 @@ public class KeyInterceptor implements KeyListener {
     }
 
     void step(int level) {
-        step(level, Long.MAX_VALUE);
+        step(level, Long.MAX_VALUE, null);
     }
     
-    void step(int level, long delay) {
+    void step(int level, long delay, Runnable preWaitTask) {
         synchronized (_sync) {
             try {
                 // if the level of the step says we should block..
                 if (blocksOnLevel(level)) {
                     // ..wait for user action..
+                    if (preWaitTask != null) {
+                        preWaitTask.run(); // run the pre-wait task if provided
+                    }
                     _sync.wait();
                 } else if (sleepOnLevel(delay, level)){
                     // ..otherwise just delay..
