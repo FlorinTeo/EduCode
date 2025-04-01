@@ -16,22 +16,28 @@ public class Generator {
     private Map<String, Question> _qMap;
     private List<Question> _qList;
     private WebDoc _webDoc;
-    private static Pattern regex = Pattern.compile("\\d+");
+    private static Pattern regex = Pattern.compile("(?:u(\\d+)[^.]*)?\\.[QP](\\d+)");
 
     private List<Question> sort(List<Question> lq) {
-        Map<Integer, Question> map = new TreeMap<Integer, Question>();
-        for(int i = lq.size(); i > 0; i--) {
+        Map<Integer, Question> map = new TreeMap<>();
+        for (int i = lq.size(); i > 0; i--) {
             Question q = lq.remove(0);
             Matcher m = regex.matcher(q.getName());
             if (m.find()) {
-                map.put(Integer.parseInt(m.group()), q);
+                // Extract the first and second numbers
+                String firstNumber = m.group(1) != null ? m.group(1) : "0"; // Optional first number
+                String secondNumber = m.group(2); // Always present
+                int unitNumber = Integer.parseInt(firstNumber);
+                int questionNumber = Integer.parseInt(secondNumber);
+                int combinedNumber = unitNumber * 100 + questionNumber; // Combine the two numbers
+                map.put(combinedNumber, q);
             } else {
                 lq.add(q);
             }
         }
         Collection<Question> c = map.values();
         c.addAll(lq);
-        return new LinkedList<Question>(c);
+        return new LinkedList<>(c);
     }
 
     /**
