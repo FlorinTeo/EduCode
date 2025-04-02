@@ -9,7 +9,7 @@ import java.util.Queue;
 
 public class WebDoc {
     public static final String _PRINT_BREAK = "<div style=\"break-after:page\"></div><br>";
-    public static final int _MAX_PX_PER_PAGE = 920;
+    public static final int _MAX_PX_PER_PAGE = 900;
     public static final int _FRQ_ANSWER_PAGES = 4;
 
     private static final String _TAG_STYLE = "<!--======== STYLE ========-->";
@@ -159,7 +159,7 @@ public class WebDoc {
     private int genBookletHtml(BufferedWriter bw, GMeta gMeta) throws IOException {
         String bkHtml = _answers
             .replaceAll("#TNAME#", gMeta.getName())
-            .replace("#QNUM#", "" + gMeta.getMCQCount());
+            .replaceAll("#TVER#", gMeta.getVersion());
 
         int iMCQ = bkHtml.indexOf(_TAG_ANSWERS_MCQ);
         int iFRQ = bkHtml.indexOf(_TAG_ANSWERS_FRQ);
@@ -193,8 +193,11 @@ public class WebDoc {
         }
 
         String s1Html = _section1
-            .replaceAll("#TNAME#", gMeta.getName())
-            .replace("#QNUM#", "" + gMeta.getMCQCount());
+            .replace("#TNAME#", gMeta.getName())
+            .replace("#TVER#", gMeta.getVersion())
+            .replace("#QTIME#", gMeta.getMCQTime())
+            .replace("#QNUM#", "" + gMeta.getMCQCount())
+            .replace("#QPCT#", gMeta.getMCQPct());
 
         int iMCQ = s1Html.indexOf(_TAG_SECTION1_MCQ);
         bw.write(s1Html.substring(0, iMCQ));
@@ -210,8 +213,11 @@ public class WebDoc {
         }
 
         String s2Html = _section2
-            .replaceAll("#TNAME#", gMeta.getName())
-            .replace("#PNUM#", "" + gMeta.getFRQuestions().size());
+            .replace("#TNAME#", gMeta.getName())
+            .replace("#TVER#", gMeta.getVersion())
+            .replace("#PTIME#", gMeta.getFRQTime())
+            .replace("#PNUM#", "" + gMeta.getFRQuestions().size())
+            .replace("#PPCT#", gMeta.getFRQPct());
 
         int iFRQ = s2Html.indexOf(_TAG_SECTION2_PAGE);
         bw.write(s2Html.substring(0, iFRQ));
@@ -226,7 +232,8 @@ public class WebDoc {
         }
         
         String apxHtml = _appendix
-            .replaceAll("#TNAME#", gMeta.getName());
+            .replaceAll("#TNAME#", gMeta.getName())
+            .replaceAll("#TVER#", gMeta.getVersion());
         int iAPX = apxHtml.indexOf(_TAG_APPENDIX_PAGE);
         bw.write(apxHtml.substring(0, iAPX));
         int nPages = gMeta.genApxHtml(bw, _appendixPage);

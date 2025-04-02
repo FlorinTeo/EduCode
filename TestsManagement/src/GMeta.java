@@ -16,6 +16,7 @@ public class GMeta {
     private static final Gson _GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private String _name;
+    private String _version;
 
     /**
      * Maps the name/index of a question with the specific question and its choices in the chosen (same/shuffled) order.
@@ -36,6 +37,7 @@ public class GMeta {
 
     private void reset() {
         _name = "";
+        _version = "";
         _display = new TreeMap<String, String>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2)
@@ -61,6 +63,7 @@ public class GMeta {
         String jsonMeta = String.join("\n", Files.readAllLines(pMeta));
         GMeta loaded  = _GSON.fromJson(jsonMeta,GMeta.class);
         _name = loaded._name;
+        _version = loaded._version;
         _display = loaded._display;
         _mcQuestions = loaded._mcQuestions;
         _frQuestions = loaded._frQuestions;
@@ -69,9 +72,10 @@ public class GMeta {
         _isAnonymized = loaded._isAnonymized;
     }
 
-    public GMeta(String name, List<Question> qList) {
+    public GMeta(String name, String version, List<Question> qList) {
         reset();
         _name = name;
+        _version = version;
         for(int i = 0; i < qList.size(); i++) {
             Question q = new Question(qList.get(i));
             switch(q.getType().toLowerCase()) {
@@ -101,8 +105,25 @@ public class GMeta {
         return _name;
     }
 
+    public String getVersion() {
+        return _version;
+    }
+
     public int getMCQCount() {
         return _display.keySet().size();
+    }
+
+    public String getMCQTime() {
+        // 2.25 minutes per question rounded up to the next 10 minutes
+        double minMCQ = getMCQCount() * 2.25;
+        return (int)(Math.ceil(minMCQ / 10) * 10) + " minutes";
+    }
+
+    public String getMCQPct() {
+        // 100% if no free response questions, 40% otherwise
+        return getFRQCount() == 0 
+             ? "100%" 
+             : "40%";
     }
 
     public List<Question> getMCQuestions() {
@@ -111,6 +132,19 @@ public class GMeta {
 
     public int getFRQCount() {
         return _frQuestions.size();
+    }
+
+    public String getFRQTime() {
+        // 22.5 minutes per question rounded up to the next 10 minutes
+        double minFRQ = getFRQCount() * 22.5;
+        return (int)(Math.ceil(minFRQ / 10) * 10) + " minutes";
+    }
+
+    public String getFRQPct() {
+        // 100% if no multiple choice questions, 60% otherwise
+        return getMCQCount() == 0 
+             ? "100%" 
+             : "60%";
     }
     
     public List<Question> getFRQuestions() {

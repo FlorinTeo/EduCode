@@ -132,7 +132,7 @@ public class Generator {
     public void genRoot(boolean regenMeta) throws IOException {
         GMeta mRoot;
         if (regenMeta) {
-            mRoot = new GMeta(".", _qList);
+            mRoot = new GMeta(".", "", _qList);
             mRoot.adjustPath(".template/");
             mRoot.save(_pRoot);
         } else {
@@ -154,16 +154,17 @@ public class Generator {
                 qList = _qList;
             } else {
                 HashSet<Question> qSet = new HashSet<Question>();
-                // make sure there are no duplicates in the qIDs
+                qList = new LinkedList<Question>();
+                // make sure the question exists and is not provided more than once in the list
                 for(String qID : qIDs) {
                     if (!_qMap.containsKey(qID) || qSet.contains((Object)qID)) {
                         throw new IllegalArgumentException(String.format("Question %s is non-existent or duplicated!", qID));
                     }
                     qSet.add(_qMap.get(qID));
+                    qList.add(_qMap.get(qID));
                 }
-                qList = new LinkedList<Question>(qSet);
             }
-            mTest = new GMeta(testName, qList);
+            mTest = new GMeta(testName, "", qList);
             mTest.adjustPath("../.template/");
             mTest.anonymize(false);
             mTest.save(pTest);
@@ -184,7 +185,7 @@ public class Generator {
             Path pVariant = Paths.get(pTest.toString(), vIDs[i]);
             GMeta mVariant;
             if (regenMeta) {
-                mVariant = new GMeta(mTest.getName() + "." + vIDs[i], mTest.getQuestions(excFRQs));
+                mVariant = new GMeta(mTest.getName(), vIDs[i], mTest.getQuestions(excFRQs));
                 mVariant.adjustPath("../../.template/");
                 mVariant.anonymize(true);
                 mVariant.save(pVariant);
