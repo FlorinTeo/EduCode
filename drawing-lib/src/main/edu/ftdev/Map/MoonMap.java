@@ -116,21 +116,24 @@ public class MoonMap extends DrawingFactory {
     }
 
     /**
-     * Restore the image from the most recently taken snapshot. By default, a snapshot is taken at the
-     * creation of the MoonMap image.
+     * Restore and repaints the image from the most recently taken snapshot.
+     * By default, a snapshot is taken at the creation of the MoonMap image.
      * @see #snapshot()
      */
     public void restore() {
         _drawing.restore();
+        _drawingFrame.repaint();
     }
 
     /**
-     * Restores the image of the most recently taken named snapshot. If no such snapshot can be located, an exception is thrown.  
+     * Restores and repaints the image of the most recently taken <i>named</i> snapshot.
+     * If no such snapshot can be located, an exception is thrown.  
      * @see #snapshot(String)
      * @throws IllegalArgumentException if the snapshot cannot be located.
      */
     public void restore(String name) {
         _drawing.restore(name);
+        _drawingFrame.repaint();
     }
     // #endregion [Public] Surfaced methods from inner Drawing/DrawingFramework
 
