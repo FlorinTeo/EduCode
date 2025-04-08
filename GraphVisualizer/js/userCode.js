@@ -536,6 +536,50 @@ export class UserCode extends CoreCode {
         await this.extractPath(startNode, endNode);
         console.outln(`    iterations = ${iterations}`);
     }
+
+    async runEulerianCheck() {
+        // resets the state in all nodes
+        graph.nodes.forEach(n => {
+             n.state = 0;
+             n.colorIndex = ColorIndex.Gray;
+        });
+        // use state to record the in-degree of each node
+        graph.nodes.forEach(n => {
+            n.neighbors.forEach(neighbor => { neighbor.state++; });
+        });
+        // if any node has an in-degree different than the out-degree, return false
+        let eulerian = true;
+        graph.nodes.forEach(n => {
+            if (n.state != n.neighbors.length) {
+                eulerian = false;
+                n.colorIndex = ColorIndex.Red;
+            } else {
+                n.colorIndex = ColorIndex.Green;
+            }
+            n.state = 0;
+        });
+        console.outln("In-degree == Out-degree? " + eulerian);
+        await this.step(this.#delay());
+        if (eulerian && graph.nodes.length > 0) {
+            // check if the graph is connected
+            graph.traverse(n => { n.state = 1; }, graph.nodes[0]);
+            graph.nodes.forEach(n => {
+                if (n.state == 1) {
+                    n.state = 0;
+                } else {
+                    n.colorIndex = ColorIndex.Red;
+                    eulerian = false;
+                }
+            });
+            console.outln("Graph is connected? " + eulerian);
+            await this.step(this.#delay());
+            graph.nodes.forEach(n => {
+                n.colorIndex = ColorIndex.Gray;
+            });
+        }
+
+        return eulerian;
+    }
     //#endregion graph algorithms
 
     /**
@@ -608,6 +652,19 @@ export class UserCode extends CoreCode {
                 console.outln("Run Path finding algo via A*:");
                 await this.runAStar();
                 break;
+            case 'euleriancheck':
+                console.outln("Run EulerianCheck:");
+                if (!await this.runEulerianCheck()) {
+                    console.out("NOT ");
+                }
+                console.outln("Eulerian!");
+                break;
+            case 'euleriancycle':
+                console.outln("Eulerian cycle from {root} node:");
+                break;
+            case 'euleriancircuit':
+                console.outln("Eulerian circuit:");
+                break;
             default:
                 console.outln("Available commands:");
                 console.outln("  loadTree / loadAVLTree : loads a sample binary tree.");
@@ -618,11 +675,16 @@ export class UserCode extends CoreCode {
                 console.outln("  --------------");
                 console.outln("  loadGraph  : loads a sample graph.");
                 console.outln("    traverse     : runs the Traversal algo.");
-                console.outln("    partition    : runs the graph partitioning algo..");
+                console.outln("    partition    : runs the graph partitioning algo.");
+                console.outln("    .............");
                 console.outln("    spanningTree : runs the Spanning algo.");
                 console.outln("    bfs          : runs Breath-First-Search algo.");
                 console.outln("    dijkstra     : runs Dijkstra algo.");
                 console.outln("    astar        : runs the A* algo.");
+                console.outln("    .............");
+                console.outln("    eulerianCheck   : checks if the graph is Eulerian.");
+                console.outln("    eulerianCycle   : gets the Eulerian cycle for a {root} node.");
+                console.outln("    eulerianCircuit : runs the Eulerian circuit."   );
                 console.outln("::Select word and click <Run> to execute command::");
         }
 
