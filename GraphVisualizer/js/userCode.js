@@ -537,7 +537,7 @@ export class UserCode extends CoreCode {
         console.outln(`    iterations = ${iterations}`);
     }
 
-    async runEulerianCheck() {
+    async runEulerianCheck(verbose = true) {
         // resets the state in all nodes
         graph.nodes.forEach(n => {
              n.state = 0;
@@ -554,29 +554,36 @@ export class UserCode extends CoreCode {
         graph.nodes.forEach(n => {
             if (n.state != n.neighbors.length) {
                 eulerian = false;
-                n.colorIndex = ColorIndex.Red;
-            } else {
-                n.colorIndex = ColorIndex.Green;
+            }
+            if (verbose) {
+                n.colorIndex = eulerian ? ColorIndex.Green : ColorIndex.Red;
             }
             n.state = 0;
         });
-        console.outln("In-degree == Out-degree? " + eulerian);
-        await this.step(this.#delay());
+
+        if (verbose) {
+            console.outln("In-degree == Out-degree? " + eulerian);
+            await this.step(this.#delay());
+        }
 
         // check if the graph is connected
         if (eulerian && graph.nodes.length > 0) {
             // check if the graph is connected
             graph.traverse(n => { n.state = 1; }, graph.nodes[0]);
             graph.nodes.forEach(n => {
-                if (n.state == 1) {
-                    n.state = 0;
-                } else {
-                    n.colorIndex = ColorIndex.Red;
+                if (n.state == 0) {
                     eulerian = false;
                 }
+                if (verbose) {
+                    n.colorIndex = eulerian ? ColorIndex.Green : ColorIndex.Red;
+                }
+                n.state = 0;
             });
-            console.outln("Graph is connected? " + eulerian);
-            await this.step(this.#delay());
+
+            if (verbose) {
+                console.outln("Graph connected? " + eulerian);
+                await this.step(this.#delay());
+            }
         }
 
         // reset node states on success
@@ -588,6 +595,13 @@ export class UserCode extends CoreCode {
         }
 
         return eulerian;
+    }
+
+    async runEulerianCycle() {
+        // pick up inputs in the algo
+        if (!await this.setup("root")) {
+            return;
+        }
     }
     //#endregion graph algorithms
 
@@ -670,6 +684,11 @@ export class UserCode extends CoreCode {
                 break;
             case 'euleriancycle':
                 console.outln("Run eulerianCycle(root):");
+                if (!await this.runEulerianCheck(false)) {
+                    console.outln("NOT an eulerian graph!");
+                } else {
+                    await this.runEulerianCycle();
+                }
                 break;
             case 'euleriancircuit':
                 console.outln("Run eulerianCircuit:");
