@@ -595,14 +595,7 @@ export class UserCode extends CoreCode {
     async #buildNodeEdgesMap() {
         // build a map of node -> egress edges
         let mapNodeEdges = new Map();
-        graph.nodes.forEach(n => {
-            mapNodeEdges.set(n, []);
-            graph.edges.forEach(e => {
-                if (e.node1 === n) {
-                    mapNodeEdges.get(n).push(e);
-                }
-            });
-        });
+        graph.nodes.forEach(n => { mapNodeEdges.set(n, [...n.neighbors]); });
         return mapNodeEdges;
     }
 
@@ -614,9 +607,9 @@ export class UserCode extends CoreCode {
         do {
             eulerianCycle.push(crtNode);
             crtNode.colorIndex = ColorIndex.Green;
-            let edge = mapNodeEdges.get(crtNode).shift();
-            crtNode = edge.node2;
-            edge.colorIndex = ColorIndex.Green;
+            let nextNode = mapNodeEdges.get(crtNode).shift();
+            graph.edges.filter(e => e.matchesNodes(crtNode, nextNode))[0].colorIndex = ColorIndex.Green;
+            crtNode = nextNode;
             if (verbose) {
                 await this.step(this.#delay());
             }
