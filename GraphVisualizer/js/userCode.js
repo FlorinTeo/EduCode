@@ -681,13 +681,13 @@ export class UserCode extends CoreCode {
                     let eulerianCycle = await this.#nodeEulerianCycle(node, mapNodeEdges, true);
                     eulerianCycle.forEach(n => { eulerianCircuit.push(n); });
                     eulerianCircuit.push(node);
-                    // print the expanded circuit
-                    await this.#printEulerianCycle(eulerianCircuit);
                     again = true;
                 } else {
                     eulerianCircuit.push(node);
                 }
             }
+            // print the expanded circuit
+            await this.#printEulerianCycle(eulerianCircuit);
         }
     }
     //#endregion graph algorithms
