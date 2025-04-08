@@ -597,11 +597,47 @@ export class UserCode extends CoreCode {
         return eulerian;
     }
 
-    async runEulerianCycle() {
+    async runEulerianCycle(verbose = true) {
         // pick up inputs in the algo
         if (!await this.setup("root")) {
             return;
         }
+        // build a map of node -> egress edges
+        let mapNodeEdges = new Map();
+        graph.nodes.forEach(n => {
+            mapNodeEdges.set(n, []);
+            graph.edges.forEach(e => {
+                if (e.node1 === n) {
+                    mapNodeEdges.get(n).push(e);
+                }
+            });
+        });
+
+        let crtNode = this.#startNode;
+        let eulerianCycle = [];
+        do {
+            eulerianCycle.push(crtNode);
+            crtNode.colorIndex = ColorIndex.Green;
+            let edge = mapNodeEdges.get(crtNode).shift();
+            crtNode = edge.node2;
+            edge.colorIndex = ColorIndex.Green;
+            if (verbose) {
+                await this.step(this.#delay());
+            }
+        } while (!(crtNode === this.#startNode));
+
+        if (verbose) {
+            console.out("Eulerian cycle: ");
+            eulerianCycle.forEach(node => {
+                node.colorIndex = ColorIndex.Gray;
+                console.out(node.label + " > ");
+            });
+            graph.edges.forEach(edge => { edge.colorIndex = ColorIndex.Gray; });
+            console.outln(this.#startNode.label);
+        }
+
+        await this.step(this.#delay());
+        return eulerianCycle;
     }
     //#endregion graph algorithms
 
