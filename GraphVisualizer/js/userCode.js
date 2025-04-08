@@ -13,14 +13,14 @@ export class UserCode extends CoreCode {
     //#region graph setup helpers
     async setup(startStr, endStr) {
         let varNode = graph.varNodes.filter(vN => vN.label.toLowerCase() === startStr)[0];
-        if (!varNode) {
+        if (!varNode || varNode.neighbors.length == 0) {
             console.outln(`No '${startStr}' node detected.`);
             return false;
         }
         this.#startNode = varNode.neighbors[0];
         if (endStr) {
             varNode = graph.varNodes.filter(vN => vN.label.toLowerCase() === endStr)[0];
-            if (!varNode) {
+            if (!varNode || varNode.neighbors.length == 0) {
                 console.outln(`No '${endStr}' node detected.`);
                 return false;
             }
@@ -680,19 +680,19 @@ export class UserCode extends CoreCode {
                 console.outln("    toPrefixStr  : serializes a tree in prefix order.");
                 console.outln("    toInfixStr   : serializes a tree in infix order.")
                 console.outln("    toPostfixStr : serializes a tree in postfix order.");
-                console.outln("    avlCheck     : checks AVL search and balance properties of a tree.");
+                console.outln("    avlCheck     : checks AVL properties of a tree.");
                 console.outln("  --------------");
                 console.outln("  loadGraph  : loads a sample graph.");
-                console.outln("    traverse     : runs the Traversal algo.");
+                console.outln("    traverse     : runs the Traversal algo on {root}.");
                 console.outln("    partition    : runs the graph partitioning algo.");
                 console.outln("    .............");
-                console.outln("    spanningTree : runs the Spanning algo.");
-                console.outln("    bfs          : runs Breath-First-Search algo.");
-                console.outln("    dijkstra     : runs Dijkstra algo.");
-                console.outln("    aStar        : runs the A* algo.");
+                console.outln("    spanningTree : runs the Spanning algo on {root}.");
+                console.outln("    bfs          : runs BFS algo on {start, end}.");
+                console.outln("    dijkstra     : runs Dijkstra algo on {start, end}.");
+                console.outln("    aStar        : runs the A* algo on {start, end}.");
                 console.outln("    .............");
-                console.outln("    eulerianCheck   : checks if the graph is Eulerian.");
-                console.outln("    eulerianCycle   : gets the Eulerian cycle for a given node.");
+                console.outln("    eulerianCheck   : checks if graph is Eulerian.");
+                console.outln("    eulerianCycle   : gets Eulerian cycle on {root}.");
                 console.outln("    eulerianCircuit : runs the Eulerian circuit."   );
                 console.outln("::Select word and click <Run> to execute command::");
         }
