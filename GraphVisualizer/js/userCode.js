@@ -601,78 +601,78 @@ export class UserCode extends CoreCode {
         let args = selection;
         switch(cmd.toLowerCase()) {
             case 'loadtree':
+                console.outln("Run loadTree(exprTree.txt):");
                 await this.loadGraph("exprTree.txt");
                 break;
             case 'loadavltree':
+                console.outln("Run loadTree(avlTree.txt):");
                 await this.loadGraph("avlTree.txt");
                 break;
             case 'toprefixstr':
-                console.outln("Prefix form of expression:");
+                console.outln("Run toPrefixStr(root):");
                 await this.toPrefixStr();
                 break;
             case 'toinfixstr':
-                console.outln("Infix form of expression:");
+                console.outln("Run toInfixStr(root):");
                 await this.toInfixStr();
                 break;
             case 'topostfixstr':
-                console.outln("Postfix form of expression:");
+                console.outln("Run toPostfixStr(root):");
                 await this.toPostfixStr();
                 break;
             case 'avlcheck':
+                console.outln("Run avlCheck(root):");
                 const {isSearch, isBalanced} = await this.avlCheck();
-                console.outln(`avlCheck: search=${isSearch}, balanced=${isBalanced}`);
+                console.outln(`search=${isSearch}, balanced=${isBalanced}`);
                 if (isSearch) {
                     if (!isBalanced) {
-                        console.outln(`avlCheck: ${await this.avlSetLabels()}`);    
+                        console.outln(`${await this.avlSetLabels()}`);    
                     }
-                    console.outln(`avlCheck: ${await this.avlStats()}`);
+                    console.outln(`${await this.avlStats()}`);
                 }
                 break;
             case 'loadgraph':
-                if (args.length == 0) {
-                    await this.loadGraph("graph.txt");
-                } else {
-                    await this.loadGraph(`unit5/${args[0]}.txt`);
-                    console.outln(`loadGraph ${args[0]}`);
-                }
+                let graphFile = (args.length == 0) ? "graph.txt" : `unit5/${args[0]}.txt`;
+                console.outln(`Run loadGraph(${graphFile}):`);
+                await this.loadGraph(graphFile);
                 break;
             case 'traverse':
-                console.outln("Run the Traversal(root) algo.");
+                console.outln("Run traverse(root):");
                 await this.runTraversal();
                 break;
             case 'partition':
-                console.outln("Run the Partitioning algo.");
+                console.outln("Run partition:");
                 await this.runPartitioning();
                 break;
             case 'spanningtree':
-                console.outln("Run Spanning Tree algo.");
+                console.outln("Run spanningTree(root).");
                 await this.runSpanningTree();
                 break;
             case 'bfs':
-                console.outln("Run Path Finding algo via BFS:");
+                console.outln("Run bfs(start, end):");
                 await this.runBFS();
                 break;
             case 'dijkstra':
-                console.outln("Run Path Finding algo via Dijkstra:");
+                console.outln("Run dijkstra(start, end):");
                 await this.runDijkstra();
                 break;
             case 'astar':
             case 'a*':
-                console.outln("Run Path finding algo via A*:");
+                console.outln("Run aStar(start, end):");
                 await this.runAStar();
                 break;
             case 'euleriancheck':
-                console.outln("Run EulerianCheck:");
+                console.outln("Run eulerianCheck:");
                 if (!await this.runEulerianCheck()) {
                     console.out("NOT ");
                 }
                 console.outln("Eulerian!");
                 break;
             case 'euleriancycle':
-                console.outln("Eulerian cycle from {root} node:");
+                console.outln("Run eulerianCycle(root):");
                 break;
             case 'euleriancircuit':
-                console.outln("Eulerian circuit:");
+                console.outln("Run eulerianCircuit:");
                 break;
             default:
                 console.outln("Available commands:");
@@ -689,10 +689,10 @@ export class UserCode extends CoreCode {
                 console.outln("    spanningTree : runs the Spanning algo.");
                 console.outln("    bfs          : runs Breath-First-Search algo.");
                 console.outln("    dijkstra     : runs Dijkstra algo.");
-                console.outln("    astar        : runs the A* algo.");
+                console.outln("    aStar        : runs the A* algo.");
                 console.outln("    .............");
                 console.outln("    eulerianCheck   : checks if the graph is Eulerian.");
-                console.outln("    eulerianCycle   : gets the Eulerian cycle for a {root} node.");
+                console.outln("    eulerianCycle   : gets the Eulerian cycle for a given node.");
                 console.outln("    eulerianCircuit : runs the Eulerian circuit."   );
                 console.outln("::Select word and click <Run> to execute command::");
         }
