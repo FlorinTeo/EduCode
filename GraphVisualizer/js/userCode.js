@@ -602,6 +602,10 @@ export class UserCode extends CoreCode {
         if (!await this.setup("root")) {
             return;
         }
+        if (!await this.runEulerianCheck(false)) {
+            console.outln("NOT an eulerian graph!");
+            return;
+        }
         // build a map of node -> egress edges
         let mapNodeEdges = new Map();
         graph.nodes.forEach(n => {
@@ -613,6 +617,8 @@ export class UserCode extends CoreCode {
             });
         });
 
+        // iterate through first (any) edge from the start node, since it's
+        // guaranteed to loop back to the same node (being Eulerian graph).
         let crtNode = this.#startNode;
         let eulerianCycle = [];
         do {
@@ -628,15 +634,11 @@ export class UserCode extends CoreCode {
 
         if (verbose) {
             console.out("Eulerian cycle: ");
-            eulerianCycle.forEach(node => {
-                node.colorIndex = ColorIndex.Gray;
-                console.out(node.label + " > ");
-            });
-            graph.edges.forEach(edge => { edge.colorIndex = ColorIndex.Gray; });
+            eulerianCycle.forEach(node => { console.out(node.label + " > "); });
             console.outln(this.#startNode.label);
+            await this.step(this.#delay());
         }
-
-        await this.step(this.#delay());
+        
         return eulerianCycle;
     }
     //#endregion graph algorithms
@@ -720,14 +722,11 @@ export class UserCode extends CoreCode {
                 break;
             case 'euleriancycle':
                 console.outln("Run eulerianCycle(root):");
-                if (!await this.runEulerianCheck(false)) {
-                    console.outln("NOT an eulerian graph!");
-                } else {
-                    await this.runEulerianCycle();
-                }
+                await this.runEulerianCycle();
                 break;
             case 'euleriancircuit':
                 console.outln("Run eulerianCircuit:");
+                await this.eulerianCircuit();
                 break;
             default:
                 console.outln("Available commands:");
