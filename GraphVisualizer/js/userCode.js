@@ -622,9 +622,6 @@ export class UserCode extends CoreCode {
             if (e.colorIndex == ColorIndex.Green) {
                 e.colorIndex = ColorIndex.Blue;
             }});
-        if (verbose) {
-            await this.step(this.#delay());
-        }
         return eulerianCycle;
     }
 
@@ -632,7 +629,6 @@ export class UserCode extends CoreCode {
         console.out("Eulerian cycle: ");
         eulerianCycle.forEach(node => { console.out(node.label + " > "); });
         console.outln(this.#startNode.label);
-        await this.step(this.#delay());
     }
 
     async #setStartNode(startStr) {
@@ -674,6 +670,8 @@ export class UserCode extends CoreCode {
         // build a map of node -> egress edges
         let mapNodeEdges = await this.#buildNodeEdgesMap();
         let eulerianCircuit = await this.#nodeEulerianCycle(this.#startNode, mapNodeEdges, true);
+        // print the expanded circuit
+        await this.#printEulerianCycle(eulerianCircuit);
         let again = true;
         while(again) {
             again = false;
@@ -683,15 +681,14 @@ export class UserCode extends CoreCode {
                     let eulerianCycle = await this.#nodeEulerianCycle(node, mapNodeEdges, true);
                     eulerianCycle.forEach(n => { eulerianCircuit.push(n); });
                     eulerianCircuit.push(node);
+                    // print the expanded circuit
+                    await this.#printEulerianCycle(eulerianCircuit);
                     again = true;
                 } else {
                     eulerianCircuit.push(node);
                 }
             }
         }
-
-        // print the resulting cycle
-        await this.#printEulerianCycle(eulerianCircuit);
     }
     //#endregion graph algorithms
 
