@@ -383,7 +383,7 @@ export class UserCode extends CoreCode {
         }
     }
 
-    async extractPath(startNode, endNode) {
+    async #extractPath(startNode, endNode) {
         if (endNode.state == null) {
             console.outln("No path exists!");
             return;
@@ -443,7 +443,7 @@ export class UserCode extends CoreCode {
             node.colorIndex = ColorIndex.Yellow;
             await this.step(this.#delay());
         }
-        await this.extractPath(startNode, endNode);
+        await this.#extractPath(startNode, endNode);
         console.outln(`    iterations = ${iterations}`);
     }
 
@@ -488,7 +488,7 @@ export class UserCode extends CoreCode {
             node.colorIndex = ColorIndex.Yellow;
             await this.step(this.#delay());
         }
-        await this.extractPath(startNode, endNode);
+        await this.#extractPath(startNode, endNode);
         console.outln(`    iterations = ${iterations}`);
     }
 
@@ -533,15 +533,18 @@ export class UserCode extends CoreCode {
             node.colorIndex = ColorIndex.Yellow;
             await this.step(this.#delay());
         }
-        await this.extractPath(startNode, endNode);
+        await this.#extractPath(startNode, endNode);
         console.outln(`    iterations = ${iterations}`);
     }
 
     async runEulerianCheck(verbose = true) {
         // resets the state in all nodes
         graph.nodes.forEach(n => {
-             n.state = 0;
-             n.colorIndex = ColorIndex.Gray;
+            n.state = 0;
+            n.colorIndex = ColorIndex.Gray;
+        });
+        graph.edges.forEach(e => {
+            e.colorIndex = ColorIndex.Gray;
         });
 
         // compute the in-degree of each node
@@ -556,7 +559,7 @@ export class UserCode extends CoreCode {
                 eulerian = false;
             }
             if (verbose) {
-                n.colorIndex = eulerian ? ColorIndex.Green : ColorIndex.Red;
+                n.colorIndex = (n.state == n.neighbors.length) ? ColorIndex.Green : ColorIndex.Red;
             }
             n.state = 0;
         });
@@ -575,7 +578,7 @@ export class UserCode extends CoreCode {
                     eulerian = false;
                 }
                 if (verbose) {
-                    n.colorIndex = eulerian ? ColorIndex.Green : ColorIndex.Red;
+                    n.colorIndex = (n.state == 1) ? ColorIndex.Blue : ColorIndex.Red;
                 }
                 n.state = 0;
             });
@@ -586,26 +589,10 @@ export class UserCode extends CoreCode {
             }
         }
 
-        // reset node states on success
-        if (eulerian) {
-            graph.nodes.forEach(n => {
-                n.state = 0;
-                n.colorIndex = ColorIndex.Gray;
-            });
-        }
-
         return eulerian;
     }
 
-    async runEulerianCycle(verbose = true) {
-        // pick up inputs in the algo
-        if (!await this.setup("root")) {
-            return;
-        }
-        if (!await this.runEulerianCheck(false)) {
-            console.outln("NOT an eulerian graph!");
-            return;
-        }
+    async #buildNodeEdgesMap() {
         // build a map of node -> egress edges
         let mapNodeEdges = new Map();
         graph.nodes.forEach(n => {
@@ -616,10 +603,13 @@ export class UserCode extends CoreCode {
                 }
             });
         });
+        return mapNodeEdges;
+    }
 
-        // iterate through first (any) edge from the start node, since it's
+    async #nodeEulerianCycle(startNode, mapNodeEdges, verbose) {
+        // iterate through first (any) edge from the startNode, since it's
         // guaranteed to loop back to the same node (being Eulerian graph).
-        let crtNode = this.#startNode;
+        let crtNode = startNode;
         let eulerianCycle = [];
         do {
             eulerianCycle.push(crtNode);
@@ -630,16 +620,85 @@ export class UserCode extends CoreCode {
             if (verbose) {
                 await this.step(this.#delay());
             }
-        } while (!(crtNode === this.#startNode));
-
+        } while (!(crtNode === startNode));
+        graph.nodes.forEach(n => {
+            if (n.colorIndex == ColorIndex.Green) {
+                n.colorIndex = ColorIndex.Blue;
+            }});
+        graph.edges.forEach(e => {
+            if (e.colorIndex == ColorIndex.Green) {
+                e.colorIndex = ColorIndex.Blue;
+            }});
         if (verbose) {
-            console.out("Eulerian cycle: ");
-            eulerianCycle.forEach(node => { console.out(node.label + " > "); });
-            console.outln(this.#startNode.label);
             await this.step(this.#delay());
         }
-        
         return eulerianCycle;
+    }
+
+    async #printEulerianCycle(eulerianCycle) {
+        console.out("Eulerian cycle: ");
+        eulerianCycle.forEach(node => { console.out(node.label + " > "); });
+        console.outln(this.#startNode.label);
+        await this.step(this.#delay());
+    }
+
+    async #setStartNode(startStr) {
+        let varNode = graph.varNodes.filter(vN => vN.label.toLowerCase() === startStr)[0];
+        this.#startNode = (varNode && varNode.neighbors.length > 0) ? varNode.neighbors[0] : graph.nodes[0];
+    }
+
+    async runEulerianCycle() {
+        // pick up inputs in the algo and check precondition (Graph is Eulerian)
+        if (!await this.setup("root")) {
+            return;
+        }
+        if (!await this.runEulerianCheck(false)) {
+            console.outln("NOT an eulerian graph!");
+            return;
+        }
+        // build a map of node -> egress edges
+        let mapNodeEdges = await this.#buildNodeEdgesMap();
+
+        // get the eulerianCycle starting from the #startNode
+        let eulerianCycle = await this.#nodeEulerianCycle(this.#startNode, mapNodeEdges, true);
+
+        // print the resulting cycle
+        await this.#printEulerianCycle(eulerianCycle);
+    }
+
+    async runEulerianCircuit() {
+        // pick up inputs in the algo, check precondition (Graph is Eulerian) and set the start node
+        if (!await this.runEulerianCheck(false)) {
+            console.outln("NOT an eulerian graph!");
+            return;
+        }
+        if (graph.size() == 0) {
+            console.outln("No graph!");
+            return;
+        }
+        await this.#setStartNode("root");
+
+        // build a map of node -> egress edges
+        let mapNodeEdges = await this.#buildNodeEdgesMap();
+        let eulerianCircuit = await this.#nodeEulerianCycle(this.#startNode, mapNodeEdges, true);
+        let again = true;
+        while(again) {
+            again = false;
+            for(let i = eulerianCircuit.length; i > 0; i--) {
+                let node = eulerianCircuit.shift();
+                if (mapNodeEdges.get(node).length > 0) {
+                    let eulerianCycle = await this.#nodeEulerianCycle(node, mapNodeEdges, true);
+                    eulerianCycle.forEach(n => { eulerianCircuit.push(n); });
+                    eulerianCircuit.push(node);
+                    again = true;
+                } else {
+                    eulerianCircuit.push(node);
+                }
+            }
+        }
+
+        // print the resulting cycle
+        await this.#printEulerianCycle(eulerianCircuit);
     }
     //#endregion graph algorithms
 
@@ -726,7 +785,7 @@ export class UserCode extends CoreCode {
                 break;
             case 'euleriancircuit':
                 console.outln("Run eulerianCircuit:");
-                await this.eulerianCircuit();
+                await this.runEulerianCircuit();
                 break;
             default:
                 console.outln("Available commands:");
