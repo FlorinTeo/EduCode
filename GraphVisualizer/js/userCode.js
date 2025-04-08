@@ -543,11 +543,13 @@ export class UserCode extends CoreCode {
              n.state = 0;
              n.colorIndex = ColorIndex.Gray;
         });
-        // use state to record the in-degree of each node
+
+        // compute the in-degree of each node
         graph.nodes.forEach(n => {
             n.neighbors.forEach(neighbor => { neighbor.state++; });
         });
-        // if any node has an in-degree different than the out-degree, return false
+
+        // check in-degree vs out-degree balance
         let eulerian = true;
         graph.nodes.forEach(n => {
             if (n.state != n.neighbors.length) {
@@ -560,6 +562,8 @@ export class UserCode extends CoreCode {
         });
         console.outln("In-degree == Out-degree? " + eulerian);
         await this.step(this.#delay());
+
+        // check if the graph is connected
         if (eulerian && graph.nodes.length > 0) {
             // check if the graph is connected
             graph.traverse(n => { n.state = 1; }, graph.nodes[0]);
@@ -573,7 +577,12 @@ export class UserCode extends CoreCode {
             });
             console.outln("Graph is connected? " + eulerian);
             await this.step(this.#delay());
+        }
+
+        // reset node states on success
+        if (eulerian) {
             graph.nodes.forEach(n => {
+                n.state = 0;
                 n.colorIndex = ColorIndex.Gray;
             });
         }
