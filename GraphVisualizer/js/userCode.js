@@ -670,14 +670,15 @@ export class UserCode extends CoreCode {
         // build a map of node -> egress edges
         let mapNodeEdges = await this.#buildNodeEdgesMap();
         let eulerianCircuit = await this.#nodeEulerianCycle(this.#startNode, mapNodeEdges, true);
-        // print the expanded circuit
-        await this.#printEulerianCycle(eulerianCircuit);
         let again = true;
         while(again) {
+            // print the current circuit
+            await this.#printEulerianCycle(eulerianCircuit);
+            await this.step(this.#delay());
             again = false;
             for(let i = eulerianCircuit.length; i > 0; i--) {
                 let node = eulerianCircuit.shift();
-                if (mapNodeEdges.get(node).length > 0) {
+                if (!again && mapNodeEdges.get(node).length > 0) {
                     let eulerianCycle = await this.#nodeEulerianCycle(node, mapNodeEdges, true);
                     eulerianCycle.forEach(n => { eulerianCircuit.push(n); });
                     eulerianCircuit.push(node);
@@ -686,8 +687,6 @@ export class UserCode extends CoreCode {
                     eulerianCircuit.push(node);
                 }
             }
-            // print the expanded circuit
-            await this.#printEulerianCycle(eulerianCircuit);
         }
     }
     //#endregion graph algorithms
