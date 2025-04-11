@@ -186,14 +186,47 @@ public class MoonMap extends DrawingFactory {
         if (!isValidArea(x, y, width, height)) {
             throw new IllegalArgumentException("Coordinates out of range");
         }
-        int[] rgbArray = new int[width * height];
+        int[] crtRgb = new int[width * height];        
+        _drawing.getImage().getRGB(x, y, width, height, crtRgb, 0, width); 
+        int[] newRgb = new int[width * height];
         int i = 0;
         for (int r = 0; r < height; r++) {
             for (int c = 0; c < width; c++) {
-                rgbArray[i++] = colors[r][c].getRGB();
+                newRgb[i] = blend(crtRgb[i], colors[r][c].getRGB(), colors[r][c].getAlpha());
+                i++;
             }
         }
-        _drawing.getImage().setRGB(x, y, width, height, rgbArray, 0, width);
+        _drawing.getImage().setRGB(x, y, width, height, newRgb, 0, width);
+    }
+
+    /**
+     * Blends two new rgb values based on an alpha value.
+     * @param baseRgb rgb value of the base layer.
+     * @param overlayRgb rgb value of the overlay layer.
+     * @param alpha alpha blending value: 0 => full base, 255 => full overlay.
+     * @return blended Rgb value.
+     */
+    private int blend(int baseRgb, int overlayRgb, int alpha) {
+        if (alpha == 255) {
+            return overlayRgb;
+        } else if (alpha == 0) {
+            return baseRgb;
+        } else {
+            double f = alpha / 255.0;
+            int baseRed = (baseRgb & 0xFF0000) >> 16;
+            int overlayRed = (overlayRgb & 0xFF0000) >> 16;
+            int blendRed = (int)((1-f) * baseRed + f * overlayRed) & 0xFF;
+
+            int baseGreen = (baseRgb & 0x00FF00) >> 8;
+            int overlayGreen = (overlayRgb & 0x00FF00) >> 8;
+            int blendGreen = (int)((1-f) * baseGreen + f * overlayGreen) & 0xFF;
+
+            int baseBlue = baseRgb & 0x0000FF;
+            int overlayBlue = overlayRgb & 0x0000FF;
+            int blendBlue = (int)((1-f) * baseBlue + f * overlayBlue) & 0xFF;
+
+            return (blendRed << 16) | (blendGreen << 8) | (blendBlue);
+        }
     }
     // #endregion [Public] MoonMap APIs
 }
