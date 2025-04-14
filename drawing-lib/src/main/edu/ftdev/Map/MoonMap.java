@@ -1,6 +1,9 @@
 package edu.ftdev.Map;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -197,6 +200,29 @@ public class MoonMap extends DrawingFactory {
             }
         }
         _drawing.getImage().setRGB(x, y, width, height, newRgb, 0, width);
+    }
+
+    /**
+     * Draws a segment between two points on the map. The segment is
+     * drawn as a solid line of a chosen width (thickness) in pixels, in the given color. 
+     * @param fromX X coordinate of the starting point.
+     * @param fromY Y coordinate of the starting point.
+     * @param toX X coordinate of the ending point.
+     * @param toY Y coordinate of the ending point.
+     * @param width the width (thickness) of the segment.
+     * @param color color of the segment
+     * @throws IllegalArgumentException if any of the coordinates fall outside the map.
+     */
+    public void drawSegment(int fromX, int fromY, int toX, int toY, int width, Color color) {
+        if (!isValidPixel(fromX, fromY) || !isValidPixel(toX, toY)) {
+            throw new IllegalArgumentException("Coordinates out of range");
+        }
+        Graphics2D g = _drawing.getGraphics();
+        g.setColor(color);
+            // Enable anti-aliasing
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+        g.drawLine(fromX, fromY, toX, toY);
     }
 
     /**

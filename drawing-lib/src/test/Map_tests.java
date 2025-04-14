@@ -122,6 +122,12 @@ public class Map_tests {
         mc.breakJump("Map has %d x %d areas. Area at (row:%d, col:%d) negated.",
             mc.getHeight() / areaWidth + 1, mc.getWidth() / areaWidth + 1,
             areaR, areaC);
+        mc.drawSegment(10, 20, 200, 100, 5, Color.RED);
+        mc.breakStep("Segment 1/3");
+        mc.drawSegment(200, 100, 200, 160, 5, Color.RED);
+        mc.breakStep("Segment 2/3");
+        mc.drawSegment(200, 160, 320, 200, 6, Color.RED);
+        mc.breakJump("Segment 3/3: all drawn!");
         mc.close();
     }
 }
