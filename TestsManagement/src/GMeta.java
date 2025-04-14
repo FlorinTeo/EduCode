@@ -267,7 +267,7 @@ public class GMeta {
         int nPages = 0;
         for (int i = 0; i < _appendix.size(); i++) {
             Question q = _appendix.get(i);
-            String qID = _isAnonymized ? "" + (i+1) : q.getName();
+            String qID = _isAnonymized ? "" : q.getName();
             String hAppendix = q.editApxHtml(format, qID);
             bw.write(hAppendix);
             bw.newLine();

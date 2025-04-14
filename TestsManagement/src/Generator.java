@@ -16,7 +16,7 @@ public class Generator {
     private Map<String, Question> _qMap;
     private List<Question> _qList;
     private WebDoc _webDoc;
-    private static Pattern regex = Pattern.compile("(?:u(\\d+)[^.]*)?\\.[QP](\\d+)");
+    private static Pattern regex = Pattern.compile("(?:u(\\d+)[^.]*)?\\.[QPA](\\d+)");
 
     private List<Question> sort(List<Question> lq) {
         Map<Integer, Question> map = new TreeMap<>();

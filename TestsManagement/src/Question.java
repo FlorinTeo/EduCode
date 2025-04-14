@@ -246,10 +246,12 @@ public class Question {
 
     public String editApxHtml(String format, String qID) {
         String hAppendix = "";
+        boolean first = true;
         for(String page : _meta.textPages) {
             hAppendix += format
-                .replace("#AID#", "")
+                .replace("#AID#", first ? qID : "")
                 .replace("#APNG#", page);
+            first = false;
         }
         return hAppendix;
     }
