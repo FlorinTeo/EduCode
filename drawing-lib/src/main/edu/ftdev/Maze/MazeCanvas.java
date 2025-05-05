@@ -425,7 +425,7 @@ public class MazeCanvas extends DrawingFactory {
         clear();
     }
 
-    // #region: [Public] methods
+    // #region: [Public] Core functionality methods
     /**
      * Clears the canvas area of this maze.<br>The window containing this canvas is brought back 
      * to its default state as it was when it was first opened. No cells are drawn, no walls or paths are visible.
@@ -665,22 +665,25 @@ public class MazeCanvas extends DrawingFactory {
     public boolean eraseShade(int row, int col) {
         return drawShade(row, col, Color.WHITE);
     }
+    // #endregion: [Public] Core functionality methods
 
     // #region: [Public] STL model generation methods
+    public static final double MAX_CELL_WIDTH_MM = 6.0;
     public static final double BASE_PADDING_MM = 2;
-    private static final double BASE_HEIGHT_MM = 1;
-    
-    private static final double PLATE_PADDING_MM = 0.5;
-    private static final double PLATE_HEIGHT_MM = 0.5;
-
-    private static final double MAX_CELL_WIDTH_MM = 4.0;
+    public static final double BASE_HEIGHT_MM = 1;
+    public static final double PLATE_PADDING_MM = 0.5;
+    public static final double PLATE_HEIGHT_MM = 0.5;
+    public static final double MAZE_HEIGHT_MM = 4.0;
+    public static final double MAZE_WALL_MM = 0.4;
+    public static final double CASE_HEIGHT_MM = 10.0;
+    public static final double CASE_WALL_MM = 1.0;
 
     /**
      * The ground level of the STL model, where the maze is placed.
      */
     public static final double STL_GROUND_LEVEL = BASE_HEIGHT_MM + PLATE_HEIGHT_MM;
 
-    public STLModel createSTLModel() {
+    public STLModel createSTLBase() {
         double cellWidth = Math.min(MAX_CELL_WIDTH_MM, _cellWidth);
         double widthMM = _nCols * cellWidth;
         double lengthMM = _nRows * cellWidth;
@@ -697,11 +700,13 @@ public class MazeCanvas extends DrawingFactory {
         STLModel model = new STLModel(widthMM, lengthMM);
 
         model.add(
+            // base
             new STLPrism(
                 new STLPoint(-BASE_PADDING_MM, -BASE_PADDING_MM, 0),
                 widthMM + 2 * BASE_PADDING_MM,
                 lengthMM + 2 * BASE_PADDING_MM,
                 BASE_HEIGHT_MM),
+            // plate
             new STLPrism(
                 new STLPoint(-PLATE_PADDING_MM, -PLATE_PADDING_MM, BASE_HEIGHT_MM),
                 widthMM + 2 * PLATE_PADDING_MM,
@@ -709,5 +714,59 @@ public class MazeCanvas extends DrawingFactory {
                 PLATE_HEIGHT_MM));
         return model;
     }
-    // #endregion: [Public] methods
+
+    public STLModel createSTLCase() {
+        double cellWidth = Math.min(MAX_CELL_WIDTH_MM, _cellWidth);
+        double widthMM = _nCols * cellWidth;
+        double lengthMM = _nRows * cellWidth;
+        if (widthMM > STLModel.MAX_WIDTH_MM || lengthMM > STLModel.MAX_LENGTH_MM) {
+            double mazeRatio = widthMM / lengthMM;
+            double modelRatio = STLModel.MAX_WIDTH_MM / STLModel.MAX_LENGTH_MM;
+            double shrinkRatio = (mazeRatio > modelRatio) 
+                ? STLModel.MAX_WIDTH_MM / widthMM
+                : STLModel.MAX_LENGTH_MM / lengthMM;
+                widthMM *= shrinkRatio;
+                lengthMM *= shrinkRatio;
+        }
+
+        widthMM += 2 * BASE_PADDING_MM;
+        lengthMM += 2 * BASE_PADDING_MM;
+        STLModel model = new STLModel(widthMM, lengthMM);
+
+        model.add(
+            // base
+            new STLPrism(
+                new STLPoint(-BASE_PADDING_MM, -BASE_PADDING_MM, 0),
+                widthMM + 2 * BASE_PADDING_MM,
+                lengthMM + 2 * BASE_PADDING_MM,
+                BASE_HEIGHT_MM),
+            // left wall
+            new STLPrism(
+                new STLPoint(0, 0, BASE_HEIGHT_MM),
+                CASE_WALL_MM,
+                lengthMM,
+                CASE_HEIGHT_MM),
+            // top wall
+            new STLPrism(
+                new STLPoint(0, 0, BASE_HEIGHT_MM),
+                widthMM,
+                CASE_WALL_MM,
+                CASE_HEIGHT_MM),
+            // right wall
+            new STLPrism(
+                new STLPoint(widthMM - CASE_WALL_MM, 0, BASE_HEIGHT_MM),
+                CASE_WALL_MM,
+                lengthMM,
+                CASE_HEIGHT_MM),
+            // top wall
+            new STLPrism(
+                new STLPoint(0, lengthMM - CASE_WALL_MM, BASE_HEIGHT_MM),
+                widthMM,
+                CASE_WALL_MM,
+                CASE_HEIGHT_MM)
+        );
+
+        return model;
+    }
+    // #endregion: [Public] STL model generation methods
 }

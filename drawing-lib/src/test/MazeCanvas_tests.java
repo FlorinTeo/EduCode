@@ -147,7 +147,7 @@ public class MazeCanvas_tests {
     public void stlTest() {
         @SuppressWarnings("resource") // this canvas is not opened so it doesn't need to be closed.
         MazeCanvas mc = new MazeCanvas(40, 80, 10);
-        STLModel model = mc.createSTLModel();
+        STLModel model = mc.createSTLBase();
         System.out.println(model.serialize());
     }
 }
