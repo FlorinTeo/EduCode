@@ -219,7 +219,7 @@ public class MoonMap extends DrawingFactory {
         }
         Graphics2D g = _drawing.getGraphics();
         g.setColor(color);
-            // Enable anti-aliasing
+        // Enable anti-aliasing
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
         g.drawLine(fromX, fromY, toX, toY);
