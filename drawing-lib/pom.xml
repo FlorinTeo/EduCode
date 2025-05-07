@@ -116,7 +116,7 @@
                     <overview>src/main/edu/ftdev/overview.html</overview>
                     <additionalOptions>
                         <additionalOption>-bottom</additionalOption>
-                        <additionalOption>"<a href='https://florinteo.github.io/EduCode/DrawingLib/drawing-lib-2.0-shaded.jar'>Library JAR</a>"</additionalOption>
+                        <additionalOption>"<a href='overview-summary.html'>Library Overview</a>"</additionalOption>
                     </additionalOptions>
                 </configuration>
                 <executions>
