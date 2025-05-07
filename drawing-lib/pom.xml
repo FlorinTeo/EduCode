@@ -113,6 +113,7 @@
                 <configuration>
                     <doclint>none</doclint> <!-- Disables strict checks -->
                     <show>protected</show> <!-- Only include protected and public members -->
+                    <overview>src/main/edu/ftdev/overview.html</overview>
                 </configuration>
                 <executions>
                     <execution>
