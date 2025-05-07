@@ -668,14 +668,41 @@ public class MazeCanvas extends DrawingFactory {
     // #endregion: [Public] Core functionality methods
 
     // #region: [Public] STL model generation methods
-    public static final double MAX_CELL_WIDTH_MM = 6.0;
+    /**
+     * The maximum size of a maze cell side, in millimiters.
+     */
+    public static final double MAX_CELL_SIDE_MM = 6.0;
+    /**
+     * The padding on the outside of the maze base prism, in millimeters.
+     */
     public static final double BASE_PADDING_MM = 2;
+    /**
+     * The height of the maze base prism , in millimeters.
+     */
     public static final double BASE_HEIGHT_MM = 1;
+    /**
+     * The padding on the outside of the maze plate prism, in millimeters.
+     */
     public static final double PLATE_PADDING_MM = 0.5;
+    /**
+     * The height of the maze plate prism, in millimeters.
+     */
     public static final double PLATE_HEIGHT_MM = 0.5;
+    /**
+     * The height of the maze walls, in millimeters.
+     */
     public static final double MAZE_HEIGHT_MM = 4.0;
+    /**
+     * The thickness of the maze walls, in millimeters.
+     */
     public static final double MAZE_WALL_MM = 0.4;
+    /**
+     * The height of the case box of the maze, in millimeters.
+     */
     public static final double CASE_HEIGHT_MM = 10.0;
+    /**
+     * The thickness of the case box walls, in millimeters.
+     */
     public static final double CASE_WALL_MM = 1.0;
 
     /**
@@ -683,8 +710,16 @@ public class MazeCanvas extends DrawingFactory {
      */
     public static final double STL_GROUND_LEVEL = BASE_HEIGHT_MM + PLATE_HEIGHT_MM;
 
+    /**
+     * Creates an STL model representing the base and plate of the maze.
+     * The base is a rectangular prism that serves as the foundation of the maze,
+     * while the plate is a thinner rectangular prism placed on top of the base.
+     * The dimensions of the base and plate are adjusted to fit within the maximum
+     * allowable size for an STL model.
+     * @return an {@link STLModel} object containing the base and plate of the maze.
+     */
     public STLModel createSTLBase() {
-        double cellWidth = Math.min(MAX_CELL_WIDTH_MM, _cellWidth);
+        double cellWidth = Math.min(MAX_CELL_SIDE_MM, _cellWidth);
         double widthMM = _nCols * cellWidth;
         double lengthMM = _nRows * cellWidth;
         if (widthMM > STLModel.MAX_WIDTH_MM || lengthMM > STLModel.MAX_LENGTH_MM) {
@@ -697,7 +732,7 @@ public class MazeCanvas extends DrawingFactory {
                 lengthMM *= shrinkRatio;
         }
 
-        STLModel model = new STLModel(widthMM, lengthMM);
+        STLModel model = new STLModel();
 
         model.add(
             // base
@@ -715,8 +750,15 @@ public class MazeCanvas extends DrawingFactory {
         return model;
     }
 
+    /**
+     * Creates an STL model representing the case of the maze.
+     * The case consists of a base and four walls (left, right, top, and bottom) 
+     * that enclose the maze. The dimensions of the case are adjusted to fit 
+     * within the maximum allowable size for an STL model.
+     * @return an {@link STLModel} object containing the case of the maze, including the base and walls.
+     */
     public STLModel createSTLCase() {
-        double cellWidth = Math.min(MAX_CELL_WIDTH_MM, _cellWidth);
+        double cellWidth = Math.min(MAX_CELL_SIDE_MM, _cellWidth);
         double widthMM = _nCols * cellWidth;
         double lengthMM = _nRows * cellWidth;
         if (widthMM > STLModel.MAX_WIDTH_MM || lengthMM > STLModel.MAX_LENGTH_MM) {
@@ -731,7 +773,7 @@ public class MazeCanvas extends DrawingFactory {
 
         widthMM += 2 * BASE_PADDING_MM;
         lengthMM += 2 * BASE_PADDING_MM;
-        STLModel model = new STLModel(widthMM, lengthMM);
+        STLModel model = new STLModel();
 
         model.add(
             // base

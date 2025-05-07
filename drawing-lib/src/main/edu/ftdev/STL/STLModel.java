@@ -36,7 +36,7 @@ public class STLModel {
     /**
      * Constructs a new empty STLModel.
      */
-    public STLModel(double width, double length) {
+    public STLModel() {
         _width = 0;
         _length = 0;
         _prisms = new ArrayList<STLPrism>();

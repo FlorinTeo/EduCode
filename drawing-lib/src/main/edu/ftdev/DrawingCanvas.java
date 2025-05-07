@@ -2,7 +2,13 @@ package edu.ftdev;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Toolkit;;
+import java.awt.Toolkit;
+
+/**
+ * The {@code DrawingCanvas} class extends the {@link Canvas} class to provide
+ * a drawable area for rendering a {@link Drawing} object. It supports zooming,
+ * panning, and resizing to fit the screen dimensions.
+ */
 public class DrawingCanvas extends Canvas {
 
     private static final long serialVersionUID = 1L;
@@ -11,6 +17,14 @@ public class DrawingCanvas extends Canvas {
     private int _scale = 1;
     private Drawing _drwImage;
     
+    /**
+     * Constructs a {@code DrawingCanvas} with the specified anchor coordinates
+     * and the {@link Drawing} object to be displayed.
+     *
+     * @param xAnchor the x-coordinate of the canvas's top-left corner
+     * @param yAnchor the y-coordinate of the canvas's top-left corner
+     * @param drwImage the {@link Drawing} object to be rendered on the canvas
+     */
     DrawingCanvas(int xAnchor, int yAnchor, Drawing drwImage) {
         _drwImage = drwImage;
 
@@ -39,14 +53,30 @@ public class DrawingCanvas extends Canvas {
         _yOrig = Math.max(_yOrig,  getHeight() - _drwImage.getHeight() * _scale);
     }
     
+    /**
+     * Converts a screen x-coordinate to the corresponding canvas x-coordinate.
+     * @param x the x-coordinate on the screen.
+     * @return the corresponding x-coordinate on the canvas.
+     */
     public int xScreenToCanvas(int x) {
         return (x - _xOrig) / _scale;
     }
     
+    /**
+     * Converts a screen y-coordinate to the corresponding canvas y-coordinate.
+     * @param y the y-coordinate on the screen.
+     * @return the corresponding y-coordinate on the canvas.
+     */
     public int yScreenToCanvas(int y) {
         return (y - _yOrig) / _scale;
     }
     
+    /**
+     * Zooms in or out of the canvas, centered around the specified anchor point.
+     * @param xAnchor the x-coordinate of the zoom anchor point.
+     * @param yAnchor the y-coordinate of the zoom anchor point.
+     * @param levels the zoom level increment (positive for zoom in, negative for zoom out).
+     */
     public void zoom(int xAnchor, int yAnchor, int levels) {
         if (levels != 1 && levels != -1) {
             //System.out.println("hmm");
@@ -65,7 +95,12 @@ public class DrawingCanvas extends Canvas {
             repaint();
         }
     }
-    
+
+    /**
+     * Pans the canvas by the specified x and y offsets.
+     * @param xOffset the horizontal offset for panning.
+     * @param yOffset the vertical offset for panning.
+     */
     public void pan(int xOffset, int yOffset) {
         _xOrig += xOffset;
         _yOrig += yOffset;
@@ -75,6 +110,10 @@ public class DrawingCanvas extends Canvas {
     // EndRegion: [Internal] User control methods
     
     // Region: [Public] Canvas overrides
+    /**
+     * Updates the canvas by calling the {@link #paint(Graphics)} method.
+     * @param g the {@link Graphics} object used for rendering.
+     */
     @Override
     public void update(Graphics g) {
         paint(g);

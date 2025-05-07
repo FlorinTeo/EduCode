@@ -20,7 +20,7 @@ public class Map_tests {
     };
 
     @Test
-    public void routesTest() throws IOException {
+    public void routesTest() throws IOException, InterruptedException {
         // loads an intersection image file and displays it in a map frame.
         _mapCanvas = new MapCanvas("Ravenna.jpg");
         // registers the key T with the method _onKeyT
@@ -29,6 +29,8 @@ public class Map_tests {
         _mapCanvas.open();
         _mapCanvas.setStatusMessage("Press T to display the routes");
         // close the window and terminate the program
+        Thread.sleep(10000);
+        _mapCanvas.setKeyHook('T', null);
         _mapCanvas.close();
         System.out.println("Done!");
     }
@@ -75,12 +77,14 @@ public class Map_tests {
     };
 
     @Test
-    public void docCodeTest() throws IOException {
+    public void docCodeTest() throws IOException, InterruptedException {
         MapCanvas mp = new MapCanvas("Woodlawn.jpg");
         mp.open();
         Queue<String> routes = new LinkedList<String>(mp.getRoutes());
         mp.setStatusMessage("Press TAB to view test action.");
         mp.setKeyHook(KeyEvent.VK_TAB, onTab, mp, routes);
+        Thread.sleep(10000);
+        mp.setKeyHook(KeyEvent.VK_TAB, null);
         mp.close();
     }
 
@@ -92,13 +96,16 @@ public class Map_tests {
     };
     
     @Test
-    public void demoKeyOverrideTest() throws IOException {
+    public void demoKeyOverrideTest() throws IOException, InterruptedException {
         MapCanvas mp = new MapCanvas("Woodlawn.jpg");
         mp.open();
         mp.setStatusMessage("Press Demo keys {A, B, ..., X} and see overidden 'D' key for this test.");
         mp.setDemoKeyHooks(true);
         mp.setKeyHook(KeyEvent.VK_D, onDKey, mp, 0);
         mp.breakJump();
+        Thread.sleep(10000);
+        mp.setDemoKeyHooks(false);
+        mp.setKeyHook(KeyEvent.VK_D, null);
         mp.close();
     }
 

@@ -100,7 +100,7 @@ public class DrawingFrame_tests {
     };
 
     @Test
-    public void snapshotTest() throws IOException {
+    public void snapshotTest() throws IOException, InterruptedException {
         Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
         DrawingFrame drwFrame = new DrawingFrame(drw);
         drwFrame.open();
@@ -129,6 +129,8 @@ public class DrawingFrame_tests {
         drwFrame.breakStep("Grayscale snapshot taken");
         drwFrame.setKeyPressedHook(KeyEvent.VK_LEFT, onKeyLeft, drw, drwFrame, 0);
         drwFrame.setStatusMessage("Press left arrow to flip through snapshots!");
+        Thread.sleep(10000);
+        drwFrame.setKeyPressedHook(KeyEvent.VK_LEFT, null);
         drwFrame.close();
         System.out.println("Snapshot test terminated");
     }
@@ -184,17 +186,21 @@ public class DrawingFrame_tests {
         DrawingFrame frame = (DrawingFrame)args[0];
         int number = (int)args[1];
         number++;
-        frame.setStatusMessage(String.format("Key pressed %d times", number));
+        frame.setStatusMessage(String.format("Key pressed #%d of 10 times", number));
         args[1] = number;
+        if (number == 10) {
+            frame.setKeyPressedHook(KeyEvent.VK_DOWN, null);
+        }
     };
 
     @Test
-    public void blockingCloseTest() throws IOException {
+    public void blockingCloseTest() throws IOException, InterruptedException {
         Drawing drw = Drawing.read("src/res/test/test_img1.jpg");
         DrawingFrame drwFrame = new DrawingFrame(drw);
         drwFrame.open();
         drwFrame.setStatusMessage("Press arrow down while waiting to close!");
         drwFrame.setKeyPressedHook(KeyEvent.VK_DOWN, onKey, drwFrame, 0);
+        Thread.sleep(10000);
         drwFrame.close();
     }
 

@@ -19,6 +19,29 @@ import edu.ftdev.DrawingFrame;
 import edu.ftdev.KeyInterceptor.KeyHook;
 import edu.ftdev.MouseInterceptor.MouseHook;
 
+/**
+ * The {@code MoonMap} class provides functionality for rendering and manipulating
+ * a map image of the Moon. It extends the {@link DrawingFactory} class and allows
+ * users to load a map image, interact with it using key and mouse hooks, and perform
+ * various operations such as drawing, blending, and modifying specific areas of the map.
+ *
+ * <p>The class supports:
+ * <ul>
+ *   <li>Loading a map image from a file or resource.</li>
+ *   <li>Registering key and mouse hooks for user interaction.</li>
+ *   <li>Taking and restoring snapshots of the map.</li>
+ *   <li>Manipulating specific areas of the map, such as drawing or blending pixels.</li>
+ *   <li>Drawing segments and shapes on the map.</li>
+ * </ul>
+ * <p>Example usage:
+ * <pre>
+ * {@code
+ * MoonMap moonMap = new MoonMap("moon.jpg");
+ * moonMap.setKeyHook(KeyEvent.VK_SPACE, (args) -> System.out.println("Space key pressed"));
+ * moonMap.drawSegment(10, 10, 50, 50, 2, Color.RED);
+ * }
+ * </pre>
+ */
 public class MoonMap extends DrawingFactory {
     /**
      * Create a new MoonMap object from an image file. The image is loaded either
@@ -103,6 +126,7 @@ public class MoonMap extends DrawingFactory {
     /**
      * Take a named snapshot of the current MoonMap. Snapshot is saved internally in the MoonMap object and can be restored later
      * with subsequent calls to the {@link #restore(String)} method. If a previous snapshot with an identical <i>name</i> exists it will be overwritten.
+     * @param name the name to be used for the snapshot.
      * @see #restore(String)
      */
     public void snapshot(String name) {
@@ -130,7 +154,8 @@ public class MoonMap extends DrawingFactory {
 
     /**
      * Restores and repaints the image of the most recently taken <i>named</i> snapshot.
-     * If no such snapshot can be located, an exception is thrown.  
+     * If no such snapshot can be located, an exception is thrown.
+     * @param name the name of the snapshot to restore.
      * @see #snapshot(String)
      * @throws IllegalArgumentException if the snapshot cannot be located.
      */

@@ -57,9 +57,9 @@ public class STLPoint {
     /**
      * Creates a new STLPoint by applying an offset to each of the current coordinates. The offset
      * values are given as parameteres to the method.
-     * @param x the offset to apply to the x coordinate.
-     * @param y the offset to apply to the y coordinate.
-     * @param z the offset to apply to the z coordinate.
+     * @param xOffset the offset to apply to the x coordinate.
+     * @param yOffset the offset to apply to the y coordinate.
+     * @param zOffset the offset to apply to the z coordinate.
      * @return the new point with new offset coordinates.
      */
     public STLPoint offset(double xOffset, double yOffset, double zOffset) {
