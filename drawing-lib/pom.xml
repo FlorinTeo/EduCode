@@ -114,10 +114,7 @@
                     <doclint>none</doclint> <!-- Disables strict checks -->
                     <show>protected</show> <!-- Only include protected and public members -->
                     <overview>src/main/edu/ftdev/overview.html</overview>
-                    <additionalOptions>
-                        <additionalOption>-bottom</additionalOption>
-                        <additionalOption>"<a href='overview-summary.html'>Library Overview</a>"</additionalOption>
-                    </additionalOptions>
+                    <additionalOptions>-bottom "&lt;a href='overview-summary.html'&gt;Library Overview&lt;/a&gt;"</additionalOptions>
                 </configuration>
                 <executions>
                     <execution>
