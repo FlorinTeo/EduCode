@@ -706,11 +706,6 @@ public class MazeCanvas extends DrawingFactory {
     public static final double CASE_WALL_MM = 1.0;
 
     /**
-     * The ground level of the STL model, where the maze is placed.
-     */
-    public static final double STL_GROUND_LEVEL = BASE_HEIGHT_MM + PLATE_HEIGHT_MM;
-
-    /**
      * Creates an STL model representing the base and plate of the maze.
      * The base is a rectangular prism that serves as the foundation of the maze,
      * while the plate is a thinner rectangular prism placed on top of the base.
