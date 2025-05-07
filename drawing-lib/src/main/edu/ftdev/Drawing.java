@@ -123,7 +123,8 @@ public class Drawing implements AutoCloseable {
      * Takes a snapshot of the image currently loaded the drawing object, and saves it internally
      * under the given <i>name</i>. If a previous snapshot with an identical <i>name</i> exists,
      * it will be overwritten. The same image can be restored later by using
-     * the {@link #restore(String)} method
+     * the {@link #restore(String)} method.
+     * @param name the name of the snapshot to be taken.
      * @see #restore()
      */
     public void snapshot(String name) {
@@ -155,7 +156,8 @@ public class Drawing implements AutoCloseable {
 
     /**
      * Restores the drawing from a previous snapshot, given by its <i>name</i>.
-     * If no such snapshot can be located, an exception is thrown.  
+     * If no such snapshot can be located, an exception is thrown.
+     * @param name the name of the snapshot to be restored.  
      * @see #snapshot(String)
      * @throws IllegalArgumentException if the snapshot cannot be located.
      */

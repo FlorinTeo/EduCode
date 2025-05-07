@@ -10,9 +10,9 @@ public class STLPoint {
 
     /**
      * Constructs a new point with the given x, y, and z coordinates.
-     * @param x The x coordinate of the point.
-     * @param y The y coordinate of the point.
-     * @param z The z coordinate of the point.
+     * @param x the x coordinate of the point.
+     * @param y the y coordinate of the point.
+     * @param z the z coordinate of the point.
      */
     public STLPoint(double x, double y, double z) {
         _x = x;
@@ -45,43 +45,25 @@ public class STLPoint {
     }
 
     /**
-     * Returns a new STLPoint with the given values added to the x, y and z coordinates of this point.
-     * @param x The x value to add to the x coordinate of the point.
-     * @param y The y value to add to the y coordinate of the point.
-     * @param z The z value to add to the z coordinate of the point.
-     * @return The new point with the added values.
+     * Creates a new STLPoint by applying an offset to each of the current coordinates. The offset
+     * values are taken from the corresponding coordinates of another point.
+     * @param other the point to containing the offset values in its coordinates.
+     * @return the new point with new offset coordinates.
      */
-    public STLPoint add(double x, double y, double z) {
-        return new STLPoint(_x + x, _y + y, _z + z);
-    }
-
-    /**
-     * Returns a new STLPoint with the x, y and z coordinates of the given point added to the x, y and z coordinates of this point.
-     * @param other The point to add to this point.
-     * @return The new point with the added values.
-     */
-    public STLPoint add(STLPoint other) {
+    public STLPoint offset(STLPoint other) {
         return new STLPoint(_x + other.getX(), _y + other.getY(), _z + other.getZ());
     }
 
     /**
-     * Returns a new STLPoint with the given values subtracted from the x, y and z coordinates of this point.
-     * @param x The x value to subtract from the x coordinate of the point.
-     * @param y The y value to subtract from the y coordinate of the point.
-     * @param z The z value to subtract from the z coordinate of the point.
-     * @return The new point with the subtracted values.
+     * Creates a new STLPoint by applying an offset to each of the current coordinates. The offset
+     * values are given as parameteres to the method.
+     * @param x the offset to apply to the x coordinate.
+     * @param y the offset to apply to the y coordinate.
+     * @param z the offset to apply to the z coordinate.
+     * @return the new point with new offset coordinates.
      */
-    public STLPoint subtract(double x, double y, double z) {
-        return new STLPoint(_x - x, _y - y, _z - z);
-    }
-
-    /**
-     * Returns a new STLPoint with the x, y and z coordinates of the given point subtracted from the x, y and z coordinates of this point.
-     * @param other The point to subtract from this point.
-     * @return The new point with the subtracted values.
-     */
-    public STLPoint subtract(STLPoint other) {
-        return new STLPoint(_x - other.getX(), _y - other.getY(), _z - other.getZ());
+    public STLPoint offset(double xOffset, double yOffset, double zOffset) {
+        return new STLPoint(_x + xOffset, _y + yOffset, _z + zOffset);
     }
 
     STLPoint crossProduct(STLPoint other) {
@@ -91,11 +73,19 @@ public class STLPoint {
         return new STLPoint(x, y, z);
     }
 
+    STLPoint opposite() {
+        return new STLPoint(-_x, -_y, -_z);
+    }
+
     STLPoint normalize() {
         double length = Math.sqrt(_x * _x + _y * _y + _z * _z);
         return new STLPoint(_x / length, _y / length, _z / length);
     }
 
+    /**
+     * Returns a string representation of the point in the format "STLPoint: x y z".
+     * @return A string representation of the point.
+     */
     @Override
     public String toString() {
         return String.format("STLPoint: %5.1f %5.1f %5.1f", _x, _y, _z);
