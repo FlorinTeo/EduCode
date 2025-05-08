@@ -186,23 +186,23 @@ public class STLPrism {
     }
 
     /**
-     * Gets the height of the prism.
-     * @return the height of the prism.
+     * Gets the width of the prism (the distance along the x axis).
+     * @return the width of the prism.
      */
     public double getWidth() {
         return _width;
     }
 
     /**
-     * Gets the width of the prism.
-     * @return the width of the prism.
+     * Gets the length of the prism (the distance along the y axis).
+     * @return the length of the prism.
      */
     public double getLength() {
         return _length;
     }
 
     /**
-     * Gets the height of the prism.
+     * Gets the height of the prism (the distance along the z axis).
      * @return the height of the prism.
      */
     public double getHeight() {
