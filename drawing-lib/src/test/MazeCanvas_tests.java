@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import edu.ftdev.Maze.MazeCanvas;
 import edu.ftdev.Maze.MazeCanvas.Side;
+import edu.ftdev.Maze.MazeCanvasSTL;
 import edu.ftdev.STL.STLModel;
 
 public class MazeCanvas_tests {
@@ -146,7 +147,7 @@ public class MazeCanvas_tests {
     @Test
     public void stlTest() {
         @SuppressWarnings("resource") // this canvas is not opened so it doesn't need to be closed.
-        MazeCanvas mc = new MazeCanvas(40, 80, 10);
+        MazeCanvasSTL mc = new MazeCanvasSTL(40, 80, 10);
         STLModel model = mc.createSTLBase();
         System.out.println(model.serialize());
     }
