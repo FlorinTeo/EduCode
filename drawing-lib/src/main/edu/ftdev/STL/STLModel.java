@@ -1,6 +1,7 @@
 package edu.ftdev.STL;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,14 +60,22 @@ public class STLModel {
     }
 
     /**
-     * Adds one or more prisms to the model.
+     * Adds one or more prisms to the model given as a vararg parameter.
      * @param prisms The prisms to add to the model.
      */
     public void add(STLPrism... prisms) {
+        add(prisms);
+    }
+
+    /**
+     * Adds one or more prisms to the model from a given collection.
+     * @param prisms The prisms to add to the model.
+     */
+    public void add(Collection<STLPrism> prisms) {
         for (STLPrism prism : prisms) {
             _prisms.add(prism);
             _width = Math.max(_width, prism.getWidth());
-            _length = Math.max(_length, prism.getLength());            
+            _length = Math.max(_length, prism.getLength());
         }
     }
 
