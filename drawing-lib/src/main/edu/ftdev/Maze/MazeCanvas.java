@@ -815,8 +815,8 @@ public class MazeCanvas extends DrawingFactory {
      */
     public STLPoint getSTLCellOrigin(STLModel smBase, int row, int col) {
         double stlCellSide = getSTLCellSide(smBase);
-        double x = BASE_PADDING_MM + col * stlCellSide;
-        double y = smBase.getLength() - BASE_PADDING_MM - row * stlCellSide - stlCellSide;
+        double x = col * stlCellSide;
+        double y = smBase.getLength() - row * stlCellSide - stlCellSide;
         return new STLPoint(x, y, BASE_HEIGHT_MM);
     }
 
