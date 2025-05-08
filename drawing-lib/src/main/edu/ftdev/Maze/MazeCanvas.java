@@ -59,16 +59,22 @@ import edu.ftdev.DrawingFrame;
  * @see DrawingFactory
  */
 public class MazeCanvas extends DrawingFactory {
+    // #region: [Internal] class constants
     private static final int _PADDING = 10;
     private static final Color _BKG_COLOR = Color.LIGHT_GRAY;
+
+    static final int DEFAULT_MAZE_ROWS = 16;
+    static final int DEFAULT_MAZE_COLUMNS = 24;
+    static final int DEFAULT_CELL_SIZE = 20;
+    //#endregion: [Internal] class constants
 
     // #region: [Private] fields
     // Padding around the canvas edge
     // Number of rows and columns
-    int _nRows = 80;
-    int _nCols = 50;
+    int _nRows;
+    int _nCols;
     // Pixel size of one cell of the maze
-    int _cellWidth = 20;
+    int _cellWidth;
 
     // Width of the pen when drawing walls and tracing path
     private int _pen;
@@ -397,7 +403,7 @@ public class MazeCanvas extends DrawingFactory {
      * @see MazeCanvas#open()
      */
     public MazeCanvas() {
-        this(16,24,20);
+        this(DEFAULT_MAZE_ROWS, DEFAULT_MAZE_COLUMNS, DEFAULT_CELL_SIZE);
     }
     
     /**
