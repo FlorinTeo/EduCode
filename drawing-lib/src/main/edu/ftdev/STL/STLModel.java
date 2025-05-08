@@ -1,6 +1,7 @@
 package edu.ftdev.STL;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class STLModel {
      * @param prisms The prisms to add to the model.
      */
     public void add(STLPrism... prisms) {
-        add(prisms);
+        add(Arrays.asList(prisms));
     }
 
     /**
