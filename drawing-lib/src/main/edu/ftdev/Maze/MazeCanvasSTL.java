@@ -127,32 +127,32 @@ public class MazeCanvasSTL extends MazeCanvas {
         model.add(
             // roof
             new STLPrism(
-                new STLPoint(-CASE_WALL_MM, -CASE_WALL_MM, 0),
-                _widthMM + 2 * CASE_WALL_MM,
-                _lengthMM + 2 * CASE_WALL_MM,
+                new STLPoint(-BASE_PADDING_MM, -BASE_PADDING_MM, 0),
+                _widthMM + 2 * BASE_PADDING_MM,
+                _lengthMM + 2 * BASE_PADDING_MM,
                 BASE_HEIGHT_MM),
             // left wall
             new STLPrism(
                 new STLPoint(0, 0, BASE_HEIGHT_MM),
-                CASE_WALL_MM,
+                -CASE_WALL_MM,
                 _lengthMM,
                 CASE_HEIGHT_MM),
-            // top wall
+            // bottom wall
             new STLPrism(
                 new STLPoint(0, 0, BASE_HEIGHT_MM),
                 _widthMM,
-                CASE_WALL_MM,
+                -CASE_WALL_MM,
                 CASE_HEIGHT_MM),
             // right wall
             new STLPrism(
-                new STLPoint(_widthMM - CASE_WALL_MM, 0, BASE_HEIGHT_MM),
+                new STLPoint(_widthMM, 0, BASE_HEIGHT_MM),
                 CASE_WALL_MM,
                 _lengthMM,
                 CASE_HEIGHT_MM),
             // top wall
             new STLPrism(
-                new STLPoint(0, _lengthMM - CASE_WALL_MM, BASE_HEIGHT_MM),
-                _widthMM,
+                new STLPoint(0, _lengthMM, BASE_HEIGHT_MM),
+                -_widthMM,
                 CASE_WALL_MM,
                 CASE_HEIGHT_MM)
         );

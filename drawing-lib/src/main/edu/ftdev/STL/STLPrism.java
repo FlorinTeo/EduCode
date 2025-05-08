@@ -112,10 +112,10 @@ public class STLPrism {
 
     /**
      * Checks if the prism is within the bounds of the STL model.
-     * @param origin The 3D point origin of the prism.
-     * @param width The width of the prism in the x direction.
-     * @param length The length of the prism in the y direction.
-     * @param height The height of the prism in the z direction.
+     * @param origin the 3D point origin of the prism.
+     * @param width the width of the prism in the x direction.
+     * @param length the length of the prism in the y direction.
+     * @param height the height of the prism in the z direction.
      */
     private static void checkBounds(STLPoint origin, double width, double length, double height) {
         double minX = Math.min(origin.getX(), origin.getX() + width);
@@ -139,10 +139,10 @@ public class STLPrism {
 
     /**
      * Constructs a new prism with the given origin, width, length, and height.
-     * @param origin The 3D point origin of the prism.
-     * @param width The width of the prism in the x direction.
-     * @param length The length of the prism in the y direction.
-     * @param height The height of the prism in the z direction.
+     * @param origin the 3D point origin of the prism.
+     * @param width the width of the prism in the x direction.
+     * @param length the length of the prism in the y direction.
+     * @param height the height of the prism in the z direction.
      */
     public STLPrism(STLPoint origin, double width, double length, double height) {
         checkBounds(origin, width, length, height);
@@ -179,7 +179,7 @@ public class STLPrism {
 
     /**
      * Gets the origin of the prism.
-     * @return The origin STLPoint of the prism.
+     * @return the origin STLPoint of the prism.
      */
     public STLPoint getOrigin() {
         return _origin;
@@ -187,7 +187,7 @@ public class STLPrism {
 
     /**
      * Gets the height of the prism.
-     * @return The height of the prism.
+     * @return the height of the prism.
      */
     public double getWidth() {
         return _width;
@@ -195,15 +195,23 @@ public class STLPrism {
 
     /**
      * Gets the width of the prism.
-     * @return The width of the prism.
+     * @return the width of the prism.
      */
     public double getLength() {
         return _length;
     }
 
     /**
+     * Gets the height of the prism.
+     * @return the height of the prism.
+     */
+    public double getHeight() {
+        return _height;
+    }
+
+    /**
      * Serializes the prism in the STL format.
-     * @return A string representing the prism in the STL format.
+     * @return a string representing the prism in the STL format.
      */
     public String serialize() {
         String output = "solid prism\n";

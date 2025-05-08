@@ -32,6 +32,7 @@ public class STLModel {
     // the actual width and length of the model.
     private double _width;
     private double _length;
+    private double _height;
     // the prisms that compose the model.
     private List<STLPrism> _prisms;
 
@@ -61,6 +62,14 @@ public class STLModel {
     }
 
     /**
+     * Returns the actual height of the model.
+     * @return The height of the model in millimeters.
+     */
+    public double getHeight() {
+        return _height;
+    }
+
+    /**
      * Adds one or more prisms to the model given as a vararg parameter.
      * @param prisms The prisms to add to the model.
      */
@@ -77,6 +86,7 @@ public class STLModel {
             _prisms.add(prism);
             _width = Math.max(_width, prism.getWidth());
             _length = Math.max(_length, prism.getLength());
+            _height = Math.max(_height, prism.getHeight());
         }
     }
 
