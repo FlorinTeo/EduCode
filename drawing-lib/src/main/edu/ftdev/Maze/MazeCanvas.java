@@ -807,17 +807,26 @@ public class MazeCanvas extends DrawingFactory {
     }
     
     /**
-     * Gets the STLPoint origin (the bottom-left corner) of a maze cell, given the base {@link STLModel} of the maze.
+     * Get the STLPoint origin (the bottom-left corner) of a maze cell, given the base {@link STLModel} of the maze.
      * @param smBase the base STLModel of the maze.
      * @param row the row index of the cell.
      * @param col the column index of the cell.
      * @return the {@link STLPoint} representing the bottom-left corner of the cell, within the base {@link STLModel} of the maze.
      */
-    public STLPoint getSTLOrigin(STLModel smBase, int row, int col) {
-        double stlCellSide = (smBase.getWidth() - 2 * BASE_PADDING_MM) / _nCols;
+    public STLPoint getSTLCellOrigin(STLModel smBase, int row, int col) {
+        double stlCellSide = getSTLCellSide(smBase);
         double x = BASE_PADDING_MM + col * stlCellSide;
         double y = smBase.getLength() - BASE_PADDING_MM - row * stlCellSide - stlCellSide;
         return new STLPoint(x, y, BASE_HEIGHT_MM);
+    }
+
+    /**
+     * Get the length of a maze cell side within the base {@link STLModel} of the maze.
+     * @param smBase the base STLModel of the maze.
+     * @return the length of a maze cell side within the base {@link STLModel} of the maze.
+     */
+    public double getSTLCellSide(STLModel smBase) {
+        return (smBase.getWidth() - 2 * BASE_PADDING_MM) / _nCols;
     }
     // #endregion: [Public] STL model generation methods
 }
