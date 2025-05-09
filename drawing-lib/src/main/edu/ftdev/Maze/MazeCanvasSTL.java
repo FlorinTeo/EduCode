@@ -123,9 +123,9 @@ public class MazeCanvasSTL extends MazeCanvas {
      */
     public STLModel createSTLCase() {
         STLModel model = new STLModel();
-        double caseWidth = _widthMM + 4 * MAZE_WALL_MM;
-        double caseLength = _lengthMM + 4 * MAZE_WALL_MM;
-        STLPoint blOrigin = new STLPoint(-2 * MAZE_WALL_MM, - 2 * MAZE_WALL_MM, BASE_HEIGHT_MM);
+        double caseWidth = _widthMM + 2 * PLATE_PADDING_MM;
+        double caseLength = _lengthMM + 2 * PLATE_PADDING_MM;
+        STLPoint blOrigin = new STLPoint(-PLATE_PADDING_MM, -PLATE_PADDING_MM, BASE_HEIGHT_MM);
         STLPoint trOrigin = blOrigin.offset(caseWidth, caseLength, 0);
 
         model.add(
@@ -135,14 +135,14 @@ public class MazeCanvasSTL extends MazeCanvas {
                 _widthMM + 2 * BASE_PADDING_MM,
                 _lengthMM + 2 * BASE_PADDING_MM,
                 BASE_HEIGHT_MM),
-            // bottom wall
-            new STLPrism(blOrigin, caseWidth, CASE_WALL_MM, CASE_HEIGHT_MM),
-            // right wall
-            new STLPrism(trOrigin, -CASE_WALL_MM, -caseLength, CASE_HEIGHT_MM),
-            // top wall
-            new STLPrism(trOrigin, -caseWidth, -CASE_WALL_MM, CASE_HEIGHT_MM),
             // left wall
-            new STLPrism(blOrigin, CASE_WALL_MM, caseLength, CASE_HEIGHT_MM)
+            new STLPrism(blOrigin, -CASE_WALL_MM, caseLength, CASE_HEIGHT_MM),
+            // bottom wall
+            new STLPrism(blOrigin, caseWidth, -CASE_WALL_MM, CASE_HEIGHT_MM),
+            // right wall
+            new STLPrism(trOrigin, CASE_WALL_MM, -caseLength, CASE_HEIGHT_MM),
+            // top wall
+            new STLPrism(trOrigin, -caseWidth, CASE_WALL_MM, CASE_HEIGHT_MM)
         );
 
         return model;
