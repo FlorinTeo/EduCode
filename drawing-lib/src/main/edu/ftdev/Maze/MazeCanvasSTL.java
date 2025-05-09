@@ -126,7 +126,7 @@ public class MazeCanvasSTL extends MazeCanvas {
         double caseWidth = _widthMM + 4 * MAZE_WALL_MM;
         double caseLength = _lengthMM + 4 * MAZE_WALL_MM;
         STLPoint blOrigin = new STLPoint(-2 * MAZE_WALL_MM, - 2 * MAZE_WALL_MM, BASE_HEIGHT_MM);
-        STLPoint trOrigin = blOrigin.offset(caseWidth, caseLength, BASE_HEIGHT_MM);
+        STLPoint trOrigin = blOrigin.offset(caseWidth, caseLength, 0);
 
         model.add(
             // roof
