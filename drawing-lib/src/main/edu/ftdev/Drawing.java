@@ -12,8 +12,10 @@ import javax.imageio.ImageIO;
 
 /**
  * Encapsulates a representation of a generic image file. A Drawing object 
- * can be created only by providing a valid image file as argument to its constructor. 
- * In return, the object can be used for accessing and modifying the image at pixel level.
+ * can be created either from a valid image file or as an empty canvas, of a chosen width and height
+ * and with a chosen color for its background.
+ * Once created, the object can be used for accessing and modifying the image at pixel level
+ * and can be loaded in a {@link DrawingFrame} for visualization.
  */
 public class Drawing implements AutoCloseable {
     /**

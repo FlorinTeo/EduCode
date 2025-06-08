@@ -3,7 +3,9 @@ import java.awt.image.BufferedImage;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -216,6 +218,54 @@ public class DrawingFrame_tests {
             }
             Thread.sleep(0);
         }
+        frame.close();
+    }
+
+    @Test
+    public void testCustomDrawing() {
+        // create a new blank drawing of 400 x 240 pixels, with a white background
+        Drawing drw = new Drawing(400, 240, Color.white);
+
+        // place it in a frame, then open the frame on the screen and wait
+        DrawingFrame frame = new DrawingFrame(drw);
+        frame.open();
+        frame.breakStep();
+
+        // get the Graphics2D object of the drawing and start doing some pixel-level drawing
+
+        // draw a red, rounded square
+        Graphics2D g = drw.getGraphics();
+        g.setStroke(new BasicStroke(3));
+        g.setColor(Color.RED);
+        g.drawRoundRect(10, 10, 100, 60, 8, 8);
+        // take a snapshot of the current state (just a red rounded square)
+        drw.snapshot("square");
+
+        // draw a blue dot
+        frame.breakStep();
+        g.setColor(Color.BLUE);
+        g.fillOval(240, 100, 30, 30);
+        // take a snapshot of the current state (red square and blue dot)
+        drw.snapshot("square + dot");
+
+        // finally wait for user action before closing.
+        // NOTE: break*() methods include a frame refresh. If the effect of drawing operations
+        // is needed before a break*() call, use frame.repaint();
+        frame.breakStep();
+
+        // restore the snapshot with just the red square
+        drw.restore("square");
+        frame.breakStep();
+
+        // clear the entire image to its initial state (no shapes)
+        drw.restore();
+        frame.breakStep();
+
+        // restore now both shapes again
+        drw.restore("square + dot");
+        frame.breakStep();
+        
+        // close the window
         frame.close();
     }
 }
