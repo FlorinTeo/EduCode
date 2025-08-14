@@ -160,7 +160,7 @@ public class Context extends TimerTask {
     public void runCleanup() {
         synchronized(_state) {
             _state = State.CLEANING;
-            System.out.printf("~~~~ Context state: %s ~~~~\n", _state.name());
+            System.out.printf("~~~~ Wordle Context state: %s ~~~~\n", _state.name());
         }
 
         Queue<Session> orphanSessions = new LinkedList<Session>();
@@ -179,7 +179,7 @@ public class Context extends TimerTask {
         System.out.printf("Sessions cleaned up ... [removed %d][remaining %d] words\n", count, _sessions.size());
         synchronized(_state) {
             _state = State.READY;
-            System.out.printf("~~~~ Context state: %s ~~~~\n", _state.name());
+            System.out.printf("~~~~ Wordle Context state: %s ~~~~\n", _state.name());
         }
     }
 }
