@@ -176,7 +176,7 @@ public class Context extends TimerTask {
             _sessions.remove(orphan.getId());
             count++;
         }
-        System.out.printf("Sessions cleaned up ... [removed %d][remaining %d] words\n", count, _sessions.size());
+        System.out.printf("Wordle sessions cleaned up ... [removed %d][remaining %d] words\n", count, _sessions.size());
         synchronized(_state) {
             _state = State.READY;
             System.out.printf("~~~~ Wordle Context state: %s ~~~~\n", _state.name());

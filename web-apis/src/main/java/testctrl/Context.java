@@ -1,32 +1,59 @@
 package testctrl;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.google.gson.Gson;
 
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
 
 public class Context extends TimerTask {
+    private final static int _DELAY_START = 8; // trigger servlet initialization asynchronously, with 8ms delay
+    private final static int _HEARTBEAT_INTERVAL = 10000; // 10sec cycle for heartbeat activities  (i.e. sessions cleanup)
 
     // #region: [Public] Enum & Class definitions pertaining to TestCtrl context.
     public enum State {
         INITIALIZING,
         READY,
+        CLEANING,
         CLOSING,
         STOPPED
     }
 
+    public class User {
+        public String name;
+        public String pwd_hash;
+
+        void checkPwd(String pwd) throws NoSuchAlgorithmException {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] md5Digest = md.digest(pwd.getBytes(StandardCharsets.UTF_8));
+            String pwdHash = new BigInteger(1, md5Digest).toString(16);
+            Servlet.checkTrue(pwd_hash.equals(pwdHash), "Invalid password for restricted access!");
+        }
+    }
+
     public class Config {
+        public List<User> users;
     };
     // #endregion: [Public] Enum & Class definitions pertaining to TestCtrl context.
 
     // #region: [Private] Instance variables for TestCtrl context.
     private ServletContext _servletContext;
     private Config _config;
+    // Map of sessions keyed by their session ID.
+    private Map<HttpSession, Session> _sessions;
     private State _state;
     private Timer _timer;
     // #endregion: [Private] Instance variables for TestCtrl context.
@@ -34,12 +61,14 @@ public class Context extends TimerTask {
     public Context(ServletContext servletContext) {
         _servletContext = servletContext;
         _config = null;
+        _sessions = new HashMap<HttpSession, Session>();
         _state = State.INITIALIZING;
         _timer = new Timer();
         // in 8ms load the servlet, then every minute perform timer-based operations!
-        _timer.schedule(this, 8, 60000);
+        _timer.schedule(this, _DELAY_START, _HEARTBEAT_INTERVAL);
     }
 
+    // #region: [Public] Life-cycle methods
     public boolean isReady() {
         synchronized(_state) {
             return _state == State.READY;
@@ -68,20 +97,23 @@ public class Context extends TimerTask {
             System.out.printf("~~~~ TestCtrl context state: %s ~~~~\n", _state.name());
         }
     }
+    // #endregion: [Public] Life-cycle methods
 
     @Override
     public void run() {
         switch(_state) {
         case INITIALIZING:
-                try {
-                    runInitialize();
-                } catch (IOException e) {
-                    System.out.printf("[EXC TestCtrl]:  initialization failure: %s\n", e.getMessage());
-                    e.printStackTrace();
-                }
+            // initialization code, running asynchronously after servlet is activated
+            try {
+                runInitialize();
+            } catch (IOException | NoSuchAlgorithmException e) {
+                System.out.printf("##ERR##.TestCtrl:  initialization failure: %s\n", e.getMessage());
+                e.printStackTrace();
+            }
             break;
         case READY:
             // timer-based operations while the server is ready
+            runCleanup();
             break;
         default:
             // no action on any of the other states!
@@ -89,7 +121,7 @@ public class Context extends TimerTask {
         }
     }
 
-    public void runInitialize() throws IOException {
+    public void runInitialize() throws IOException, NoSuchAlgorithmException {
         synchronized(_state) {
             _state = State.INITIALIZING;
             System.out.printf("~~~~ TestCtrl context state: %s ~~~~\n", _state.name());
@@ -105,7 +137,61 @@ public class Context extends TimerTask {
             _state = State.READY;
             System.out.printf("~~~~ TestCtrl context state: %s ~~~~\n", _state.name());
         }
-
         // TestCtrl ready to accept requests
     }
+
+    public void runCleanup() {
+        synchronized(_state) {
+            _state = State.CLEANING;
+            System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
+        }
+
+        Map<HttpSession, Session> newSessions = new HashMap<HttpSession, Session>();
+        Instant now = Instant.now();
+        int activeSessions = 0;
+        for(Map.Entry<HttpSession, Session> kvp : _sessions.entrySet()) {
+            if (!kvp.getValue().isOrphan(now)) {
+                newSessions.put(kvp.getKey(), kvp.getValue());
+                activeSessions++;
+            }
+        }
+        if (_sessions.size() != activeSessions) {
+            System.out.printf("TestCtrl sessions cleaned up ... [removed %d][remaining %d]\n", _sessions.size() - activeSessions, activeSessions);
+            _sessions = newSessions;
+        }
+
+        synchronized(_state) {
+            _state = State.READY;
+            System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
+        }
+    }
+
+    // #region: [Public] Session management methods
+    @SuppressWarnings("null")
+    public Session newSession(String name, String pwd, HttpSession httpSession) throws NoSuchAlgorithmException {
+
+        // check user exists in the configuration
+        User user = _config.users.stream().filter(u -> u.name.equals(name)).findFirst().orElse(null);
+        Servlet.checkTrue(user != null, "Invalid username or password");
+
+        // check the user password matches
+        user.checkPwd(pwd);
+
+        // check that either no session is active or the existing session belongs to the same user
+        Session crtSession = _sessions.get(httpSession);
+        Servlet.checkTrue(crtSession == null || crtSession.getUser().equals(user), "Other user logged in this session!");
+
+        // all good, create the session, register it in the _sessions map and return it
+        Session session = new Session(user);
+        _sessions.put(httpSession, session);
+        return session;
+    }
+
+    public Session closeSession(HttpSession httpSession) {
+        // remove the session from the _sessions map
+        Session session = _sessions.remove(httpSession);
+        Servlet.checkTrue(session != null, "Client session invalid.");
+        return session;
+    }
+    // #endregion: [Public] Session management methods
 }

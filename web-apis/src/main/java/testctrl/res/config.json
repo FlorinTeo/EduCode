@@ -1,0 +1,6 @@
+{
+  "users": [
+    { "name": "tstave",         "pwd_hash": "ee428516c52a06ab16396a9e5f5d09fc" },
+    { "name": "c-fteodorescu",  "pwd_hash": "d929ab0ef184e66e6ad0003bb2dd5e87" }
+  ]
+}
