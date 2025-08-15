@@ -1,0 +1,18 @@
+@charset "ISO-8859-1";
+
+/* Cascading Style Sheet for HOST login page */
+
+body {
+  font-family: Helvetica, sans-serif;
+}
+
+.title-highlight {
+    font-weight:400;
+    font-size:24px;
+    color:#0D1DE0;
+}
+
+.input-login {
+    height: 20px;
+    width: 60px;
+}
