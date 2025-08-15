@@ -4,17 +4,21 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
+import jakarta.servlet.http.HttpSession;
+
 public class Session implements Comparable<Session> {
-    // A Session which have not been touched for _LIFECHECK duration is considered orphaned and subjected to removal.
-    private static final Duration _LIFECHECK = Duration.ofMinutes(5);
+    // A Session not touched for _IDLE_THRESHOLD duration is considered orphaned and subjected to removal.
+    private static final Duration _IDLE_THRESHOLD = Duration.ofMinutes(5);
 
     private String _sessionId;
+    private User _user;
+    private HttpSession _httpSession;
     private Instant _heartbeat;
-    private Context.User _user;
 
-    public Session(Context.User user) {
+    public Session(User user, HttpSession httpSession) {
         _sessionId = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         _user = user;
+        _httpSession = httpSession;
         _heartbeat = Instant.now();
     }
 
@@ -22,8 +26,12 @@ public class Session implements Comparable<Session> {
         return _sessionId;
     }
 
-    public Context.User getUser() {
+    public User getUser() {
         return _user;
+    }
+
+    public HttpSession getHttpSession() {
+        return _httpSession;
     }
 
     public void touch() {
@@ -32,7 +40,7 @@ public class Session implements Comparable<Session> {
 
     public boolean isOrphan(Instant now) {
         Duration lifetime = Duration.between(_heartbeat, now);
-        return (lifetime.compareTo(_LIFECHECK) >= 0);
+        return (lifetime.compareTo(_IDLE_THRESHOLD) >= 0);
     }
 
     @Override

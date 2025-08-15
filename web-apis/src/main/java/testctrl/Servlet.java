@@ -36,7 +36,7 @@ public class Servlet extends HttpServlet{
         // Get the HttpSession (creates one if it doesn't exist)
 
         Map<String, String[]> params = request.getParameterMap();
-        String sid = "?";
+        Session session = null;
         Answer answer = new Answer();
 
         try {
@@ -50,13 +50,12 @@ public class Servlet extends HttpServlet{
                     String name = params.get("name")[0];
                     String pwd = params.get("pwd")[0];                   
                     // try to create a session. This may throw if user is invalid (unknown or wrong password) or if a session is already opened.
-                    Session session = _context.newSession(name, pwd, request.getSession());
-                    sid = session.getId();
-                    answer = answer.new Msg(sid, "Session created!");
+                    session = _context.newSession(name, pwd, request.getSession());
+                    answer = answer.new Msg(session.getId(), "Session created!");
                     break;
                 case "logout": // http://localhost:8080/web-apis/testctrl?cmd=logout
-                    _context.closeSession(request.getSession());
-                    answer = answer.new Msg(sid, "Session closed!");
+                    session = _context.closeSession(request.getSession());
+                    answer = answer.new Msg(session.getId(), "Session closed!");
                     break;
                 default:
                     answer = answer.new Err("Unsupported 'cmd' parameter!");

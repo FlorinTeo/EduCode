@@ -1,11 +1,8 @@
 package testctrl;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.HashMap;
@@ -30,18 +27,6 @@ public class Context extends TimerTask {
         CLEANING,
         CLOSING,
         STOPPED
-    }
-
-    public class User {
-        public String name;
-        public String pwd_hash;
-
-        void checkPwd(String pwd) throws NoSuchAlgorithmException {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] md5Digest = md.digest(pwd.getBytes(StandardCharsets.UTF_8));
-            String pwdHash = new BigInteger(1, md5Digest).toString(16);
-            Servlet.checkTrue(pwd_hash.equals(pwdHash), "Invalid password for restricted access!");
-        }
     }
 
     public class Config {
@@ -99,6 +84,7 @@ public class Context extends TimerTask {
     }
     // #endregion: [Public] Life-cycle methods
 
+    // #region: [Private] Async runners
     @Override
     public void run() {
         switch(_state) {
@@ -113,7 +99,7 @@ public class Context extends TimerTask {
             break;
         case READY:
             // timer-based operations while the server is ready
-            runCleanup();
+            runHeartbeat();
             break;
         default:
             // no action on any of the other states!
@@ -121,7 +107,7 @@ public class Context extends TimerTask {
         }
     }
 
-    public void runInitialize() throws IOException, NoSuchAlgorithmException {
+    private void runInitialize() throws IOException, NoSuchAlgorithmException {
         synchronized(_state) {
             _state = State.INITIALIZING;
             System.out.printf("~~~~ TestCtrl context state: %s ~~~~\n", _state.name());
@@ -140,12 +126,50 @@ public class Context extends TimerTask {
         // TestCtrl ready to accept requests
     }
 
-    public void runCleanup() {
+    private void runHeartbeat() {
         synchronized(_state) {
             _state = State.CLEANING;
             System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
         }
+        pruneSessions();
+        synchronized(_state) {
+            _state = State.READY;
+            System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
+        }
+    }
+    // #endregion: [Private] Async runners
 
+    // #region: [Public] Session management methods
+    @SuppressWarnings("null")
+    public Session newSession(String name, String pwd, HttpSession httpSession) throws NoSuchAlgorithmException {
+        // check user exists in the configuration
+        User user = _config.users.stream().filter(u -> u.name.equals(name)).findFirst().orElse(null);
+        Servlet.checkTrue(user != null, "Invalid username or password");
+
+        // check the user password matches
+        user.checkPwd(pwd);
+
+        // check that either no session is active or the existing session belongs to the same user
+        Session session = _sessions.get(httpSession);
+        Servlet.checkTrue(session == null || session.getUser().equals(user), "Other user logged in this session!");
+
+        // all good, if no pre-existing session for this user, create one
+        if (session == null) {
+            session = new Session(user, httpSession);
+            _sessions.put(httpSession, session);
+        }
+        session.touch();
+        return session;
+    }
+
+    public Session closeSession(HttpSession httpSession) {
+        // remove the session from the _sessions map
+        Session session = _sessions.remove(httpSession);
+        Servlet.checkTrue(session != null, "Client session invalid.");
+        return session;
+    }
+
+    public void pruneSessions() {
         Map<HttpSession, Session> newSessions = new HashMap<HttpSession, Session>();
         Instant now = Instant.now();
         int activeSessions = 0;
@@ -159,39 +183,6 @@ public class Context extends TimerTask {
             System.out.printf("TestCtrl sessions cleaned up ... [removed %d][remaining %d]\n", _sessions.size() - activeSessions, activeSessions);
             _sessions = newSessions;
         }
-
-        synchronized(_state) {
-            _state = State.READY;
-            System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
-        }
-    }
-
-    // #region: [Public] Session management methods
-    @SuppressWarnings("null")
-    public Session newSession(String name, String pwd, HttpSession httpSession) throws NoSuchAlgorithmException {
-
-        // check user exists in the configuration
-        User user = _config.users.stream().filter(u -> u.name.equals(name)).findFirst().orElse(null);
-        Servlet.checkTrue(user != null, "Invalid username or password");
-
-        // check the user password matches
-        user.checkPwd(pwd);
-
-        // check that either no session is active or the existing session belongs to the same user
-        Session crtSession = _sessions.get(httpSession);
-        Servlet.checkTrue(crtSession == null || crtSession.getUser().equals(user), "Other user logged in this session!");
-
-        // all good, create the session, register it in the _sessions map and return it
-        Session session = new Session(user);
-        _sessions.put(httpSession, session);
-        return session;
-    }
-
-    public Session closeSession(HttpSession httpSession) {
-        // remove the session from the _sessions map
-        Session session = _sessions.remove(httpSession);
-        Servlet.checkTrue(session != null, "Client session invalid.");
-        return session;
     }
     // #endregion: [Public] Session management methods
 }
