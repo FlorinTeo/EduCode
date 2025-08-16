@@ -17,5 +17,10 @@
                 <td><input id="btnLogout" type="submit" value="logout" ></td>
             </tr>
         </table>
+        <div id="divLog" class="log-div">
+            <table id="tblLog">
+                <!-- Log entries will be added here -->
+            </table>
+        </div>
     </body>
 </html>

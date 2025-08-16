@@ -1,4 +1,9 @@
 /**
+ * Get page parameters from the URL.
+ */
+const username = (new URLSearchParams(window.location.search)).get("name");
+
+/**
  * Login page controls
  */
 const edtName = document.getElementById("edtName");
@@ -9,6 +14,7 @@ const txtOutput = document.getElementById("txtOutput");
 /**
  * Hook code listeners to actions and events in the login flow
  */
+document.addEventListener("DOMContentLoaded", onPageLoad);
 btnLogin.addEventListener("click", onClickLogin);
 
 /**
@@ -16,6 +22,13 @@ btnLogin.addEventListener("click", onClickLogin);
  */
 const urlAPI = window.location.origin + "/web-apis/testctrl";
 const urlCtrlPanelJSP = window.location.origin + "/web-apis/testctrl/ctrlpanel.jsp";
+
+/**
+ * Callback when page is loaded
+ */
+function onPageLoad() {
+    edtName.value = username ?? "";
+}
 
 /**
  * Callback for clicking on the "Login" button

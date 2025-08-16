@@ -10,6 +10,8 @@ const username = (new URLSearchParams(window.location.search)).get("name");
 const txtTitleSid = document.getElementById("titleSid");
 const txtTitleName = document.getElementById("titleName");
 const btnLogout = document.getElementById("btnLogout");
+const divLog = document.getElementById("divLog");
+const tblLog = document.getElementById("tblLog");
 
 /**
  * Static URLs for the CtrlPanel flow
@@ -29,6 +31,31 @@ btnLogout.addEventListener("click", onClickLogout);
 function onPageLoad() {
     txtTitleSid.innerText = sid;
     txtTitleName.innerText = username;
+    setInterval(onStatusRequest, 4000);
+    onStatusRequest();
+}
+
+/**
+ * Timer callback sending a [GET ../web-api/testctrl?cmd=status] request to the server.
+ */
+var logId = 0
+function onStatusRequest() {
+    const row = tblLog.insertRow(-1);
+    row.insertCell(0).textContent = logId++;
+    row.insertCell(1).textContent = 'heartbeat';
+    divLog.scrollTop = divLog.scrollHeight;
+    //var request = new  XMLHttpRequest();
+    // request.open("GET", `${urlAPI}?cmd=status&name=${username}`, true);
+    // request.timeout = 2000;
+    // request.onload = onStatusResponse;
+    // request.withCredentials = true;
+    // request.send();
+}
+
+/**
+ * Callback for receiving the response from the [GET ../web-api/testctrl?cmd=status] request.
+ */
+function onStatusResponse() {
 }
 
 /**

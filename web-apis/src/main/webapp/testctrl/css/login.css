@@ -9,20 +9,9 @@ body {
         border-collapse: collapse;
         width: 100%;
     
-        td:nth-child(1) {
-            width: 60%;
-            text-align: left;
-        }
-    
-        td:nth-child(2) {
-            width: 35%;
-            text-align: right;
-        }
-    
-        td:nth-child(3) {
-            width: 5%;
-            text-align: right;
-        }
+        td:nth-child(1) { width: 60%; text-align: left; }
+        td:nth-child(2) { width: 35%; text-align: right; }
+        td:nth-child(3) { width: 5%; text-align: right; }
     
         .title-highlight {
             font-weight: 400;
@@ -37,25 +26,12 @@ body {
         border-collapse: collapse;
         width: 100%;
         text-align: left;
-    
-        td:nth-child(1) {
-            width: 110px;
-            text-align: right;
-        }
-    
-        td:nth-child(2) {
-            text-align: left;
-        }
+
+        td:nth-child(1) { width: 110px; text-align: right; }
+        td:nth-child(2) { text-align: left; }
     
         input[type="text"],
-        input[type="password"] {
-            width: 200px;
-            height: 20px;
-        }
-    
-        input[type="submit"] {
-            height: 20px;
-            width: 100px;
-        }
+        input[type="password"] { width: 200px; height: 20px; }
+        input[type="submit"] { height: 20px; width: 100px; }
     }
 }
