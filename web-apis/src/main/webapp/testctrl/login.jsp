@@ -22,6 +22,6 @@
         </table>
         <p>
         <!--  Output area -->
-        <div id="txtOutput"></div>
+        <div id="txtOutput" class="err-div"></div>
     </body>
 </html>

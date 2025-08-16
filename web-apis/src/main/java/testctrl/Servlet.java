@@ -67,13 +67,16 @@ public class Servlet extends HttpServlet{
         response.getOutputStream().print(jsonAnswer);
     }
 
+    @SuppressWarnings("null")
     public Answer executeCmdLogin(HttpSession httpSession, Map<String, String[]> params) throws NoSuchAlgorithmException {
         checkTrue(params.containsKey("name"), "Missing 'name' parameter!");
         checkTrue(params.containsKey("pwd"), "Missing 'pwd' parameter!");
         String name = params.get("name")[0];
-        String pwd = params.get("pwd")[0];                   
-        // try to create a session. This may throw if user is invalid (unknown or wrong password) or if a session is already opened.
-        Session session = _context.newSession(name, pwd, httpSession);
+        String pwd = params.get("pwd")[0];
+        User user = _context.getUser(name);
+        checkTrue(user != null && user.hasRole("admin","teacher") && user.matchesPwd(pwd), "Invalid name, role or password!");
+        // try to create a session. This may throw if another user is logged in this session already.
+        Session session = _context.newSession(user, httpSession);
         return new Answer().new Msg(session.getId(), "Session created!");
     }
 

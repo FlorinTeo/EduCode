@@ -18,9 +18,12 @@
             </tr>
         </table>
         <div id="divLog" class="log-div">
-            <table id="tblLog">
-                <!-- Log entries will be added here -->
-            </table>
+            Backend logs:
+            <div id="divLogContent" class="log-content">
+                <table id="tblLog">
+                    <!-- Log entries will be added here -->
+                </table>
+            </div>
         </div>
     </body>
 </html>

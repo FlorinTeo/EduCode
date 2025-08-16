@@ -68,6 +68,10 @@ public class Context extends TimerTask {
         return _config;
     }
 
+    public User getUser(String name) {
+        return _config.users.stream().filter(u -> u.name.equals(name)).findFirst().orElse(null);
+    }
+
     public void closing() {
         synchronized(_state) {
             _state = State.CLOSING;
@@ -141,14 +145,7 @@ public class Context extends TimerTask {
 
     // #region: [Public] Session management methods
     @SuppressWarnings("null")
-    public Session newSession(String name, String pwd, HttpSession httpSession) throws NoSuchAlgorithmException {
-        // check user exists in the configuration
-        User user = _config.users.stream().filter(u -> u.name.equals(name)).findFirst().orElse(null);
-        Servlet.checkTrue(user != null, "Invalid username or password");
-
-        // check the user password matches
-        user.checkPwd(pwd);
-
+    public Session newSession(User user, HttpSession httpSession) throws NoSuchAlgorithmException {
         // check that either no session is active or the existing session belongs to the same user
         Session session = _sessions.get(httpSession);
         Servlet.checkTrue(session == null || session.getUser().equals(user), "Other user logged in this session!");

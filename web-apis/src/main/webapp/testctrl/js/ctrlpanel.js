@@ -11,6 +11,7 @@ const txtTitleSid = document.getElementById("titleSid");
 const txtTitleName = document.getElementById("titleName");
 const btnLogout = document.getElementById("btnLogout");
 const divLog = document.getElementById("divLog");
+const divLogContent = document.getElementById("divLogContent");
 const tblLog = document.getElementById("tblLog");
 
 /**
@@ -22,8 +23,20 @@ const urlLoginJSP = window.location.origin + "/web-apis/testctrl/login.jsp";
 /**
  * Hook code listeners to actions and events in the CtrlPanel main flow
  */
+window.addEventListener("resize", onPageResize);
 document.addEventListener("DOMContentLoaded", onPageLoad);
 btnLogout.addEventListener("click", onClickLogout);
+
+/**
+ * Callback when page is resized
+ */
+function onPageResize() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    console.log(`Window resized: ${width}x${height}`);
+    txtTitleSid.style.display = (width < 800) ? 'none' : 'inline';
+    divLog.style.display = (height < 300) ? 'none' : 'block';
+}
 
 /**
  * Callback when page is loaded
@@ -43,7 +56,11 @@ function onStatusRequest() {
     const row = tblLog.insertRow(-1);
     row.insertCell(0).textContent = logId++;
     row.insertCell(1).textContent = 'heartbeat';
-    divLog.scrollTop = divLog.scrollHeight;
+    // retain only the mosts recent 100 logs (to limit memory usage)
+    if (tblLog.rows.length > 100) {
+        tblLog.deleteRow(0);
+    }
+    divLogContent.scrollTop = divLogContent.scrollHeight;
     //var request = new  XMLHttpRequest();
     // request.open("GET", `${urlAPI}?cmd=status&name=${username}`, true);
     // request.timeout = 2000;

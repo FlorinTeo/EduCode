@@ -2,6 +2,7 @@
 
 body {
     font-family: Helvetica, sans-serif;
+    background-color: #f1ffef;
 
     .title-table {
         /* border: 1px solid black; */
@@ -33,5 +34,9 @@ body {
         input[type="text"],
         input[type="password"] { width: 200px; height: 20px; }
         input[type="submit"] { height: 20px; width: 100px; }
+    }
+
+    .err-div {
+        color: red
     }
 }

@@ -1,7 +1,7 @@
 {
   "users": [
-    { "name": "tstave",         "pwd_hash": "ee428516c52a06ab16396a9e5f5d09fc", "role": "teacher" },
-    { "name": "c-fteodorescu",  "pwd_hash": "d929ab0ef184e66e6ad0003bb2dd5e87", "role": "teacher" },
-    { "name": "s-student",      "pwd_hash": "c570886bcc41d69560681f728cb9cf2a", "role": "student" }
+    { "name": "tstave",         "pwd_hash": "ee428516c52a06ab16396a9e5f5d09fc", "roles": "teacher" },
+    { "name": "c-fteodorescu",  "pwd_hash": "d929ab0ef184e66e6ad0003bb2dd5e87", "roles": "teacher|admin" },
+    { "name": "s-student",      "pwd_hash": "c570886bcc41d69560681f728cb9cf2a", "roles": "student" }
   ]
 }
