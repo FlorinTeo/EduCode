@@ -2,11 +2,12 @@
  * Get page parameters from the URL.
  */
 const sid = (new URLSearchParams(window.location.search)).get("sid");
-const titleName = (new URLSearchParams(window.location.search)).get("name");
+const username = (new URLSearchParams(window.location.search)).get("name");
 
 /**
  * CtrlPanel page controls
  */
+const txtTitleSid = document.getElementById("titleSid");
 const txtTitleName = document.getElementById("titleName");
 const btnLogout = document.getElementById("btnLogout");
 
@@ -26,7 +27,8 @@ btnLogout.addEventListener("click", onClickLogout);
  * Callback when page is loaded
  */
 function onPageLoad() {
-    txtTitleName.innerText = titleName;
+    txtTitleSid.innerText = sid;
+    txtTitleName.innerText = username;
 }
 
 /**
@@ -48,8 +50,8 @@ function onLogoutResponse() {
     var jsonResponse = JSON.parse(this.response);
     if (this.status != 200) {
         // alert on error (unexpected)
-        alert(`[${this.status}] ${jsonResponse._error}`);
+        // alert(`[${this.status}] ${jsonResponse._error}`);
     }
     // in all cases redirect to the Login page
-    window.location.href = `${urlLoginJSP}`;
+    window.location.href = `${urlLoginJSP}?name=${username}`;
 }

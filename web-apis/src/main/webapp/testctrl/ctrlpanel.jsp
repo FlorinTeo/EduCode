@@ -10,16 +10,11 @@
     </head>
     <body>
         <!-- Title of the page: "Instant Reaction Host username" .... [logout] -->
-        <table>
+        <table class="title-table">
             <tr>
-                <td>
-                    <span>Tests Manager </span>
-                    <span class="title-highlight">Control Panel</span>
-                    <span class="title-name" id="titleName"></span>
-                </td>
-                <td>
-                    <input id="btnLogout" type="submit" value="logout" >
-                </td>
+                <td><span>Tests Manager </span><span class="title-highlight">Control Panel</span></td>
+                <td><span class="title-sid" id="titleSid"></span> <span class="title-name" id="titleName"></span></td>
+                <td><input id="btnLogout" type="submit" value="logout" ></td>
             </tr>
         </table>
     </body>

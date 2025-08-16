@@ -1,18 +1,61 @@
 @charset "ISO-8859-1";
 
-/* Cascading Style Sheet for HOST login page */
-
 body {
-  font-family: Helvetica, sans-serif;
-}
+    font-family: Helvetica, sans-serif;
 
-.title-highlight {
-    font-weight:400;
-    font-size:24px;
-    color:#0D1DE0;
-}
-
-.input-login {
-    height: 20px;
-    width: 60px;
+    .title-table {
+        /* border: 1px solid black; */
+        border: none;
+        border-collapse: collapse;
+        width: 100%;
+    
+        td:nth-child(1) {
+            width: 60%;
+            text-align: left;
+        }
+    
+        td:nth-child(2) {
+            width: 35%;
+            text-align: right;
+        }
+    
+        td:nth-child(3) {
+            width: 5%;
+            text-align: right;
+        }
+    
+        .title-highlight {
+            font-weight: 400;
+            font-size: 20px;
+            color: #0D1DE0;
+        }
+    }
+    
+    .login-table {
+        /* border: 1px solid black; */
+        border: none;
+        border-collapse: collapse;
+        width: 100%;
+        text-align: left;
+    
+        td:nth-child(1) {
+            width: 110px;
+            text-align: right;
+        }
+    
+        td:nth-child(2) {
+            text-align: left;
+        }
+    
+        input[type="text"],
+        input[type="password"] {
+            width: 200px;
+            height: 20px;
+        }
+    
+        input[type="submit"] {
+            height: 20px;
+            width: 100px;
+        }
+    }
 }
