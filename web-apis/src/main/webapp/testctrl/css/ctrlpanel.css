@@ -11,10 +11,7 @@ html, body {
 .main-style {
     display: flex;
     flex-direction: column;
-    padding-top: 8px;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-bottom: 8px;
+    padding: 8px;
     height: calc(100vh - 16px);
 }
 
@@ -35,17 +32,31 @@ html, body {
     flex: 1 1 auto;
     overflow: auto;
     border: 1px solid #747474;
-    min-height: 0;
     margin-top: 10px;
     margin-bottom: 10px; /* matches log-style height + margin */
 }
+.actions-style td:nth-child(1) { padding: 8px 12px;  position: relative;}
+.actions-style td:nth-child(1)::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  right: 0;
+  width: 1px;
+  background: #747474;
+  display: block;
+}
+.actions-style td:nth-child(2) {
+  height: 40px;
+  vertical-align: middle;
+}
+.actions-style input[type="submit"] { width: 120px; }
 
 .main-style .log-style {
     flex-shrink: 0;
     height: 200px;
     z-index: 10;
 }
-
 .log-style .log-content-style {
     height: 180px;
     overflow-y: auto;

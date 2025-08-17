@@ -18,10 +18,20 @@
                 </tr>
             </table>
             <div id="divActions" class="actions-style">
-                Action buttons and descriptions go here
+                <table id="tblActions">
+                    <!-- Action entries to be added here -->
+                    <tr><td><input id="btnShowSessions" value="Show Sessions" type="submit"></td>
+                        <td>Shows all the sessions currently active on the server.</td>
+                    </tr>
+                    <tr><td><input id="btnSample" value="Sample Action" type="submit"></td>
+                        <td>Demonstrates a sample action entry.<br>
+                            This is a template to be used as more actions are added to the control panel.
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div id="divLog" class="log-style">
-                Backend logs:
+                Server logs:
                 <div id="divLogContent" class="log-content-style">
                     <table id="tblLog">
                         <!-- Log entries will be added here -->
