@@ -166,19 +166,36 @@ public class Context extends TimerTask {
         return session;
     }
 
+    public Session getSession(HttpSession httpSession) {
+        return _sessions.get(httpSession);
+    }
+    
     public void pruneSessions() {
         Map<HttpSession, Session> newSessions = new HashMap<HttpSession, Session>();
         Instant now = Instant.now();
         int activeSessions = 0;
         for(Map.Entry<HttpSession, Session> kvp : _sessions.entrySet()) {
-            if (!kvp.getValue().isOrphan(now)) {
-                newSessions.put(kvp.getKey(), kvp.getValue());
-                activeSessions++;
+            HttpSession httpSession = kvp.getKey();
+            Session session = kvp.getValue();
+            if (session.isOrphan(now)) {
+                Log(new LogEntry("Session pruned > [%s] %s", session.getId(), session.getUser().name));
+                continue;
             }
+            newSessions.put(httpSession, session);
+            activeSessions++;
         }
         if (_sessions.size() != activeSessions) {
             System.out.printf("TestCtrl sessions cleaned up ... [removed %d][remaining %d]\n", _sessions.size() - activeSessions, activeSessions);
             _sessions = newSessions;
+        }
+    }
+    
+    public void Log(LogEntry logEntry) {
+        // Log the entry in all "admin" and "teacher" sessions
+        for(Session session : _sessions.values()) {
+            if (session.getUser().hasRole("admin", "teacher")) {
+                session.Log(logEntry);
+            }
         }
     }
     // #endregion: [Public] Session management methods

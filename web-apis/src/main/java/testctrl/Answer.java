@@ -22,6 +22,14 @@ public class Answer {
         }
     }
 
+    public class Logs extends Answer {
+        public LogEntry[] _logs;
+
+        public Logs(LogEntry... logs) {
+            _logs = logs;
+        }
+    }
+
     @Override
     public String toString() {
         Gson gson = new Gson();

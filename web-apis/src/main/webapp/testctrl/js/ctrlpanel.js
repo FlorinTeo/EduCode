@@ -51,28 +51,31 @@ function onPageLoad() {
 /**
  * Timer callback sending a [GET ../web-api/testctrl?cmd=status] request to the server.
  */
-var logId = 0
 function onStatusRequest() {
-    const row = tblLog.insertRow(-1);
-    row.insertCell(0).textContent = logId++;
-    row.insertCell(1).textContent = 'heartbeat';
-    // retain only the mosts recent 100 logs (to limit memory usage)
-    if (tblLog.rows.length > 100) {
-        tblLog.deleteRow(0);
-    }
-    divLogContent.scrollTop = divLogContent.scrollHeight;
-    //var request = new  XMLHttpRequest();
-    // request.open("GET", `${urlAPI}?cmd=status&name=${username}`, true);
-    // request.timeout = 2000;
-    // request.onload = onStatusResponse;
-    // request.withCredentials = true;
-    // request.send();
+    var request = new  XMLHttpRequest();
+    request.open("GET", `${urlAPI}?cmd=status&type=log`, true);
+    request.timeout = 2000;
+    request.onload = onStatusResponse;
+    request.withCredentials = true;
+    request.send();
 }
 
 /**
- * Callback for receiving the response from the [GET ../web-api/testctrl?cmd=status] request.
+ * Callback for receiving the response from the [GET ../web-api/testctrl?cmd=status&type=log] request.
  */
 function onStatusResponse() {
+    var jsonResponse = JSON.parse(this.response);
+    var logs = (this.status == 200) ? jsonResponse._logs : [jsonResponse._error];
+    for (const log of logs) {
+        const row = tblLog.insertRow(-1);
+        row.insertCell(0).textContent = log._logTime;
+        row.insertCell(1).textContent = log._logText;
+        // retain only the mosts recent 100 logs (to limit memory usage)
+        if (tblLog.rows.length > 100) {
+            tblLog.deleteRow(0);
+        }
+    }
+    divLogContent.scrollTop = divLogContent.scrollHeight;
 }
 
 /**
@@ -91,11 +94,9 @@ function onClickLogout(e) {
  * Callback for receiving the response from the REST API Host Logout call
  */
 function onLogoutResponse() {
-    var jsonResponse = JSON.parse(this.response);
     if (this.status != 200) {
-        // alert on error (unexpected)
         // alert(`[${this.status}] ${jsonResponse._error}`);
     }
-    // in all cases redirect to the Login page
+    // error or not, redirect to the Login page
     window.location.href = `${urlLoginJSP}?name=${username}`;
 }

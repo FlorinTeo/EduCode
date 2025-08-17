@@ -22,6 +22,19 @@ public class Servlet extends HttpServlet{
         }
     }
 
+    public static String paramsToLog(Map<String, String[]> params) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, String[]> entry : params.entrySet()) {
+            if (sb.length() > 0) {
+                sb.append("&");
+            }
+            String param = entry.getKey();
+            String value = param.equalsIgnoreCase("pwd") ? "******" : entry.getValue() != null && entry.getValue().length > 0 ? entry.getValue()[0] : "";
+            sb.append(param).append("=").append(value);
+        }
+        return sb.toString();
+    }
+
     /**
      * On initialization retrieve and retain _serverContext 
      */
@@ -35,10 +48,10 @@ public class Servlet extends HttpServlet{
      */
     @SuppressWarnings("null")
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession httpSession = request.getSession();
+        Map<String, String[]> params = request.getParameterMap();
         Answer answer;
         try {
-            HttpSession httpSession = request.getSession();
-            Map<String, String[]> params = request.getParameterMap();
             checkTrue(_context.isReady(), "Server not ready!");
             checkTrue(params.containsKey("cmd"),"Missing 'cmd' parameter!");
             String cmd = params.get("cmd")[0];
@@ -51,10 +64,15 @@ public class Servlet extends HttpServlet{
                     // http://localhost:8080/web-apis/testctrl?cmd=logout
                     answer = executeCmdLogout(httpSession);
                     break;
+                case "status":
+                    // http://localhost:8080/web-apis/testctrl?cmd=status&type=log
+                    answer = executeCmdStatus(httpSession, params);
+                    break;
                 default:
                     answer = new Answer().new Err("Unsupported 'cmd' parameter!");
             }
         } catch(RuntimeException | NoSuchAlgorithmException e) {
+            _context.Log(new LogEntry("%s > ?%s", e.getMessage(), paramsToLog(params)));
             answer = new Answer().new Err(e.getMessage());
         }
 
@@ -77,11 +95,27 @@ public class Servlet extends HttpServlet{
         checkTrue(user != null && user.hasRole("admin","teacher") && user.matchesPwd(pwd), "Invalid name, role or password!");
         // try to create a session. This may throw if another user is logged in this session already.
         Session session = _context.newSession(user, httpSession);
+        _context.Log(new LogEntry("User '%s' logged in session [%s]", user.name, session.getId()));
         return new Answer().new Msg(session.getId(), "Session created!");
     }
 
     public Answer executeCmdLogout(HttpSession httpSession) {
         Session session = _context.closeSession(httpSession);
+        _context.Log(new LogEntry("User '%s' logged out from session [%s]", session.getUser().name, session.getId()));
         return new Answer().new Msg(session.getId(), "Session closed!");
+    }
+
+    @SuppressWarnings("null")
+    public Answer executeCmdStatus(HttpSession httpSession, Map<String, String[]> params) {
+        Session session = _context.getSession(httpSession);
+        checkTrue(session != null, "Session not found!");
+        session.touch();
+        String type = params.get("type")[0];
+        switch(type) {
+            case "log":
+                return new Answer().new Logs(session.purgeLog());
+            default:
+                return new Answer().new Err("Unknown status type!");
+        }
     }
 }
