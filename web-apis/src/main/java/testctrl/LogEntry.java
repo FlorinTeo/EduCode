@@ -6,7 +6,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class LogEntry {
-        private static final DateTimeFormatter _LOG_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM/dd-HH:mm:ss.SSS");
+        private static final DateTimeFormatter _LOG_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM/dd HH:mm:ss.S");
         public String _logTime;
         public String _logText;
         

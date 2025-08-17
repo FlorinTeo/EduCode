@@ -3,52 +3,55 @@
 html, body {
     font-family: Helvetica, sans-serif;
     background-color: #dcfdf7;
-
-    .title-table {
-        /* border: 1px solid black; */
-        border: none;
-        border-collapse: collapse;
-        width: 100%;
-
-        td:nth-child(1) { width: 60%; text-align: left; }
-        td:nth-child(2) { width: 35%; text-align: right; padding-right: 4px; }
-        td:nth-child(3) { width: 5%; text-align: right; }
-
-        .title-highlight {
-            font-weight: 400;
-            font-size: 20px;
-            color: #0D1DE0;
-        }
-        .title-sid {
-            font-weight: 200;
-            font-size: 12px;
-            color: #a0a0a0;
-        }
-        .title-name {
-            font-weight: 400;
-            font-size: 20px;
-            color: #41a308;
-        }
-    }
-
-    .log-div {
-        position: fixed;
-        left: 8px;
-        right: 8px;
-        bottom: 8px;
-        height:200px;
-
-        .log-content {
-            height:180px;
-            overflow-y:auto;
-            z-index: 0;
-            background-color: white;
-            border:1px solid #747474;
-            table {
-                size: 100%;
-                td:nth-child(1) { font-size: 10px; width: 100px; text-align: left; color: #757575}
-                td:nth-child(2) { font-size: 12px; }
-            }
-        }
-    }
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
+
+.main-style {
+    display: flex;
+    flex-direction: column;
+    padding-top: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+    height: calc(100vh - 16px);
+}
+
+.main-style .title-style {
+    flex: 0 0 auto;
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+}
+.title-style td:nth-child(1) { width: 60%; text-align: left; }
+.title-style td:nth-child(2) { width: 35%; text-align: right; padding-right: 4px; }
+.title-style td:nth-child(3) { width: 5%; text-align: right; }
+.title-highlight { font-weight: 400; font-size: 20px; color: #0D1DE0; }
+.title-sid { font-weight: 200; font-size: 12px; color: #a0a0a0; }
+.title-name { font-weight: 400; font-size: 20px; color: #41a308; }
+
+.main-style .actions-style {
+    flex: 1 1 auto;
+    overflow: auto;
+    border: 1px solid #747474;
+    min-height: 0;
+    margin-top: 10px;
+    margin-bottom: 10px; /* matches log-style height + margin */
+}
+
+.main-style .log-style {
+    flex-shrink: 0;
+    height: 200px;
+    z-index: 10;
+}
+
+.log-style .log-content-style {
+    height: 180px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #747474;
+}
+.log-content-style table { width: 100%; }
+.log-content-style td:nth-child(1) { font-size: 10px; width: 100px; text-align: left; color: #757575; }
+.log-content-style td:nth-child(2) { font-size: 12px; }

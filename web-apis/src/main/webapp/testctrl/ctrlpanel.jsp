@@ -9,20 +9,24 @@
         <script defer src="js/ctrlpanel.js?ver=1.0"></script>
     </head>
     <body>
-        <!-- Title of the page: "Instant Reaction Host username" .... [logout] -->
-        <table class="title-table">
-            <tr>
-                <td><span>Tests Manager </span><span class="title-highlight">Control Panel</span></td>
-                <td><span class="title-sid" id="titleSid"></span> <span class="title-name" id="titleName"></span></td>
-                <td><input id="btnLogout" type="submit" value="logout" ></td>
-            </tr>
-        </table>
-        <div id="divLog" class="log-div">
-            Backend logs:
-            <div id="divLogContent" class="log-content">
-                <table id="tblLog">
-                    <!-- Log entries will be added here -->
-                </table>
+        <div class="main-style">
+            <table class="title-style">
+                <tr>
+                    <td><span>Tests Manager </span><span class="title-highlight">Control Panel</span></td>
+                    <td><span class="title-sid" id="titleSid"></span> <span class="title-name" id="titleName"></span></td>
+                    <td><input id="btnLogout" type="submit" value="logout" ></td>
+                </tr>
+            </table>
+            <div id="divActions" class="actions-style">
+                Action buttons and descriptions go here
+            </div>
+            <div id="divLog" class="log-style">
+                Backend logs:
+                <div id="divLogContent" class="log-content-style">
+                    <table id="tblLog">
+                        <!-- Log entries will be added here -->
+                    </table>
+                </div>
             </div>
         </div>
     </body>
