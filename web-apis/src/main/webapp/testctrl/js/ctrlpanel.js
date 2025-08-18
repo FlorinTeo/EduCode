@@ -16,6 +16,7 @@ const btnSetPwd = document.getElementById("btnSetPwd");
 
 const dlgAction = document.getElementById("dlgAction");
 const dlgTitle = document.getElementById("dlgTitle");
+const dlgActionApply = document.getElementById("dlgApply");
 const dlgActionClose = document.getElementById("dlgClose");
 const dlgActionSource = document.getElementById("dlgSource");
 
@@ -31,12 +32,17 @@ btnSample.addEventListener("click", onActionSampleDlgOpen);
 btnShowSessions.addEventListener("click", onActionSessionsDlgOpen);
 btnSetPwd.addEventListener("click", onActionSetPwdDlgOpen);
 dlgActionClose.addEventListener("click", onActionDlgClose);
+dlgActionApply.addEventListener("click", onActionDlgClose);
 // #endregion: event listeners
 
 // #region: window resize callback
-/**
- * Callback when page is resized
- */
+function onPageLoad() {
+    txtTitleSid.innerText = sid;
+    txtTitleName.innerText = username;
+    setInterval(onStatusRequest, 4000);
+    onStatusRequest();
+}
+
 function onPageResize() {
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -44,22 +50,9 @@ function onPageResize() {
     txtTitleSid.style.display = (width < 800) ? 'none' : 'inline';
     divLog.style.display = (height < 300) ? 'none' : 'block';
 }
-
-/**
- * Callback when page is loaded
- */
-function onPageLoad() {
-    txtTitleSid.innerText = sid;
-    txtTitleName.innerText = username;
-    setInterval(onStatusRequest, 4000);
-    onStatusRequest();
-}
 // #endregion: window resize callback
 
 // #region: timer callback
-/**
- * Timer callback sending a [GET ../web-api/testctrl?cmd=status] request to the server.
- */
 function onStatusRequest() {
     var request = new  XMLHttpRequest();
     request.open("GET", `${urlAPI}?cmd=status&type=log`, true);
@@ -69,9 +62,6 @@ function onStatusRequest() {
     request.send();
 }
 
-/**
- * Callback for receiving the response from the [GET ../web-api/testctrl?cmd=status&type=log] request.
- */
 function onStatusResponse() {
     var jsonResponse = JSON.parse(this.response);
     var logs = (this.status == 200) ? jsonResponse._logs : [jsonResponse._error];
@@ -89,9 +79,6 @@ function onStatusResponse() {
 // #endregion: timer callback
 
 // #region: logout event handlers
-/**
- * Callback for clicking on the Host Logout button
- */
 function onClickLogout(e) {
     e.preventDefault();
     var request = new  XMLHttpRequest();
@@ -101,9 +88,6 @@ function onClickLogout(e) {
     request.send();
 }
 
-/**
- * Callback for receiving the response from the REST API Host Logout call
- */
 function onLogoutResponse() {
     if (this.status != 200) {
         // alert(`[${this.status}] ${jsonResponse._error}`);
@@ -120,7 +104,14 @@ function onActionSampleDlgOpen(e) {
     dlgAction.style.width = '100%';
     dlgAction.style.height = '100%';
     dlgAction.style.resize = 'both';
+
+    dlgActionApply.style.display = 'block';
+    dlgActionApply.addEventListener("click", onActionSampleDlgApply);
     dlgAction.showModal();
+}
+function onActionSampleDlgApply(e) {
+    e.preventDefault();
+    dlgAction.close();
 }
 
 function onActionSessionsDlgOpen(e) {
@@ -129,6 +120,8 @@ function onActionSessionsDlgOpen(e) {
     dlgAction.style.width = '80%';
     dlgAction.style.height = '60%';
     dlgAction.style.resize = 'none';
+
+    dlgActionApply.style.display = 'none';
     dlgAction.showModal();
 }
 
@@ -138,7 +131,14 @@ function onActionSetPwdDlgOpen(e) {
     dlgAction.style.width = '40%';
     dlgAction.style.height = '30%';
     dlgAction.style.resize = 'none';
+
+    dlgActionApply.style.display = 'block';
+    dlgActionApply.addEventListener("click", onActionSetPwdDlgApply);
     dlgAction.showModal();
+}
+function onActionSetPwdDlgApply(e) {
+    e.preventDefault();
+    dlgAction.close();
 }
 
 function onActionDlgClose(e) {

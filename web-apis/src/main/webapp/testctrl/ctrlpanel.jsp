@@ -52,6 +52,7 @@
         <dialog id="dlgAction" class="action-dialog-style">
             <div id="dlgTitleBar" class="action-dialog-textBar-style">
                 <span id="dlgTitle">Action Dialog</span>
+                <img id="dlgApply" src="../res/window-apply.png" alt="Apply" style="width:24px;height:24px;">
                 <img id="dlgClose" src="../res/window-close.png" alt="Close" style="width:24px;height:24px;">
             </div>
             <div id="dlgSource" class="action-dialog-src-style">
