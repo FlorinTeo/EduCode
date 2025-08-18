@@ -1,12 +1,8 @@
-/**
- * Get page parameters from the URL.
- */
+// #region: page parameters
 const sid = (new URLSearchParams(window.location.search)).get("sid");
 const username = (new URLSearchParams(window.location.search)).get("name");
+// #endregion: page parameters
 
-/**
- * CtrlPanel page controls
- */
 const txtTitleSid = document.getElementById("titleSid");
 const txtTitleName = document.getElementById("titleName");
 const btnLogout = document.getElementById("btnLogout");
@@ -14,19 +10,30 @@ const divLog = document.getElementById("divLog");
 const divLogContent = document.getElementById("divLogContent");
 const tblLog = document.getElementById("tblLog");
 
-/**
- * Static URLs for the CtrlPanel flow
- */
+const btnSample = document.getElementById("btnSample");
+const btnShowSessions = document.getElementById("btnShowSessions");
+const btnSetPwd = document.getElementById("btnSetPwd");
+
+const dlgAction = document.getElementById("dlgAction");
+const dlgTitle = document.getElementById("dlgTitle");
+const dlgActionClose = document.getElementById("dlgClose");
+const dlgActionSource = document.getElementById("dlgSource");
+
 const urlAPI = window.location.origin + "/web-apis/testctrl";
 const urlLoginJSP = window.location.origin + "/web-apis/testctrl/login.jsp";
 
-/**
- * Hook code listeners to actions and events in the CtrlPanel main flow
- */
+// #region: event listeners
 window.addEventListener("resize", onPageResize);
 document.addEventListener("DOMContentLoaded", onPageLoad);
 btnLogout.addEventListener("click", onClickLogout);
 
+btnSample.addEventListener("click", onActionSampleDlgOpen);
+btnShowSessions.addEventListener("click", onActionSessionsDlgOpen);
+btnSetPwd.addEventListener("click", onActionSetPwdDlgOpen);
+dlgActionClose.addEventListener("click", onActionDlgClose);
+// #endregion: event listeners
+
+// #region: window resize callback
 /**
  * Callback when page is resized
  */
@@ -47,7 +54,9 @@ function onPageLoad() {
     setInterval(onStatusRequest, 4000);
     onStatusRequest();
 }
+// #endregion: window resize callback
 
+// #region: timer callback
 /**
  * Timer callback sending a [GET ../web-api/testctrl?cmd=status] request to the server.
  */
@@ -77,7 +86,9 @@ function onStatusResponse() {
     }
     divLogContent.scrollTop = divLogContent.scrollHeight;
 }
+// #endregion: timer callback
 
+// #region: logout event handlers
 /**
  * Callback for clicking on the Host Logout button
  */
@@ -100,3 +111,38 @@ function onLogoutResponse() {
     // error or not, redirect to the Login page
     window.location.href = `${urlLoginJSP}?name=${username}`;
 }
+// #endregion: Logout event handlers
+
+// #region: action dialog event handlers
+function onActionSampleDlgOpen(e) {
+    e.preventDefault();
+    dlgTitle.innerHTML = 'Sample Action';
+    dlgAction.style.width = '100%';
+    dlgAction.style.height = '100%';
+    dlgAction.style.resize = 'both';
+    dlgAction.showModal();
+}
+
+function onActionSessionsDlgOpen(e) {
+    e.preventDefault();
+    dlgTitle.innerHTML = 'Show Sessions';
+    dlgAction.style.width = '80%';
+    dlgAction.style.height = '60%';
+    dlgAction.style.resize = 'none';
+    dlgAction.showModal();
+}
+
+function onActionSetPwdDlgOpen(e) {
+    e.preventDefault();
+    dlgTitle.innerHTML = 'Set Password';
+    dlgAction.style.width = '40%';
+    dlgAction.style.height = '30%';
+    dlgAction.style.resize = 'none';
+    dlgAction.showModal();
+}
+
+function onActionDlgClose(e) {
+    e.preventDefault();
+    dlgAction.close();
+}
+// #endregion: action dialog event handlers

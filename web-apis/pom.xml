@@ -73,6 +73,10 @@
                                 <targetPath>WEB-INF/classes/testctrl/res</targetPath>
                             </resource>
                             <resource>
+                                <directory>src/main/webapp/res</directory>
+                                <targetPath>res</targetPath>
+                            </resource>
+                            <resource>
                                 <directory>src/main/java/wordle/res</directory>
                                 <targetPath>WEB-INF/classes/wordle/res</targetPath>
                             </resource>
