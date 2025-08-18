@@ -31,8 +31,8 @@ btnLogout.addEventListener("click", onClickLogout);
 btnSample.addEventListener("click", onActionSampleDlgOpen);
 btnShowSessions.addEventListener("click", onActionSessionsDlgOpen);
 btnSetPwd.addEventListener("click", onActionSetPwdDlgOpen);
+dlgActionApply.addEventListener("click", onActionDlgApply);
 dlgActionClose.addEventListener("click", onActionDlgClose);
-dlgActionApply.addEventListener("click", onActionDlgClose);
 // #endregion: event listeners
 
 // #region: window resize callback
@@ -98,24 +98,33 @@ function onLogoutResponse() {
 // #endregion: Logout event handlers
 
 // #region: action dialog event handlers
+function getFormattedTime() {
+    const now = new Date();
+    const pad = (n, z = 2) => ('00' + n).slice(-z);
+    const MM = pad(now.getMonth() + 1);
+    const dd = pad(now.getDate());
+    const HH = pad(now.getHours());
+    const mm = pad(now.getMinutes());
+    const ss = pad(now.getSeconds());
+    const SS = pad(Math.floor(now.getMilliseconds() / 10)); // hundredths
+    return `${MM}/${dd} ${HH}:${mm}:${ss}.${SS}`;
+}
+
 function onActionSampleDlgOpen(e) {
     e.preventDefault();
+    dlgAction.trigger = btnSample;
     dlgTitle.innerHTML = 'Sample Action';
     dlgAction.style.width = '100%';
     dlgAction.style.height = '100%';
     dlgAction.style.resize = 'both';
 
     dlgActionApply.style.display = 'block';
-    dlgActionApply.addEventListener("click", onActionSampleDlgApply);
     dlgAction.showModal();
-}
-function onActionSampleDlgApply(e) {
-    e.preventDefault();
-    dlgAction.close();
 }
 
 function onActionSessionsDlgOpen(e) {
     e.preventDefault();
+    dlgAction.trigger = btnShowSessions;
     dlgTitle.innerHTML = 'Show Sessions';
     dlgAction.style.width = '80%';
     dlgAction.style.height = '60%';
@@ -127,17 +136,36 @@ function onActionSessionsDlgOpen(e) {
 
 function onActionSetPwdDlgOpen(e) {
     e.preventDefault();
+    dlgAction.trigger = btnSetPwd;
     dlgTitle.innerHTML = 'Set Password';
     dlgAction.style.width = '40%';
     dlgAction.style.height = '30%';
     dlgAction.style.resize = 'none';
 
     dlgActionApply.style.display = 'block';
-    dlgActionApply.addEventListener("click", onActionSetPwdDlgApply);
     dlgAction.showModal();
 }
-function onActionSetPwdDlgApply(e) {
+
+function onActionDlgApply(e) {
     e.preventDefault();
+    const logTime = getFormattedTime();
+    var logText = "Unknown action applied";
+    switch (dlgAction.trigger) {
+        case btnSample:
+            logText = `Sample action applied`;
+            break;
+        case btnSetPwd:
+            logText = `Set password action applied`;
+            break;
+    }
+
+    const row = tblLog.insertRow(-1);
+    row.insertCell(0).textContent = logTime;
+    row.insertCell(1).textContent = logText;
+    if (tblLog.rows.length > 100) {
+        tblLog.deleteRow(0);
+    }
+    divLogContent.scrollTop = divLogContent.scrollHeight;
     dlgAction.close();
 }
 
