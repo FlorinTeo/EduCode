@@ -82,12 +82,15 @@ html, body {
 }
 
 .action-dialog-style .action-dialog-src-style {
-    width: calc(100% - 8px);
-    height: calc(100% - 30px);
+    padding: 24px;
+    width: calc(100% - 56px); /* full div size - 2 x padding */
+    height: calc(100% - 78px); /* full div size - textBar - 2 x padding */
     display: block;
     margin-left: auto;
     margin-right: auto;
     background: lightgray;
+    max-height: calc(100% - 30px);
+    overflow-y: auto;
 }
 
 /*--------======== .log-style ========---------*/

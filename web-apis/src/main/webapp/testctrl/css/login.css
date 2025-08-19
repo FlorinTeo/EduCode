@@ -27,9 +27,6 @@ body {
     border-collapse: collapse;
     width: 100%;
     text-align: left;
-    input[type="text"],
-    input[type="password"] { width: 200px; height: 20px; }
-    input[type="submit"] { height: 20px; width: 100px; }
 }
 .login-table td:nth-child(1) { width: 110px; text-align: right; }
 .login-table td:nth-child(2) { text-align: left; }

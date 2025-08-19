@@ -1,0 +1,15 @@
+@charset "ISO-8859-1";
+    
+.setPwd-table {
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+}
+.setPwd-table td:nth-child(1) { width: 160px; text-align: right; }
+.setPwd-table td:nth-child(2) { text-align: left; }
+.setPwd-table input[type="text"], .setPwd-table input[type="password"] { width: 200px; height: 20px; }
+
+.err-div {
+    color: red
+}

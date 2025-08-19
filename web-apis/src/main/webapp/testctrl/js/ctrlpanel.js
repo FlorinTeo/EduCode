@@ -98,6 +98,7 @@ function onLogoutResponse() {
 // #endregion: Logout event handlers
 
 // #region: action dialog event handlers
+// #region: helper methods
 function getFormattedTime() {
     const now = new Date();
     const pad = (n, z = 2) => ('00' + n).slice(-z);
@@ -109,42 +110,7 @@ function getFormattedTime() {
     const SS = pad(Math.floor(now.getMilliseconds() / 10)); // hundredths
     return `${MM}/${dd} ${HH}:${mm}:${ss}.${SS}`;
 }
-
-function onActionSampleDlgOpen(e) {
-    e.preventDefault();
-    dlgAction.trigger = btnSample;
-    dlgTitle.innerHTML = 'Sample Action';
-    dlgAction.style.width = '100%';
-    dlgAction.style.height = '100%';
-    dlgAction.style.resize = 'both';
-
-    dlgActionApply.style.display = 'block';
-    dlgAction.showModal();
-}
-
-function onActionSessionsDlgOpen(e) {
-    e.preventDefault();
-    dlgAction.trigger = btnShowSessions;
-    dlgTitle.innerHTML = 'Show Sessions';
-    dlgAction.style.width = '80%';
-    dlgAction.style.height = '60%';
-    dlgAction.style.resize = 'none';
-
-    dlgActionApply.style.display = 'none';
-    dlgAction.showModal();
-}
-
-function onActionSetPwdDlgOpen(e) {
-    e.preventDefault();
-    dlgAction.trigger = btnSetPwd;
-    dlgTitle.innerHTML = 'Set Password';
-    dlgAction.style.width = '40%';
-    dlgAction.style.height = '30%';
-    dlgAction.style.resize = 'none';
-
-    dlgActionApply.style.display = 'block';
-    dlgAction.showModal();
-}
+// #endregion: helper methodss
 
 function onActionDlgApply(e) {
     e.preventDefault();
@@ -173,4 +139,56 @@ function onActionDlgClose(e) {
     e.preventDefault();
     dlgAction.close();
 }
+
+// #region: actSample handlers
+function onActionSampleDlgOpen(e) {
+    e.preventDefault();
+    dlgAction.trigger = btnSample;
+    dlgTitle.innerHTML = 'Sample Action';
+    dlgAction.style.width = '100%';
+    dlgAction.style.height = '100%';
+    dlgAction.style.resize = 'both';
+
+    dlgActionApply.style.display = 'block';
+    dlgAction.showModal();
+}
+// #endregion: actSample handlers
+
+// #region: actSessions handlers
+function onActionSessionsDlgOpen(e) {
+    e.preventDefault();
+    dlgAction.trigger = btnShowSessions;
+    dlgTitle.innerHTML = 'Show Sessions';
+    dlgAction.style.width = '80%';
+    dlgAction.style.height = '60%';
+    dlgAction.style.resize = 'none';
+
+    dlgActionApply.style.display = 'none';
+    dlgAction.showModal();
+}
+// #endregion: actSession handlers
+
+// #region: actSetPwd handlers
+function onActionSetPwdDlgOpen(e) {
+    e.preventDefault();
+    dlgAction.trigger = btnSetPwd;
+    dlgTitle.innerHTML = 'Set Password';
+    dlgAction.style.width = '40%';
+    dlgAction.style.height = '30%';
+    dlgAction.style.resize = 'none';
+
+    fetch('actSetPwd.jsp')
+    .then(res => res.text())
+    .then(html => {
+        dlgActionSource.innerHTML = html;
+        // Dynamically load JS
+        const script = document.createElement('script');
+        script.src = 'js/actSetPwd.js';
+        document.body.appendChild(script);
+    });
+
+    dlgActionApply.style.display = 'block';
+    dlgAction.showModal();
+}
+// #endregion: actSetPwd handlers
 // #endregion: action dialog event handlers
