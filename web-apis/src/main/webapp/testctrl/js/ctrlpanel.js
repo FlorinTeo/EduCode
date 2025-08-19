@@ -173,19 +173,26 @@ function onActionSetPwdDlgOpen(e) {
     e.preventDefault();
     dlgAction.trigger = btnSetPwd;
     dlgTitle.innerHTML = 'Set Password';
-    dlgAction.style.width = '40%';
-    dlgAction.style.height = '30%';
+    dlgAction.style.width = '36%';
+    dlgAction.style.height = '24%';
     dlgAction.style.resize = 'none';
 
-    fetch('actSetPwd.jsp')
-    .then(res => res.text())
-    .then(html => {
-        dlgActionSource.innerHTML = html;
-        // Dynamically load JS
-        const script = document.createElement('script');
-        script.src = 'js/actSetPwd.js';
-        document.body.appendChild(script);
-    });
+    if (typeof setPwd_loaded == "undefined") {
+        fetch('actSetPwd.jsp')
+        .then(res => res.text())
+        .then(html => {
+            dlgActionSource.innerHTML = html;
+            // Dynamically load JS
+            const script = document.createElement('script');
+            script.src = 'js/actSetPwd.js';
+            document.body.appendChild(script);
+            script.onload = () => {
+                setPwd_reset(username);
+            };
+        });
+    } else {
+        setPwd_reset(username);
+    }
 
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
