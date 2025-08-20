@@ -11,7 +11,9 @@ function actUserMgmt_onOpen() {
 }
 
 function actUserMgmt_onApply() {
-    addLog(`User '${actUserMgmt_edtName.value}' was updated!`);
+    actUserMgmt_txtOutput.innerHTML = actUserMgmt_txtOutput.innerHTML + "Action not implemented yet!<br>";
+    //addLog(`User '${actUserMgmt_edtName.value}' was updated!`);
+    return false;
 }
 
 function actUserMgmt_onCancel() {

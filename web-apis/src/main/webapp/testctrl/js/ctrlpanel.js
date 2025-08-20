@@ -162,9 +162,10 @@ function onActionDlgApply(e) {
     e.preventDefault();
     const actName = Object.keys(actMap).find(key => actMap[key].div && actMap[key].div.style.display !== "none");
     if (actMap[actName].onApply) {
-        actMap[actName].onApply();
+        if (actMap[actName].onApply()) {
+            dlgAction.close();
+        }
     }
-    dlgAction.close();
 }
 
 function onActionDlgClose(e) {
