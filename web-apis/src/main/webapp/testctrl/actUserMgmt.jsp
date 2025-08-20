@@ -14,6 +14,6 @@
         </table>
         <p>
         <!--  Output area -->
-        <div id="actUserMgmt_txtOutput" class="actUserMgmt-divErr"></div>
+        <div id="actUserMgmt_txtOutput" class="actUserMgmt-err-div"></div>
     </div>
 </html>

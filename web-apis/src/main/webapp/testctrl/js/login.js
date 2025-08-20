@@ -46,6 +46,7 @@ function onLoginResponse() {
     } else {
         // otherwise display the response on the login page.
         txtOutput.innerHTML = `[${this.status}] ${jsonResponse._error}`;
+        txtOutput.classList.add('err-div');
     }
 }
 // #endregion: login event handlers

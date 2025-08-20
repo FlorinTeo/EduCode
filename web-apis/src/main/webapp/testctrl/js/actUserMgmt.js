@@ -7,6 +7,7 @@ function actUserMgmt_onOpen() {
     actUserMgmt_edtName.value = username;
     actUserMgmt_edtPwd.value = "";
     actUserMgmt_txtOutput.innerHTML = "";
+    actUserMgmt_txtOutput.classList.add('actUserMgmt-err-div');
 }
 
 function actUserMgmt_onApply() {
