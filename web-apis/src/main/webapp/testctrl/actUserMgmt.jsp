@@ -11,7 +11,7 @@
         <table class="actUserMgmt-table">
             <tr><th></th><th>Password reset</th></tr>
             <tr><td>Name:</td><td><input id="actUserMgmt_edtName" type="text"></td></tr>
-            <tr><td>Password:</td><td><input id="actUserMgmt_edtPwd" type="password"></td></tr>
+            <tr><td>New Password:</td><td><input id="actUserMgmt_edtPwd" type="password"></td></tr>
             <tr><td>Confirm Password:</td><td><input id="actUserMgmt_edtPwdConfirm" type="password"></td></tr>
         </table>
         <p>
