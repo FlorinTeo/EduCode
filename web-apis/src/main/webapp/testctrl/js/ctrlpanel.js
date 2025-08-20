@@ -193,8 +193,8 @@ function onActSampleDlgOpen(e) {
 function onActSessionMgmt(e) {
     e.preventDefault();
     selectAction("actSessionMgmt");
-    dlgAction.style.width = '80%';
-    dlgAction.style.height = '60%';
+    dlgAction.style.width = '60%';
+    dlgAction.style.height = '40%';
     dlgAction.style.resize = 'none';
     dlgActionTitle.innerHTML = 'Session Management';
     dlgActionApply.style.display = 'none';
@@ -202,8 +202,7 @@ function onActSessionMgmt(e) {
 }
 // #endregion: actSession handlers
 
-// #region: actSetPwd handlers
-let divSetPwd = document.getElementById("setPwd_div");
+// #region: actUserMgmt handlers
 function onActUserMgmt(e) {
     e.preventDefault();
     selectAction("actUserMgmt");
@@ -214,5 +213,5 @@ function onActUserMgmt(e) {
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
 }
-// #endregion: actSetPwd handlers
+// #endregion: actUserMgmt handlers
 // #endregion: action dialog event handlers

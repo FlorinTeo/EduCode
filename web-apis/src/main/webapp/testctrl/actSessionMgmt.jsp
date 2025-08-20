@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta charset="ISO-8859-1">
-        <link rel="stylesheet" href="css/actSessionMgmt.css?ver=1.0">
+        <link rel="stylesheet" href="css/actSessionMgmt.css?ver=1.1">
         <script defer src="js/actSessionMgmt.js?ver=1.0"></script>
     </head>
     <div id="actSessionMgmt_div" class="actSessionMgmt-style">
