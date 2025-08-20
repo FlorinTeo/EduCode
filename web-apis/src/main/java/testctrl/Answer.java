@@ -8,17 +8,17 @@ public class Answer {
         public String _sid;
         public String _message;
 
-        public Msg(String sid, String message) {
+        public Msg(String sid, String format, Object... args) {
             _sid = sid;
-            _message = message;
+            _message = String.format(format, args);
         }
     }
 
     public class Err extends Answer {
         public String _error;
 
-        public Err(String error) {
-            _error = error;
+        public Err(String format, Object... args) {
+            _error = String.format(format, args);
         }
     }
 

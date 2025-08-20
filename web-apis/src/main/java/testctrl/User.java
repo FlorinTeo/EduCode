@@ -8,10 +8,22 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Class representing a user in the system.
  */
-public class User {
+public class User implements Comparable<User> {
     public String name;
     public String pwd_hash;
     public String roles;
+
+    /**
+     * Creates a MD5 hash of the given password.
+     * @param pwd The password to hash.
+     * @return The MD5 hash of the password.
+     * @throws NoSuchAlgorithmException
+     */
+    private String getPwdHash(String pwd) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] md5Digest = md.digest(pwd.getBytes(StandardCharsets.UTF_8));
+        return new BigInteger(1, md5Digest).toString(16);
+    }
 
     /**
      * Checks a user's password by generating the MD5 hash of the provided password
@@ -20,10 +32,7 @@ public class User {
      * @throws NoSuchAlgorithmException
      */
     boolean matchesPwd(String pwd) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        byte[] md5Digest = md.digest(pwd.getBytes(StandardCharsets.UTF_8));
-        String pwdHash = new BigInteger(1, md5Digest).toString(16);
-        return pwd_hash.equals(pwdHash);
+        return pwd_hash.equals(getPwdHash(pwd));
     }
 
     /**
@@ -38,4 +47,32 @@ public class User {
         }
         return false;
     }
+
+    /**
+     * Sets the password for the user.
+     * @param pwd The new password.
+     * @return always true.
+     * @throws NoSuchAlgorithmException
+     */
+    boolean setPwd(String pwd) throws NoSuchAlgorithmException {
+        pwd_hash = getPwdHash(pwd);
+        return true; // Password changed
+    }
+
+    // #region: Comparable overrides
+    @Override
+    public int compareTo(User o) {
+        return name.compareTo(o.name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (this == obj || obj instanceof User && this.compareTo((User) obj) == 0);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+    // #endregion: comparable overrides
 }

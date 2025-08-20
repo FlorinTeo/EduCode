@@ -68,6 +68,10 @@ public class Servlet extends HttpServlet{
                     // http://localhost:8080/web-apis/testctrl?cmd=status&type=log
                     answer = executeCmdStatus(httpSession, params);
                     break;
+                case "set":
+                    // http://localhost:8080/web-apis/testctrl?cmd=set&op=setusr&name=<name>&pwd=<password>
+                    answer = executeCmdSet(httpSession, params);
+                    break;
                 default:
                     answer = new Answer().new Err("Unsupported 'cmd' parameter!");
             }
@@ -116,6 +120,44 @@ public class Servlet extends HttpServlet{
                 return new Answer().new Logs(session.purgeLog());
             default:
                 return new Answer().new Err("Unknown status type!");
+        }
+    }
+
+    @SuppressWarnings("null")
+    public Answer executeCmdSet(HttpSession httpSession, Map<String, String[]> params) throws NoSuchAlgorithmException {
+        Session session = _context.getSession(httpSession);
+        checkTrue(session != null, "Session not found!");
+        checkTrue(params.containsKey("op"), "Missing 'op' parameter!");
+        String op = params.get("op")[0];
+        switch(op) {
+            case "setusr":
+                checkTrue(params.containsKey("name"), "Missing 'name' parameter!");
+                checkTrue(params.containsKey("pwd"), "Missing 'pwd' parameter!");
+                String name = params.get("name")[0];
+                String pwd = params.get("pwd")[0];
+                User targetUser = _context.getUser(name);
+                checkTrue(targetUser != null, "Invalid user!");
+                if (session.getUser().hasRole("admin","teacher")) {
+                    // admins and teachers are allowed to change password for any user
+                    checkTrue(targetUser.setPwd(pwd), "Failed to change password!");
+                    Answer.Msg msgAnswer = new Answer().new Msg(
+                        "User '%s' changed password for user '%s'!",
+                        session.getUser().name,
+                        targetUser.name);
+                    _context.Log(new LogEntry(msgAnswer._message));
+                    return msgAnswer;
+                } else {
+                    checkTrue(targetUser.equals(session.getUser()), "Invalid non-self user!");
+                    // non-admins/teachers are only allowed to change only their own password                    // targetUser.setName(name);
+                    checkTrue(targetUser.setPwd(pwd), "Failed to change password!");
+                    Answer.Msg msgAnswer = new Answer().new Msg(
+                        "User '%s' changed own password!",
+                        session.getUser().name);
+                    _context.Log(new LogEntry(msgAnswer._message));
+                    return msgAnswer;
+                }
+            default:
+                return new Answer().new Err("Unknown set operation '" + op + "'!");
         }
     }
 }
