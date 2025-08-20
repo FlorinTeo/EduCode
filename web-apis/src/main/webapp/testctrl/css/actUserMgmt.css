@@ -16,6 +16,8 @@
     width: 100%;
     text-align: left;
 }
+.actUserMgmt-table th { border-bottom: 1px solid #919191; padding-bottom: 4px;}
+.actUserMgmt-table tr:nth-child(2) td { padding-top: 4px; }
 .actUserMgmt-table td:nth-child(1) { width: 140px; text-align: right; }
 .actUserMgmt-table td:nth-child(2) { text-align: left; }
 .actUserMgmt-table input[type="text"], .actUserMgmt-table input[type="password"] { width: 200px; height: 20px; }

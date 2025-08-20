@@ -3,14 +3,16 @@
 <html>
     <head>
         <meta charset="ISO-8859-1">
-        <link rel="stylesheet" href="css/actUserMgmt.css?ver=1.1">
+        <link rel="stylesheet" href="css/actUserMgmt.css?ver=1.2">
         <script defer src="js/actUserMgmt.js?ver=1.0"></script>
     </head>
     <div id="actUserMgmt_div" class="actUserMgmt-style">
         <!-- Controls for setting [Name][Password] -->
         <table class="actUserMgmt-table">
+            <tr><th></th><th>Password reset</th></tr>
             <tr><td>Name:</td><td><input id="actUserMgmt_edtName" type="text"></td></tr>
             <tr><td>Password:</td><td><input id="actUserMgmt_edtPwd" type="password"></td></tr>
+            <tr><td>Confirm Password:</td><td><input id="actUserMgmt_edtPwdConfirm" type="password"></td></tr>
         </table>
         <p>
         <!--  Output area -->
