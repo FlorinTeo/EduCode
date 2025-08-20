@@ -11,14 +11,20 @@ const divLogContent = document.getElementById("divLogContent");
 const tblLog = document.getElementById("tblLog");
 
 const btnSample = document.getElementById("btnSample");
-const btnShowSessions = document.getElementById("btnShowSessions");
-const btnSetPwd = document.getElementById("btnSetPwd");
+const btnSessionMgmt = document.getElementById("btnSessionMgmt");
+const btnUserMgmt = document.getElementById("btnUserMgmt");
 
 const dlgAction = document.getElementById("dlgAction");
 const dlgTitle = document.getElementById("dlgTitle");
 const dlgActionApply = document.getElementById("dlgApply");
 const dlgActionClose = document.getElementById("dlgClose");
 const dlgActionSource = document.getElementById("dlgSource");
+
+const actMap = {
+    actSample: { div: null },
+    actSessionMgmt: { div: null },
+    actUserMgmt: { div: null },
+};
 
 const urlAPI = window.location.origin + "/web-apis/testctrl";
 const urlLoginJSP = window.location.origin + "/web-apis/testctrl/login.jsp";
@@ -28,9 +34,10 @@ window.addEventListener("resize", onPageResize);
 document.addEventListener("DOMContentLoaded", onPageLoad);
 btnLogout.addEventListener("click", onClickLogout);
 
-btnSample.addEventListener("click", onActionSampleDlgOpen);
-btnShowSessions.addEventListener("click", onActionSessionsDlgOpen);
-btnSetPwd.addEventListener("click", onActionSetPwdDlgOpen);
+btnSample.addEventListener("click", onActSampleDlgOpen);
+btnSessionMgmt.addEventListener("click", onActSessionMgmt);
+btnUserMgmt.addEventListener("click", onActUserMgmt);
+
 dlgActionApply.addEventListener("click", onActionDlgApply);
 dlgActionClose.addEventListener("click", onActionDlgClose);
 // #endregion: event listeners
@@ -99,7 +106,7 @@ function onLogoutResponse() {
 
 // #region: action dialog event handlers
 // #region: helper methods
-function getFormattedTime() {
+function addLog(logText) {
     const now = new Date();
     const pad = (n, z = 2) => ('00' + n).slice(-z);
     const MM = pad(now.getMonth() + 1);
@@ -108,23 +115,8 @@ function getFormattedTime() {
     const mm = pad(now.getMinutes());
     const ss = pad(now.getSeconds());
     const SS = pad(Math.floor(now.getMilliseconds() / 10)); // hundredths
-    return `${MM}/${dd} ${HH}:${mm}:${ss}.${SS}`;
-}
-// #endregion: helper methodss
-
-function onActionDlgApply(e) {
-    e.preventDefault();
-    const logTime = getFormattedTime();
-    var logText = "Unknown action applied";
-    switch (dlgAction.trigger) {
-        case btnSample:
-            logText = `Sample action applied`;
-            break;
-        case btnSetPwd:
-            logText = `Set password action applied`;
-            break;
-    }
-
+    const logTime = `${MM}/${dd} ${HH}:${mm}:${ss}.${SS}`;
+    
     const row = tblLog.insertRow(-1);
     row.insertCell(0).textContent = logTime;
     row.insertCell(1).textContent = logText;
@@ -132,68 +124,89 @@ function onActionDlgApply(e) {
         tblLog.deleteRow(0);
     }
     divLogContent.scrollTop = divLogContent.scrollHeight;
+}
+// #endregion: helper methodss
+function selectAction(actName) {
+    Array.from(dlgActionSource.children).forEach(actDiv => actDiv.style.display = 'none');
+    if (actMap[actName].div == null) {
+        fetch(`${actName}.jsp`)
+            .then(res => res.text())
+            .then(html => { dlgActionSource.insertAdjacentHTML('beforeend', html); })
+            .then(() => {
+                actMap[actName].div = document.getElementById(`${actName}_div`);
+                const script = document.createElement(`script`);
+                script.src = `js/${actName}.js`;
+                script.onload = () => {
+                    actMap[actName].onOpen = window[`${actName}_onOpen`];
+                    actMap[actName].onApply = window[`${actName}_onApply`];
+                    actMap[actName].onCancel = window[`${actName}_onCancel`];
+                    if (actMap[actName].onOpen) {
+                        actMap[actName].onOpen();
+                    }
+                };
+                document.body.appendChild(script);
+            });
+    } else {
+        actMap[actName].div.style.display = 'block';
+        if (actMap[actName].onOpen) {
+            actMap[actName].onOpen();
+        }
+    }
+}
+
+function onActionDlgApply(e) {
+    e.preventDefault();
+    const actName = Object.keys(actMap).find(key => actMap[key].div && actMap[key].div.style.display !== "none");
+    if (actMap[actName].onApply) {
+        actMap[actName].onApply();
+    }
     dlgAction.close();
 }
 
 function onActionDlgClose(e) {
     e.preventDefault();
+    const actName = Object.keys(actMap).find(key => actMap[key].div && actMap[key].div.style.display !== "none");
+    if (actMap[actName].onCancel) {
+        actMap[actName].onCancel();
+    }
     dlgAction.close();
 }
 
 // #region: actSample handlers
-function onActionSampleDlgOpen(e) {
+function onActSampleDlgOpen(e) {
     e.preventDefault();
-    dlgAction.trigger = btnSample;
+    selectAction("actSample");
     dlgTitle.innerHTML = 'Sample Action';
     dlgAction.style.width = '100%';
     dlgAction.style.height = '100%';
     dlgAction.style.resize = 'both';
-
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
 }
 // #endregion: actSample handlers
 
 // #region: actSessions handlers
-function onActionSessionsDlgOpen(e) {
+function onActSessionMgmt(e) {
     e.preventDefault();
-    dlgAction.trigger = btnShowSessions;
-    dlgTitle.innerHTML = 'Show Sessions';
+    selectAction("actSessionMgmt");
+    dlgTitle.innerHTML = 'Session Management';
     dlgAction.style.width = '80%';
     dlgAction.style.height = '60%';
     dlgAction.style.resize = 'none';
-
     dlgActionApply.style.display = 'none';
     dlgAction.showModal();
 }
 // #endregion: actSession handlers
 
 // #region: actSetPwd handlers
-function onActionSetPwdDlgOpen(e) {
+let divSetPwd = document.getElementById("setPwd_div");
+function onActUserMgmt(e) {
     e.preventDefault();
-    dlgAction.trigger = btnSetPwd;
-    dlgTitle.innerHTML = 'Set Password';
+    selectAction("actUserMgmt");
+    dlgTitle.innerHTML = 'User Management';
     dlgAction.style.width = '36%';
     dlgAction.style.height = '24%';
     dlgAction.style.resize = 'none';
-
-    if (typeof setPwd_loaded == "undefined") {
-        fetch('actSetPwd.jsp')
-        .then(res => res.text())
-        .then(html => {
-            dlgActionSource.innerHTML = html;
-            // Dynamically load JS
-            const script = document.createElement('script');
-            script.src = 'js/actSetPwd.js';
-            document.body.appendChild(script);
-            script.onload = () => {
-                setPwd_reset(username);
-            };
-        });
-    } else {
-        setPwd_reset(username);
-    }
-
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
 }

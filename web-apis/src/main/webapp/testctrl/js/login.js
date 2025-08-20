@@ -8,7 +8,7 @@ const btnLogin = document.getElementById("btnLogin");
 const txtOutput = document.getElementById("txtOutput");
 
 const urlAPI = window.location.origin + "/web-apis/testctrl";
-const urlCtrlPanelJSP = window.location.origin + "/web-apis/testctrl/ctrlpanel.jsp";
+const urlCtrlPanelJSP = window.location.origin + "/web-apis/testctrl/ctrlPanel.jsp";
 
 // #region: event listeners
 document.addEventListener("DOMContentLoaded", onPageLoad);

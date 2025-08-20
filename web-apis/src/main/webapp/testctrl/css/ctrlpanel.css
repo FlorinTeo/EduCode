@@ -53,7 +53,7 @@ html, body {
     height: 40px;
     vertical-align: middle;
 }
-.actions-style input[type="submit"] { width: 120px; }
+.actions-style input[type="submit"] { width: 160px; }
 
 /*--------======== .action-dialog-style ========---------*/
 .action-dialog-style {

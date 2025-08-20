@@ -5,8 +5,11 @@
         <meta charset="ISO-8859-1">
         <!-- Text on the browser tab: "IR Host" -->
         <title>Tests Manager</title>
-        <link rel="stylesheet" href="css/ctrlpanel.css?ver=1.0">
-        <script defer src="js/ctrlpanel.js?ver=1.0"></script>
+        <link rel="stylesheet" href="css/ctrlPanel.css?ver=1.0">
+        <!-- <script defer src="js/actSample.js?ver=1.0"></script>
+        <script defer src="js/actSessionMgmt.js?ver=1.0"></script>
+        <script defer src="js/actUserMgmt.js?ver=1.0"></script> -->
+        <script defer src="js/ctrlPanel.js?ver=1.0"></script>
     </head>
     <body>
         <div class="main-style">
@@ -24,16 +27,17 @@
                 <table id="tblActions">
                     <!-- Sample/Template pattern to be used when adding custom actions -->
                     <tr><td><input id="btnSample" value="Sample Action" type="submit"></td>
-                        <td>Demonstrates a sample action entry.<br>
+                        <td>Sample action template.<br>
                             This is a template to be used as more actions are added to the control panel.
                         </td>
                     </tr>
                     <!-- Action entries to be added bellow -->
-                    <tr><td><input id="btnShowSessions" value="Show Sessions" type="submit"></td>
-                        <td>Shows the list of the active sessions currently logged in on the server.</td>
+                    <tr><td><input id="btnSessionMgmt" value="Session Management" type="submit"></td>
+                        <td>Session management operations, such as:<br>
+                            Display the list of active sessions, currently logged in on the server.</td>
                     </tr>
-                    <tr><td><input id="btnSetPwd" value="Set Password" type="submit"></td>
-                        <td>Sets a new password for any registered user.</td>
+                    <tr><td><input id="btnUserMgmt" value="User Management" type="submit"></td>
+                        <td>User management operations, such as:<br>Update the user password.</td>
                     </tr>
                 </table>
             </div>
