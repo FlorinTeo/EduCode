@@ -1,5 +1,6 @@
 @charset "ISO-8859-1";
 
+
 html, body {
     font-family: Helvetica, sans-serif;
     background-color: #dcfdf7;
@@ -61,28 +62,24 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: gray;
     border: 1px solid rgb(0, 0, 0);
     padding: 0px;
-    min-height: 400px;
+    font-size: 14px;
+    font-weight: 400;
 }
 
-.action-dialog-style .action-dialog-textBar-style {
+.action-dialog-style .action-dialog-titleBar-style {
     width: 100%;
-    padding: 0px;
-    display: flex;
-    align-items: center;
+    color: white;
+    background: rgb(87, 87, 87);
+    border: none;
+    border-collapse: collapse;
 }
+.action-dialog-titleBar-style td:first-child { padding-left: 16px; width: 100%;}
+.action-dialog-titleBar-style td:nth-child(2) { vertical-align: top; width: 32px; }
+.action-dialog-titleBar-style td:nth-child(3) { vertical-align: top; width: 32px;}
 
-#dlgTitle {
-    flex: 1;
-    text-align: center;
-    color: yellow;
-}
-
-.action-dialog-style .action-dialog-src-style {
-    width: calc(100% - 8px);
-    height: calc(100% - 30px);
+.action-dialog-style .action-dialog-pane-style {
     display: block;
     margin-left: auto;
     margin-right: auto;

@@ -54,12 +54,14 @@
 
         <!----==== Action dialog ====---->
         <dialog id="dlgAction" class="action-dialog-style">
-            <div id="dlgTitleBar" class="action-dialog-textBar-style">
-                <span id="dlgTitle">Action Dialog</span>
-                <img id="dlgApply" src="../res/window-apply.png" alt="Apply" style="width:24px;height:24px;">
-                <img id="dlgClose" src="../res/window-close.png" alt="Close" style="width:24px;height:24px;">
-            </div>
-            <div id="dlgSource" class="action-dialog-src-style">
+            <table id="dlgActionTitleBar" class="action-dialog-titleBar-style">
+                <tr>
+                    <td><span id="dlgActionTitle">Action Dialog</span></td>
+                    <td><img id="dlgActionApply" src="../res/window-apply.png" alt="Apply" style="width:24px; height:24px;"></td>
+                    <td><img id="dlgActionClose" src="../res/window-close.png" alt="Close" style="width:24px; height:24px;"></td>
+                </tr>
+            </table>
+            <div id="dlgActionPane" class="action-dialog-pane-style">
                 <!-- <textarea id="dlgSource">This is where the action source html goes.</textarea> -->
             </div>
         </dialog>

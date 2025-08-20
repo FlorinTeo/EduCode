@@ -1,3 +1,4 @@
+const actUserMgmt_div = document.getElementById("actUserMgmt_div");
 const actUserMgmt_edtName = document.getElementById("actUserMgmt_edtName");
 const actUserMgmt_edtPwd = document.getElementById("actUserMgmt_edtPwd");
 const actUserMgmt_txtOutput = document.getElementById("actUserMgmt_txtOutput");

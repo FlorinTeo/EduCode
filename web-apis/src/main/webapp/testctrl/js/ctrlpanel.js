@@ -15,10 +15,10 @@ const btnSessionMgmt = document.getElementById("btnSessionMgmt");
 const btnUserMgmt = document.getElementById("btnUserMgmt");
 
 const dlgAction = document.getElementById("dlgAction");
-const dlgTitle = document.getElementById("dlgTitle");
-const dlgActionApply = document.getElementById("dlgApply");
-const dlgActionClose = document.getElementById("dlgClose");
-const dlgActionSource = document.getElementById("dlgSource");
+const dlgActionTitle = document.getElementById("dlgActionTitle");
+const dlgActionApply = document.getElementById("dlgActionApply");
+const dlgActionClose = document.getElementById("dlgActionClose");
+const dlgActionPane = document.getElementById("dlgActionPane");
 
 const actMap = {
     actSample: { div: null },
@@ -127,19 +127,23 @@ function addLog(logText) {
 }
 // #endregion: helper methodss
 function selectAction(actName) {
-    Array.from(dlgActionSource.children).forEach(actDiv => actDiv.style.display = 'none');
+    Array.from(dlgActionPane.children).forEach(actDiv => actDiv.style.display = 'none');
     if (actMap[actName].div == null) {
         fetch(`${actName}.jsp`)
             .then(res => res.text())
-            .then(html => { dlgActionSource.insertAdjacentHTML('beforeend', html); })
+            .then(html => { dlgActionPane.insertAdjacentHTML('beforeend', html); })
             .then(() => {
                 actMap[actName].div = document.getElementById(`${actName}_div`);
                 const script = document.createElement(`script`);
                 script.src = `js/${actName}.js`;
                 script.onload = () => {
+                    actMap[actName].onCreate = window[`${actName}_onCreate`];
                     actMap[actName].onOpen = window[`${actName}_onOpen`];
                     actMap[actName].onApply = window[`${actName}_onApply`];
                     actMap[actName].onCancel = window[`${actName}_onCancel`];
+                    if (actMap[actName].onCreate) {
+                        actMap[actName].onCreate();
+                    }
                     if (actMap[actName].onOpen) {
                         actMap[actName].onOpen();
                     }
@@ -176,10 +180,10 @@ function onActionDlgClose(e) {
 function onActSampleDlgOpen(e) {
     e.preventDefault();
     selectAction("actSample");
-    dlgTitle.innerHTML = 'Sample Action';
     dlgAction.style.width = '100%';
     dlgAction.style.height = '100%';
     dlgAction.style.resize = 'both';
+    dlgActionTitle.innerHTML = 'Sample Action';
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
 }
@@ -189,10 +193,10 @@ function onActSampleDlgOpen(e) {
 function onActSessionMgmt(e) {
     e.preventDefault();
     selectAction("actSessionMgmt");
-    dlgTitle.innerHTML = 'Session Management';
     dlgAction.style.width = '80%';
     dlgAction.style.height = '60%';
     dlgAction.style.resize = 'none';
+    dlgActionTitle.innerHTML = 'Session Management';
     dlgActionApply.style.display = 'none';
     dlgAction.showModal();
 }
@@ -203,10 +207,10 @@ let divSetPwd = document.getElementById("setPwd_div");
 function onActUserMgmt(e) {
     e.preventDefault();
     selectAction("actUserMgmt");
-    dlgTitle.innerHTML = 'User Management';
-    dlgAction.style.width = '36%';
-    dlgAction.style.height = '24%';
+    dlgAction.style.width = '';
+    dlgAction.style.height = '';
     dlgAction.style.resize = 'none';
+    dlgActionTitle.innerHTML = 'User Management';
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
 }
