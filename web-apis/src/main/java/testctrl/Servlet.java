@@ -124,7 +124,7 @@ public class Servlet extends HttpServlet{
     }
 
     @SuppressWarnings("null")
-    public Answer executeCmdSet(HttpSession httpSession, Map<String, String[]> params) throws NoSuchAlgorithmException {
+    public Answer executeCmdSet(HttpSession httpSession, Map<String, String[]> params) throws NoSuchAlgorithmException, IOException {
         Session session = _context.getSession(httpSession);
         checkTrue(session != null, "Session not found!");
         checkTrue(params.containsKey("op"), "Missing 'op' parameter!");
@@ -140,7 +140,8 @@ public class Servlet extends HttpServlet{
                 if (session.getUser().hasRole("admin","teacher")) {
                     // admins and teachers are allowed to change password for any user
                     checkTrue(targetUser.setPwd(pwd), "Failed to change password!");
-                    Answer.Msg msgAnswer = new Answer().new Msg(
+                    checkTrue(_context.saveConfig(), "Failed to save configuration!");
+                    Answer.Msg msgAnswer = new Answer().new Msg(session.getId(),
                         "User '%s' changed password for user '%s'!",
                         session.getUser().name,
                         targetUser.name);
@@ -150,7 +151,8 @@ public class Servlet extends HttpServlet{
                     checkTrue(targetUser.equals(session.getUser()), "Invalid non-self user!");
                     // non-admins/teachers are only allowed to change only their own password                    // targetUser.setName(name);
                     checkTrue(targetUser.setPwd(pwd), "Failed to change password!");
-                    Answer.Msg msgAnswer = new Answer().new Msg(
+                    checkTrue(_context.saveConfig(), "Failed to save configuration!");
+                    Answer.Msg msgAnswer = new Answer().new Msg(session.getId(),
                         "User '%s' changed own password!",
                         session.getUser().name);
                     _context.Log(new LogEntry(msgAnswer._message));

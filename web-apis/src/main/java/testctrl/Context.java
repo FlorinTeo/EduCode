@@ -64,9 +64,26 @@ public class Context extends TimerTask {
         return _state;
     }
 
+    // #region: [Public] Configuration management methods
+    public Config loadConfig() throws IOException {
+        String configPath = _servletContext.getRealPath("WEB-INF\\classes\\testctrl\\res\\config.json");
+        String configString = Files.readString(Paths.get(configPath));
+        Gson deserializer = new Gson();
+        return deserializer.fromJson(configString, Config.class);
+    }
+
     public Config getConfig() {
         return _config;
     }
+
+    public boolean saveConfig() throws IOException {
+        String configPath = _servletContext.getRealPath("WEB-INF\\classes\\testctrl\\res\\config.json");
+        Gson serializer = new Gson();
+        String configString = serializer.toJson(_config);
+        Files.writeString(Paths.get(configPath), configString);
+        return true;
+    }
+    // #endregion: [Public] Configuration management methods
 
     public User getUser(String name) {
         return _config.users.stream().filter(u -> u.name.equals(name)).findFirst().orElse(null);
@@ -118,10 +135,7 @@ public class Context extends TimerTask {
         }
 
         // Load server configuration from WEB-INF/classes/testctrl/res/config.json
-        String configPath = _servletContext.getRealPath("WEB-INF\\classes\\testctrl\\res\\config.json");
-        String configString = Files.readString(Paths.get(configPath));
-        Gson deserializer = new Gson();
-        _config = deserializer.fromJson(configString, Config.class);
+        _config = loadConfig();
 
         synchronized(_state) {
             _state = State.READY;
