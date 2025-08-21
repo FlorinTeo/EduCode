@@ -12,6 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
@@ -78,15 +79,15 @@ public class Context extends TimerTask {
 
     public boolean saveConfig() throws IOException {
         String configPath = _servletContext.getRealPath("WEB-INF\\classes\\testctrl\\res\\config.json");
-        Gson serializer = new Gson();
+        Gson serializer = new GsonBuilder().setPrettyPrinting().create();
         String configString = serializer.toJson(_config);
         Files.writeString(Paths.get(configPath), configString);
         return true;
     }
     // #endregion: [Public] Configuration management methods
 
-    public User getUser(String name) {
-        return _config.users.stream().filter(u -> u.name.equals(name)).findFirst().orElse(null);
+    public User getUser(String username) {
+        return _config.users.stream().filter(u -> u.username.equals(username)).findFirst().orElse(null);
     }
 
     public void closing() {
@@ -192,7 +193,7 @@ public class Context extends TimerTask {
             HttpSession httpSession = kvp.getKey();
             Session session = kvp.getValue();
             if (session.isOrphan(now)) {
-                Log(new LogEntry("Session pruned > [%s] %s", session.getId(), session.getUser().name));
+                Log(new LogEntry("Session pruned > [%s] %s", session.getId(), session.getUser().username));
                 continue;
             }
             newSessions.put(httpSession, session);

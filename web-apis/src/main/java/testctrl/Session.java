@@ -63,11 +63,11 @@ public class Session implements Comparable<Session> {
 
     @Override
     public int compareTo(Session o) {
-        return _user.name.compareTo(o._user.name);
+        return _user.compareTo(o._user);
     }
 
     @Override
     public String toString() {
-        return String.format("[%s] %s : %s", _heartbeat.toString(), _sessionId, _user.name);
+        return String.format("[%s] %s : %s", _heartbeat.toString(), _sessionId, _user.username);
     }
 }

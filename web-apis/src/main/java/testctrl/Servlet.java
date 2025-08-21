@@ -99,13 +99,13 @@ public class Servlet extends HttpServlet{
         checkTrue(user != null && user.hasRole("admin","teacher") && user.matchesPwd(pwd), "Invalid name, role or password!");
         // try to create a session. This may throw if another user is logged in this session already.
         Session session = _context.newSession(user, httpSession);
-        _context.Log(new LogEntry("User '%s' logged in session [%s]", user.name, session.getId()));
+        _context.Log(new LogEntry("User '%s' logged in session [%s]", user.username, session.getId()));
         return new Answer().new Msg(session.getId(), "Session created!");
     }
 
     public Answer executeCmdLogout(HttpSession httpSession) {
         Session session = _context.closeSession(httpSession);
-        _context.Log(new LogEntry("User '%s' logged out from session [%s]", session.getUser().name, session.getId()));
+        _context.Log(new LogEntry("User '%s' logged out from session [%s]", session.getUser().username, session.getId()));
         return new Answer().new Msg(session.getId(), "Session closed!");
     }
 
@@ -143,8 +143,8 @@ public class Servlet extends HttpServlet{
                     checkTrue(_context.saveConfig(), "Failed to save configuration!");
                     Answer.Msg msgAnswer = new Answer().new Msg(session.getId(),
                         "User '%s' changed password for user '%s'!",
-                        session.getUser().name,
-                        targetUser.name);
+                        session.getUser().username,
+                        targetUser.username);
                     _context.Log(new LogEntry(msgAnswer._message));
                     return msgAnswer;
                 } else {
@@ -154,7 +154,7 @@ public class Servlet extends HttpServlet{
                     checkTrue(_context.saveConfig(), "Failed to save configuration!");
                     Answer.Msg msgAnswer = new Answer().new Msg(session.getId(),
                         "User '%s' changed own password!",
-                        session.getUser().name);
+                        session.getUser().username);
                     _context.Log(new LogEntry(msgAnswer._message));
                     return msgAnswer;
                 }

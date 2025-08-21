@@ -9,9 +9,13 @@ import java.security.NoSuchAlgorithmException;
  * Class representing a user in the system.
  */
 public class User implements Comparable<User> {
-    public String name;
+    public String username;
+    public String firt_name;
+    public String last_name;
+    public String aka_name;
     public String pwd_hash;
     public String roles;
+    public String tags;
 
     /**
      * Creates a MD5 hash of the given password.
@@ -62,7 +66,7 @@ public class User implements Comparable<User> {
     // #region: Comparable overrides
     @Override
     public int compareTo(User o) {
-        return name.compareTo(o.name);
+        return username.compareTo(o.username);
     }
 
     @Override
@@ -72,7 +76,7 @@ public class User implements Comparable<User> {
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return username.hashCode();
     }
     // #endregion: comparable overrides
 }
