@@ -17,6 +17,10 @@ function actUserMgmt_onApply() {
         actUserMgmt_txtOutput.innerHTML = "Name is required!";
         return false;
     }
+    if (actUserMgmt_edtPwdNew.value.trim() === "") {
+        actUserMgmt_txtOutput.innerHTML = "New password is required!";
+        return false;
+    }
     if (actUserMgmt_edtPwdNew.value !== actUserMgmt_edtPwdConfirm.value) {
         actUserMgmt_txtOutput.innerHTML = "Passwords do not match!";
         return false;
