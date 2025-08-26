@@ -12,7 +12,7 @@ public class Program {
     // Test generator singleton 
     private static Generator _generator;
 
-      public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         System.out.println("____/Tests Management Console \\____");
         Scanner input = new Scanner(System.in);
         do {

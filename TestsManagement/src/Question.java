@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -71,7 +72,9 @@ public class Question {
     }
 
     public Question(Path pQuestion) throws IOException {
-        Path pMeta = Paths.get(pQuestion.toString(), ".meta");
+        DirectoryStream<Path> stream = Files.newDirectoryStream(pQuestion, ".meta*.jsonc");
+        Path pMeta = stream.iterator().next();
+        stream.close();
         String jsonMeta = String.join("\n", Files.readAllLines(pMeta));
         _meta = _GSON.fromJson(jsonMeta, QMeta.class);
         loadPxHeight(pQuestion.toString());

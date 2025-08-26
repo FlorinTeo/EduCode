@@ -16,21 +16,22 @@ public class Generator {
     private Map<String, Question> _qMap;
     private List<Question> _qList;
     private WebDoc _webDoc;
-    private static Pattern regex = Pattern.compile("(?:u(\\d+)[^.]*)?\\.[QPA](\\d+)");
+    private static Pattern regex = Pattern.compile("(?:(ap|ds)(\\d+)[^.]*)?\\.[QPA](\\d+)");
 
     private List<Question> sort(List<Question> lq) {
-        Map<Integer, Question> map = new TreeMap<>();
+        Map<String, Question> map = new TreeMap<>();
         for (int i = lq.size(); i > 0; i--) {
             Question q = lq.remove(0);
             Matcher m = regex.matcher(q.getName());
             if (m.find()) {
                 // Extract the first and second numbers
-                String firstNumber = m.group(1) != null ? m.group(1) : "0"; // Optional first number
-                String secondNumber = m.group(2); // Always present
+                String group = m.group(1) != null ? m.group(1) : ""; // optional "ap" or "ds"
+                String firstNumber = m.group(2) != null ? m.group(2) : "0"; // Optional first number
+                String secondNumber = m.group(3); // Always present
                 int unitNumber = Integer.parseInt(firstNumber);
                 int questionNumber = Integer.parseInt(secondNumber);
-                int combinedNumber = unitNumber * 100 + questionNumber; // Combine the two numbers
-                map.put(combinedNumber, q);
+                String key = String.format("%s_%03d_%03d", group, unitNumber, questionNumber);
+                map.put(key, q);
             } else {
                 lq.add(q);
             }
@@ -136,7 +137,7 @@ public class Generator {
             mRoot.adjustPath(".template/");
             mRoot.save(_pRoot);
         } else {
-             mRoot = new GMeta(_pRoot);
+            mRoot = new GMeta(_pRoot);
         }
         _webDoc.genIndexHtml(mRoot, _pRoot);
     }
@@ -169,7 +170,7 @@ public class Generator {
             mTest.anonymize(false);
             mTest.save(pTest);
         } else {
-             mTest = new GMeta(pTest);
+            mTest = new GMeta(pTest);
         }
         _webDoc.genTestHtml(mTest, pTest);
     }
