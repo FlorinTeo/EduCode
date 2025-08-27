@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
+import testctrl.testmgmt.Generator;
 
 public class Context extends TimerTask {
     private final static int _DELAY_START = 8; // trigger servlet initialization asynchronously, with 8ms delay
@@ -31,6 +32,7 @@ public class Context extends TimerTask {
     }
 
     public class Config {
+        public String tests_root;
         public List<User> users;
     };
     // #endregion: [Public] Enum & Class definitions pertaining to TestCtrl context.
@@ -42,6 +44,8 @@ public class Context extends TimerTask {
     private Map<HttpSession, Session> _sessions;
     private State _state;
     private Timer _timer;
+    // Test management fields
+    private Generator _generator;
     // #endregion: [Private] Instance variables for TestCtrl context.
 
     public Context(ServletContext servletContext) {
@@ -137,6 +141,8 @@ public class Context extends TimerTask {
 
         // Load server configuration from WEB-INF/classes/testctrl/res/config.json
         _config = loadConfig();
+        String rootPath = _servletContext.getRealPath("") + _config.tests_root;
+        _generator = new Generator(rootPath);
 
         synchronized(_state) {
             _state = State.READY;

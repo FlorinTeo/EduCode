@@ -1,4 +1,5 @@
 {
+	"tests_root": "..\\lwhs",
 	"users": [
 		{
 			"username": "tstave",
