@@ -220,4 +220,10 @@ public class Context extends TimerTask {
         }
     }
     // #endregion: [Public] Session management methods
+
+    // #region: [Public] Question-set methods
+    public Generator getGenerator() {
+        return _generator;
+    }
+    // //#endregion: [Public] Question-set methods
 }

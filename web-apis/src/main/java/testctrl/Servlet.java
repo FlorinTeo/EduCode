@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import testctrl.testmgmt.Generator;
 
 @WebServlet("/testctrl")
 public class Servlet extends HttpServlet{
@@ -71,6 +72,10 @@ public class Servlet extends HttpServlet{
                 case "set":
                     // http://localhost:8080/web-apis/testctrl?cmd=set&op=setusr&name=<name>&pwd=<password>
                     answer = executeCmdSet(httpSession, params);
+                    break;
+                case "query":
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=qset
+                    answer = executeCmdQuery(httpSession, params);
                     break;
                 default:
                     answer = new Answer().new Err("Unsupported 'cmd' parameter!");
@@ -160,6 +165,25 @@ public class Servlet extends HttpServlet{
                 }
             default:
                 return new Answer().new Err("Unknown set operation '" + op + "'!");
+        }
+    }
+
+    @SuppressWarnings("null")
+    public Answer executeCmdQuery(HttpSession httpSession, Map<String, String[]> params) throws NoSuchAlgorithmException, IOException {
+        Session session = _context.getSession(httpSession);
+        checkTrue(session != null, "Session not found!");
+        checkTrue(params.containsKey("type"), "Missing 'type' parameter!");
+        checkTrue(session.getUser().hasRole("admin","teacher"), "Access denied!");
+        session.touch();
+        String type = params.get("type")[0];
+        _context.Log(new LogEntry("User '%s' executing query:qset!", session.getUser().username));
+        switch(type) {
+            case "qset":
+                Generator gen = _context.getGenerator();
+                _context.Log(new LogEntry(gen.getQuestions()));
+                return new Answer().new Msg(session.getId(), "Processing 'qset' query!");
+            default:
+                return new Answer().new Err("Unknown query type!");
         }
     }
 }

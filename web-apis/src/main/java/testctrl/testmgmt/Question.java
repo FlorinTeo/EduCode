@@ -30,7 +30,7 @@ public class Question {
 
     private List<Question> _bQuestions = null;
 
-     /**
+    /**
      * Utility method to shuffle a given list into another one.
      * Method does not modify its {list} parameter.
      * @param list - list to be shuffled.
