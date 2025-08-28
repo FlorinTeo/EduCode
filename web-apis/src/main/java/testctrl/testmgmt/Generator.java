@@ -128,6 +128,16 @@ public class Generator {
         return output;
     }
 
+    public Collection<QRec> getQRecs() {
+        List<QRec> qRecs = new LinkedList<QRec>();
+        for (Question q : _qList) {
+            QRec qRec = new QRec();
+            qRec._qName = q.getName();
+            qRec._qType = q.getType();
+            qRecs.add(qRec);
+        }
+        return qRecs;
+    }
     /**
      * Generates .meta and index.html for the full set of questions loaded in this generator.
      * @throws IOException

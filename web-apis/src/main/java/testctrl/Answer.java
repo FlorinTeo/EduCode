@@ -1,6 +1,10 @@
 package testctrl;
 
+import java.util.Collection;
+
 import com.google.gson.Gson;
+
+import testctrl.testmgmt.QRec;
 
 public class Answer {
 
@@ -27,6 +31,14 @@ public class Answer {
 
         public Logs(LogEntry... logs) {
             _logs = logs;
+        }
+    }
+
+    public class QList extends Answer {
+        public QRec[] _qRecs;
+
+        public QList(Collection<QRec> qRecs) {
+            _qRecs = qRecs.toArray(new QRec[0]);
         }
     }
 

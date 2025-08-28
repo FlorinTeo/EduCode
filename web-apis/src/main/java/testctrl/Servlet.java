@@ -2,6 +2,7 @@ package testctrl;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.Map;
 
 import jakarta.servlet.ServletException;
@@ -10,7 +11,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import testctrl.Answer.QList;
 import testctrl.testmgmt.Generator;
+import testctrl.testmgmt.QRec;
 
 @WebServlet("/testctrl")
 public class Servlet extends HttpServlet{
@@ -176,12 +179,12 @@ public class Servlet extends HttpServlet{
         checkTrue(session.getUser().hasRole("admin","teacher"), "Access denied!");
         session.touch();
         String type = params.get("type")[0];
-        _context.Log(new LogEntry("User '%s' executing query:qset!", session.getUser().username));
         switch(type) {
             case "qset":
                 Generator gen = _context.getGenerator();
-                _context.Log(new LogEntry(gen.getQuestions()));
-                return new Answer().new Msg(session.getId(), "Processing 'qset' query!");
+                Collection<QRec> qRecs = gen.getQRecs();
+                _context.Log(new LogEntry("[query:qset] Returning %d query records", qRecs.size()));
+                return new Answer().new QList(qRecs);
             default:
                 return new Answer().new Err("Unknown query type!");
         }
