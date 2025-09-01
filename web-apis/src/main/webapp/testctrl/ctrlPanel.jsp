@@ -6,7 +6,7 @@
         <!-- Text on the browser tab: "IR Host" -->
         <title>Tests Manager</title>
         <link rel="stylesheet" href="css/ctrlPanel.css?ver=1.0">
-        <!-- <script defer src="js/actSample.js?ver=1.0"></script>
+        <!-- <script defer src="js/actTestMgmt.js?ver=1.0"></script>
         <script defer src="js/actSessionMgmt.js?ver=1.0"></script>
         <script defer src="js/actUserMgmt.js?ver=1.0"></script> -->
         <script defer src="js/ctrlPanel.js?ver=1.0"></script>
@@ -26,10 +26,10 @@
             <div id="divActions" class="actions-style">
                 <table id="tblActions">
                     <!-- Sample/Template pattern to be used when adding custom actions -->
-                    <tr><td><input id="btnSample" value="Sample Action" type="submit"></td>
-                        <td>Sample action template.<br>
-                            This is a template to be used as more actions are added to the control panel.
-                        </td>
+                    <tr><td><input id="btnTestMgmt" value="Test Management" type="submit"></td>
+                        <td>Test management operations such as:<br>
+                            Select questions to be packaged into a test.<br>
+                            Edit or delete existing tests.</td>
                     </tr>
                     <!-- Action entries to be added bellow -->
                     <tr><td><input id="btnSessionMgmt" value="Session Management" type="submit"></td>

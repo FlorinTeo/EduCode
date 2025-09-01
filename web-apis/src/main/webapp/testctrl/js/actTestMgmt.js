@@ -1,11 +1,11 @@
-function actSample_onOpen() {
+function actTestMgmt_onOpen() {
 }
 
-function actSample_onApply() {
+function actTestMgmt_onApply() {
    addLog("actSample_onApply called");
    return true;
 }
 
-function actSample_onCancel() {
+function actTestMgmt_onCancel() {
    addLog("actSample_onCancel called");
 }

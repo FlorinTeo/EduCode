@@ -1,0 +1,32 @@
+.actTestMgmt-style {
+    width: 100%;
+    height: 100%;
+    flex: 1 1 auto;
+    box-sizing: border-box;
+    padding: 8px;
+    background-color: #ffe5fb;
+    overflow: auto;
+}
+
+.actTestMgmt-lvl0-table {
+    height: 100%;
+    width: 100%;
+    border-collapse: collapse;
+}
+.actTestMgmt-lvl0-table td { border: 1px solid #000; padding-top: 4px; padding-bottom: 4px; }
+.actTestMgmt-lvl0-table tr:nth-child(1) { height: 10px; }
+.actTestMgmt-lvl0-table tr:nth-child(2) td { height: 100%; vertical-align: top; }
+
+.actTestMgmt-lvl1-table {
+    height: 100%;
+    width: 100%;
+    border-collapse: collapse;
+}
+.actTestMgmt-lvl1-table td:nth-child(1) { width: 240px; }
+
+.actTestMgmt-lvl2-table {
+    height: 100%;
+    width: 100%;
+    border-collapse: collapse;
+}
+.actTestMgmt-lvl0-table tr:nth-child(1) { height: 10px; }

@@ -10,7 +10,7 @@ const divLog = document.getElementById("divLog");
 const divLogContent = document.getElementById("divLogContent");
 const tblLog = document.getElementById("tblLog");
 
-const btnSample = document.getElementById("btnSample");
+const btnTestMgmt = document.getElementById("btnTestMgmt");
 const btnSessionMgmt = document.getElementById("btnSessionMgmt");
 const btnUserMgmt = document.getElementById("btnUserMgmt");
 
@@ -21,7 +21,7 @@ const dlgActionClose = document.getElementById("dlgActionClose");
 const dlgActionPane = document.getElementById("dlgActionPane");
 
 const actMap = {
-    actSample: { div: null },
+    actTestMgmt: { div: null },
     actSessionMgmt: { div: null },
     actUserMgmt: { div: null },
 };
@@ -34,7 +34,7 @@ window.addEventListener("resize", onPageResize);
 document.addEventListener("DOMContentLoaded", onPageLoad);
 btnLogout.addEventListener("click", onClickLogout);
 
-btnSample.addEventListener("click", onActSampleDlgOpen);
+btnTestMgmt.addEventListener("click", onActTestMgmt);
 btnSessionMgmt.addEventListener("click", onActSessionMgmt);
 btnUserMgmt.addEventListener("click", onActUserMgmt);
 
@@ -178,13 +178,13 @@ function onActionDlgClose(e) {
 }
 
 // #region: actSample handlers
-function onActSampleDlgOpen(e) {
+function onActTestMgmt(e) {
     e.preventDefault();
-    selectAction("actSample");
+    selectAction("actTestMgmt");
     dlgAction.style.width = '100%';
     dlgAction.style.height = '100%';
     dlgAction.style.resize = 'both';
-    dlgActionTitle.innerHTML = 'Sample Action';
+    dlgActionTitle.innerHTML = 'Test Management Action';
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
 }
