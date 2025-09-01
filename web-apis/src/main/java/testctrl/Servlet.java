@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import testctrl.Answer.QList;
 import testctrl.testmgmt.Generator;
 import testctrl.testmgmt.QRec;
 
@@ -50,7 +49,6 @@ public class Servlet extends HttpServlet{
      * Parse a "http://.../web-apis/testctrl?" request and dispatch it to the specific
      * executeCmdXXX method.
      */
-    @SuppressWarnings("null")
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession httpSession = request.getSession();
         Map<String, String[]> params = request.getParameterMap();

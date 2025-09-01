@@ -165,7 +165,6 @@ public class Context extends TimerTask {
     // #endregion: [Private] Async runners
 
     // #region: [Public] Session management methods
-    @SuppressWarnings("null")
     public Session newSession(User user, HttpSession httpSession) throws NoSuchAlgorithmException {
         // check that either no session is active or the existing session belongs to the same user
         Session session = _sessions.get(httpSession);
