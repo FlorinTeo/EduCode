@@ -8,85 +8,84 @@
         <script defer src="js/actTestMgmt.js"></script>
     </head>
     <div id="actTestMgmt_div" class="actTestMgmt-style">
+        <!-- Top (level 0) table: 2 rows, 1 column -->
         <table class="actTestMgmt-lvl0-table">
-            <tr>
-                <td>
-                    Test name:
-                    <input list="testNames" name="testName">
-                    <datalist id="testNames">
-                        <option value="Test 1">
-                        <option value="Test 2">
-                        <option value="Test 3">
-                    </datalist>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <table class="actTestMgmt-lvl1-table">
-                        <tr>
-                            <td>
-                                <table class="actTestMgmt-lvl2-table">
-                                    <tr><td>
-                                        filter:
-                                    </td></tr>
-                                    <tr><td>
-                                        MCQ list:
-                                    </td></tr>
-                                    <tr><td>
-                                        FRQ list:
-                                    </td></tr>
-                                    <tr><td>
-                                        APX list:
-                                    </td></tr>
-                                </table>
-                            </td>
-                            <td>
-                                question content.
-                            </td>
-                        </tr>
-                        <!-- <td>
-                        <tr>
-                            <td>Filter:
-                                <input id="qFilter_input" name="qFilter">
-                                <datalist id="qFilter_dlist">
+            <tr><td>
+                Test name:
+                <!-- Edit field for test name -->
+                <input id="actTestMgmt_edtTests" list="actTestMgmt_dlTests" name="testName" style="width: 185px;">
+                <datalist id="actTestMgmt_dlTests">
+                    <option value="Test 1">
+                    <option value="Test 2">
+                    <option value="Test 3">
+                </datalist>
+            </td></tr>
+            <tr><td>
+                <!-- Inner (level 1) table: 1 row, 2 columns -->
+                <table class="actTestMgmt-lvl1-table">
+                    <tr><td>
+                        <!-- Inner (level 2) table: 4 rows, 1 column -->
+                        <table class="actTestMgmt-lvl2-table">
+                            <tr><td>
+                                <!-- Edit field for question lists filter -->
+                                <input list="actTestMgmt_edtFilter" name="actTestMgmt_dlFilters" style="width: 250px;">
+                                <datalist id="actTestMgmt_dlFilters">
                                     <option value="ap">
                                     <option value="ds">
                                 </datalist>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Multiple Choice Questions (MCQ):
-                                <select id="mcq_select" size="10" style="width: 100%;">
-                                    <option value="MCQ 1">MCQ 1</option>
-                                    <option value="MCQ 2">MCQ 2</option>
-                                    <option value="MCQ 3">MCQ 3</option>
+                            </td></tr>
+                            <tr><td>
+                                <b>Multiple Choice Questions (MCQ):</b>
+                                <ul id="actTestsMgmt_lstMCQ">
+                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
+                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
+                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
+                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
+                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
+                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
+                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
+                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
+                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
+                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
+                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
+                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
+                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
+                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
+                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
+                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
+                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
+                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
+                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
+                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
+                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
+                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
+                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
+                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
+                                </ul>
+                            </td></tr>
+                            <tr><td>
+                                <b>Free Response Questions (FRQ):</b>
+                                <ul id="actTestsMgmt_lstFRQ">
+                                    <li><input type="checkbox"><label>ap5.P1</label></li>
+                                    <li><input type="checkbox"><label>ap7-8.P1</label></li>
+                                </ul>
+                            </td></tr>
+                            <tr><td>
+                                <b>Appendix Pages (APX):</b>
+                                <ul id="actTestsMgmt_lstAPX">
+                                    <li><input type="checkbox"><label>ds1.A1</label></li>
+                                    <li><input type="checkbox"><label>ds5.A0</label></li>
+                                    <li><input type="checkbox"><label>ds5.A0</label></li>
                                 </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Free Response Questions (FRQ):
-                                <select id="frq_select" size="10" style="width: 100%;">
-                                    <option value="FRQ 1">FRQ 1</option>
-                                    <option value="FRQ 2">FRQ 2</option>
-                                    <option value="FRQ 3">FRQ 3</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Appendix Pages (APX):
-                                <select id="apx_select" size="10" style="width: 100%;">
-                                    <option value="APX 1">APX 1</option>
-                                    <option value="APX 2">APX 2</option>
-                                    <option value="APX 3">APX 3</option>
-                                </select>
-                            </td>
-                        </tr> -->
-                    </table>
-                </td>
-            </tr>
+                            </td></tr>
+                        </table>
+                    </td><td>
+                        <div id="actTestMgmt_divQContent">
+                            
+                        </div>
+                    </td></tr>
+                </table>
+            </td></tr>
         </table>
     </div>
     </html>
