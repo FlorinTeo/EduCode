@@ -5,7 +5,7 @@
     <head>
         <meta charset="ISO-8859-1">
         <link rel="stylesheet" href="css/actTestMgmt.css?ver=1.1">
-        <script defer src="js/actTestMgmt.js"></script>
+        <script defer src="js/actTestMgmt.js?ver=1.1"></script>
     </head>
     <div id="actTestMgmt_div" class="actTestMgmt-style">
         <!-- Top (level 0) table: 2 rows, 1 column -->
@@ -13,12 +13,7 @@
             <tr><td>
                 Test name:
                 <!-- Edit field for test name -->
-                <input id="actTestMgmt_edtTests" list="actTestMgmt_dlTests" name="testName" style="width: 185px;">
-                <datalist id="actTestMgmt_dlTests">
-                    <option value="Test 1">
-                    <option value="Test 2">
-                    <option value="Test 3">
-                </datalist>
+                <input id="actTestMgmt_edtTestName" list="actTestMgmt_dlstTests" style="width: 185px;">
             </td></tr>
             <tr><td>
                 <!-- Inner (level 1) table: 1 row, 2 columns -->
@@ -28,58 +23,29 @@
                         <table class="actTestMgmt-lvl2-table">
                             <tr><td>
                                 <!-- Edit field for question lists filter -->
-                                <input list="actTestMgmt_edtFilter" name="actTestMgmt_dlFilters" style="width: 250px;">
-                                <datalist id="actTestMgmt_dlFilters">
-                                    <option value="ap">
-                                    <option value="ds">
-                                </datalist>
+                                <input id="actTestMgmt_edtFilter" list="actTestMgmt_dlstFilters" style="width: 100%;">
                             </td></tr>
                             <tr><td>
-                                <b>Multiple Choice Questions (MCQ):</b>
+                                <input id="actTestMgmt_ckb_allMCQ" type="checkbox"><b>Multiple Choice (MCQ):</b>
                                 <ul id="actTestsMgmt_lstMCQ">
-                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
-                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
-                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
-                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
-                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
-                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
-                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
-                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
-                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
-                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
-                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
-                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
-                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
-                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
-                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
-                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
-                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
-                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
-                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
-                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
-                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
-                                    <li><input type="checkbox"><label>ap2.Q3</label></li>
-                                    <li><input type="checkbox"><label>ap7-8.Q2</label></li>
-                                    <li><input type="checkbox"><label>ds3.Q3-4</label></li>
+                                    <!-- MCQ entries filled in dynamically -->
                                 </ul>
                             </td></tr>
                             <tr><td>
-                                <b>Free Response Questions (FRQ):</b>
+                                <input id="actTestMgmt_ckb_allFRQ" type="checkbox"><b>Free Response (FRQ):</b>
                                 <ul id="actTestsMgmt_lstFRQ">
-                                    <li><input type="checkbox"><label>ap5.P1</label></li>
-                                    <li><input type="checkbox"><label>ap7-8.P1</label></li>
+                                    <!-- FRQ entries filled in dynamically -->
                                 </ul>
                             </td></tr>
                             <tr><td>
-                                <b>Appendix Pages (APX):</b>
+                                <input id="actTestMgmt_ckb_allAPX" type="checkbox"><b>Appendix (APX):</b>
                                 <ul id="actTestsMgmt_lstAPX">
-                                    <li><input type="checkbox"><label>ds1.A1</label></li>
-                                    <li><input type="checkbox"><label>ds5.A0</label></li>
-                                    <li><input type="checkbox"><label>ds5.A0</label></li>
+                                    <!-- APX entries filled in dynamically -->
                                 </select>
                             </td></tr>
                         </table>
                     </td><td>
+                        <!-- Placeholder div for a question content-->
                         <div id="actTestMgmt_divQContent">
                             
                         </div>
@@ -88,4 +54,10 @@
             </td></tr>
         </table>
     </div>
+    <datalist id="actTestMgmt_dlstTests">
+    </datalist>
+    <datalist id="actTestMgmt_dlstFilters">
+        <option value="ap">
+        <option value="ds">
+    </datalist>
     </html>

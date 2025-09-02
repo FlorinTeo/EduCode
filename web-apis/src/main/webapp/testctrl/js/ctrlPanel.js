@@ -135,7 +135,7 @@ function selectAction(actName) {
             .then(() => {
                 actMap[actName].div = document.getElementById(`${actName}_div`);
                 const script = document.createElement(`script`);
-                script.src = `js/${actName}.js`;
+                script.src = `js/${actName}.js?ver=1.3`;
                 script.onload = () => {
                     actMap[actName].onCreate = window[`${actName}_onCreate`];
                     actMap[actName].onOpen = window[`${actName}_onOpen`];
