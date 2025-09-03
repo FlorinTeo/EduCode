@@ -11,7 +11,7 @@ export class CheckedList {
                 if (li.filtered) {
                     li.classList.remove("selected-li");
                 } else {
-                    li.innerHTML =  `<input type="checkbox" ${li.checked ? "checked" : ""}><label>${li.label.textContent}</label>`;
+                    this.#ulElem.appendChild(li);
                 }
             });
     }
@@ -38,11 +38,18 @@ export class CheckedList {
         this.#fnHandlers[eventName] = fnHandler;
     }
 
-    filter(filterText) {
+    filter(pattern) {
         this.#liList.forEach(li => {
-            li.filtered = !li.checkbox.textContent.startsWith(actTestMgmt_edtFilter.value);
+            li.filtered = !li.label.textContent.startsWith(pattern);
         });
         this.#reset();
+    }
+
+    check(state) {
+        this.#liList.filter(li => !li.filtered).forEach(li => {
+            li.checkbox.checked = state;
+            this.#callHandler("check", {host: this, innerTarget: li});
+        });
     }
 
     addItem(liText, metadata) {
@@ -50,7 +57,7 @@ export class CheckedList {
         li.innerHTML = `<input type="checkbox"><label>${liText}</label>`;
         li.checkbox = li.querySelector("input[type='checkbox']");
         li.label = li.querySelector("label");
-        li.hidden = false;
+        li.filtered = false;
         li.selected = false;
         li.checked = false;
         li.metadata = metadata;

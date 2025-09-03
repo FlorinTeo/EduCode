@@ -1,4 +1,4 @@
-import { CheckedList } from "./ctrlCheckedList.js?ver=1.0";
+import { CheckedList } from "./ctrlCheckedList.js?ver=1.1";
 
 // #region: page referenced parameters
 let refUrlAPI;
@@ -44,8 +44,11 @@ export async function onCreate(sid, username, urlAPI, addLog) {
 
 export async function onOpen() {
    actTestMgmt_edtFilter.value = "";
+   actTestMgmt_ckbMCQ.checked = false;
    actTestMgmt_lstMCQ.clear();
+   actTestMgmt_ckbFRQ.checked = false;
    actTestMgmt_lstFRQ.clear();
+   actTestMgmt_ckbAPX.checked = false;
    actTestMgmt_lstAPX.clear();
    // get the questions set
    var request = new  XMLHttpRequest();
@@ -108,7 +111,16 @@ function actTestMgmt_onFilterChange(event) {
 }
 
 function actTestMgmt_onCheckAll(event) {
-   refAddLog("actTestMgmt_onCheckAll called");
+   if (event.target === actTestMgmt_ckbMCQ) {
+      refAddLog("actTestMgmt_onCheckAll(actTestMgmt_lstMCQ) called");
+      actTestMgmt_lstMCQ.check(event.target.checked);
+   } else if (event.target === actTestMgmt_ckbFRQ) {
+      refAddLog("actTestMgmt_onCheckAll(actTestMgmt_lstFRQ) called");
+      actTestMgmt_lstFRQ.check(event.target.checked);
+   } else if (event.target === actTestMgmt_ckbAPX) {
+      refAddLog("actTestMgmt_onCheckAll(actTestMgmt_lstAPX) called");
+      actTestMgmt_lstAPX.check(event.target.checked);
+   }
 }
 
 function actTestMgmt_onCheckQuestion(event) {
