@@ -5,11 +5,9 @@
         <meta charset="ISO-8859-1">
         <!-- Text on the browser tab: "IR Host" -->
         <title>Tests Manager</title>
+        <link rel="stylesheet" href="css/ctrlCheckedList.css?ver=1.0">
         <link rel="stylesheet" href="css/adminPanel.css?ver=1.0">
-        <!-- <script defer src="js/actTestMgmt.js?ver=1.0"></script>
-        <script defer src="js/actSessionMgmt.js?ver=1.0"></script>
-        <script defer src="js/actUserMgmt.js?ver=1.0"></script> -->
-        <script defer src="js/adminPanel.js?ver=1.0"></script>
+        <script defer type="module" src="js/adminPanel.js?ver=1.0"></script>
     </head>
     <body>
         <div class="main-style">

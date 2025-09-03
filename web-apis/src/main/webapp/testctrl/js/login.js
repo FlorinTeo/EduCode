@@ -42,7 +42,7 @@ function onLoginResponse() {
     var jsonResponse = JSON.parse(this.response);
     if (this.status == 200) {
         // when successful or user already logged in, redirect to the AdminPanel page
-        window.location.href = `${urlAdminPanelJSP}?sid=${jsonResponse._sid}&name=${edtName.value}`;
+        window.location.href = `${urlAdminPanelJSP}?sid=${jsonResponse._sid}&name=${edtName.value}&ver=1.0`;
     } else {
         // otherwise display the response on the login page.
         txtOutput.innerHTML = `[${this.status}] ${jsonResponse._error}`;

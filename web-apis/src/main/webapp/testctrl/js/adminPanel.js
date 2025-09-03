@@ -1,6 +1,8 @@
 // #region: page parameters
 const sid = (new URLSearchParams(window.location.search)).get("sid");
 const username = (new URLSearchParams(window.location.search)).get("name");
+const urlAPI = window.location.origin + "/web-apis/testctrl";
+const urlLoginJSP = window.location.origin + "/web-apis/testctrl/login.jsp";
 // #endregion: page parameters
 
 const txtTitleSid = document.getElementById("titleSid");
@@ -26,12 +28,9 @@ const actMap = {
     actUserMgmt: { div: null },
 };
 
-const urlAPI = window.location.origin + "/web-apis/testctrl";
-const urlLoginJSP = window.location.origin + "/web-apis/testctrl/login.jsp";
-
 // #region: event listeners
-window.addEventListener("resize", onPageResize);
 document.addEventListener("DOMContentLoaded", onPageLoad);
+window.addEventListener("resize", onPageResize);
 btnLogout.addEventListener("click", onClickLogout);
 
 btnTestMgmt.addEventListener("click", onActTestMgmt);
@@ -43,14 +42,14 @@ dlgActionClose.addEventListener("click", onActionDlgClose);
 // #endregion: event listeners
 
 // #region: window resize callback
-function onPageLoad() {
+async function onPageLoad() {
     txtTitleSid.innerText = sid;
     txtTitleName.innerText = username;
     setInterval(onStatusRequest, 4000);
     onStatusRequest();
 }
 
-function onPageResize() {
+async function onPageResize() {
     const width = window.innerWidth;
     const height = window.innerHeight;
     console.log(`Window resized: ${width}x${height}`);
@@ -86,7 +85,7 @@ function onStatusResponse() {
 // #endregion: timer callback
 
 // #region: logout event handlers
-function onClickLogout(e) {
+async function onClickLogout(e) {
     e.preventDefault();
     var request = new  XMLHttpRequest();
     request.open("GET", `${urlAPI}?cmd=logout`, true);
@@ -106,7 +105,7 @@ function onLogoutResponse() {
 
 // #region: action dialog event handlers
 // #region: helper methods
-function addLog(logText) {
+export function addLog(logText) {
     const now = new Date();
     const pad = (n, z = 2) => ('00' + n).slice(-z);
     const MM = pad(now.getMonth() + 1);
@@ -126,61 +125,59 @@ function addLog(logText) {
     divLogContent.scrollTop = divLogContent.scrollHeight;
 }
 // #endregion: helper methodss
-function selectAction(actName) {
+async function selectAction(actName) {
     Array.from(dlgActionPane.children).forEach(actDiv => actDiv.style.display = 'none');
     if (actMap[actName].div == null) {
-        fetch(`${actName}.jsp?ver=1.1`)
-            .then(res => res.text())
-            .then(html => { dlgActionPane.insertAdjacentHTML('beforeend', html); })
-            .then(() => {
-                actMap[actName].div = document.getElementById(`${actName}_div`);
-                const script = document.createElement(`script`);
-                script.src = `js/${actName}.js?ver=1.4`;
-                script.onload = () => {
-                    actMap[actName].onCreate = window[`${actName}_onCreate`];
-                    actMap[actName].onOpen = window[`${actName}_onOpen`];
-                    actMap[actName].onApply = window[`${actName}_onApply`];
-                    actMap[actName].onCancel = window[`${actName}_onCancel`];
-                    if (actMap[actName].onCreate) {
-                        actMap[actName].onCreate();
-                    }
-                    if (actMap[actName].onOpen) {
-                        actMap[actName].onOpen();
-                    }
-                };
-                document.body.appendChild(script);
-            });
+        const res = await fetch(`${actName}.jsp`);
+        const html = await res.text();
+        // the dialog action pane needs to be inserted ahead of loading the module!
+        dlgActionPane.insertAdjacentHTML('beforeend', html);
+
+        // module is trying to load elements from the dlgActionPane, which needs to be in the document!
+        const module = await import(`./${actName}.js`);
+
+        actMap[actName].div = document.getElementById(`${actName}_div`);
+        actMap[actName].onCreate = module.onCreate;
+        actMap[actName].onOpen = module.onOpen;
+        actMap[actName].onApply = module.onApply;
+        actMap[actName].onCancel = module.onCancel;
+        if (actMap[actName].onCreate) {
+            await actMap[actName].onCreate(sid, username, urlAPI, addLog);
+        }
+        if (actMap[actName].onOpen) {
+            await actMap[actName].onOpen();
+        }
     } else {
         actMap[actName].div.style.display = 'block';
         if (actMap[actName].onOpen) {
-            actMap[actName].onOpen();
+            await actMap[actName].onOpen();
         }
     }
 }
 
-function onActionDlgApply(e) {
+async function onActionDlgApply(e) {
     e.preventDefault();
     const actName = Object.keys(actMap).find(key => actMap[key].div && actMap[key].div.style.display !== "none");
-    if (actMap[actName].onApply) {
+    if (actName && actMap[actName].onApply) {
         if (actMap[actName].onApply()) {
             dlgAction.close();
         }
     }
 }
 
-function onActionDlgClose(e) {
+async function onActionDlgClose(e) {
     e.preventDefault();
     const actName = Object.keys(actMap).find(key => actMap[key].div && actMap[key].div.style.display !== "none");
-    if (actMap[actName].onCancel) {
+    if (actName && actMap[actName].onCancel) {
         actMap[actName].onCancel();
     }
     dlgAction.close();
 }
 
 // #region: actSample handlers
-function onActTestMgmt(e) {
+async function onActTestMgmt(e) {
     e.preventDefault();
-    selectAction("actTestMgmt");
+    await selectAction("actTestMgmt");
     dlgAction.style.width = '100%';
     dlgAction.style.height = '100%';
     dlgAction.style.resize = 'both';
@@ -191,9 +188,9 @@ function onActTestMgmt(e) {
 // #endregion: actSample handlers
 
 // #region: actSessions handlers
-function onActSessionMgmt(e) {
+async function onActSessionMgmt(e) {
     e.preventDefault();
-    selectAction("actSessionMgmt");
+    await selectAction("actSessionMgmt");
     dlgAction.style.width = '60%';
     dlgAction.style.height = '40%';
     dlgAction.style.resize = 'none';
@@ -204,9 +201,9 @@ function onActSessionMgmt(e) {
 // #endregion: actSession handlers
 
 // #region: actUserMgmt handlers
-function onActUserMgmt(e) {
+async function onActUserMgmt(e) {
     e.preventDefault();
-    selectAction("actUserMgmt");
+    await selectAction("actUserMgmt");
     dlgAction.style.width = '';
     dlgAction.style.height = '';
     dlgAction.style.resize = 'none';

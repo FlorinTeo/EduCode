@@ -17,17 +17,21 @@ export class CheckedList {
     }
 
     #callHandler(eventName, event) {
-        if (this.#fnHandlers.has(eventName)) {
-            this.#fnHandlers[eventName](event)
+        if (eventName in this.#fnHandlers) {
+            this.#fnHandlers[eventName](event);
         }
     }
     // #endregion: [Private] helper methods
 
     constructor(htmlId) {
         this.#ulElem = document.getElementById(htmlId);
+        this.#fnHandlers = {};
+        this.clear();
+    }
+
+    clear() {
         this.#ulElem.innerHTML = "";
         this.#liList = [];
-        this.#fnHandlers = {};
     }
 
     setEventListener(eventName, fnHandler) {
@@ -41,7 +45,7 @@ export class CheckedList {
         this.#reset();
     }
 
-    addItem(liText) {
+    addItem(liText, metadata) {
         const li = document.createElement("li");
         li.innerHTML = `<input type="checkbox"><label>${liText}</label>`;
         li.checkbox = li.querySelector("input[type='checkbox']");
@@ -49,16 +53,20 @@ export class CheckedList {
         li.hidden = false;
         li.selected = false;
         li.checked = false;
-        checkbox.addEventListener("change", function(event) {
-            event.target = li;
-            event.target.checked = event.target.checkbox.checked;
-            this.#callHandler("change", event);
+        li.metadata = metadata;
+
+        const checkedListInstance = this;
+        li.checkbox.addEventListener("change", function(event) {
+            event.host = this;
+            event.innerTarget = li;
+            checkedListInstance.#callHandler("check", event);
         });
-        label.addEventListener("click", function(event) {
-            event.target = li;
-            event.target.selected = !event.target.selected;
-            event.target.classList.toggle("selected-li");
-            this.#callHandler("click", event);
+        li.label.addEventListener("click", function(event) {
+            event.host = this;
+            event.innerTarget = li;
+            li.selected = !li.selected;
+            li.classList.toggle("selected-li");
+            checkedListInstance.#callHandler("select", event);
         });
         this.#liList.push(li);
         this.#ulElem.appendChild(li);

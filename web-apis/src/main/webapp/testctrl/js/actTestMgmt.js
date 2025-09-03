@@ -1,13 +1,20 @@
-const actTestMgmt_edtTestName = document.getElementById("actTestMgmt_edtTestName");
+import { CheckedList } from "./ctrlCheckedList.js?ver=1.0";
+
+// #region: page referenced parameters
+let refUrlAPI;
+let refAddLog;
+// #endregion page referenced parameters
+
+//const actTestMgmt_edtTestName = document.getElementById("actTestMgmt_edtTestName");
 const actTestMgmt_edtFilter = document.getElementById("actTestMgmt_edtFilter");
-const actTestMgmt_dlstTests = document.getElementById("actTestMgmt_dlstTests");
-const actTestMgmt_dlstFilters = document.getElementById("actTestMgmt_dlstFilters");
-const actTestMgmt_lstMCQ = document.getElementById("actTestsMgmt_lstMCQ");
-const actTestMgmt_lstFRQ = document.getElementById("actTestsMgmt_lstFRQ");
-const actTestMgmt_lstAPX = document.getElementById("actTestsMgmt_lstAPX");
-const actTestMgmt_ckb_allMCQ = document.getElementById("actTestMgmt_ckb_allMCQ");
-const actTestMgmt_ckb_allFRQ = document.getElementById("actTestMgmt_ckb_allFRQ");
-const actTestMgmt_ckb_allAPX = document.getElementById("actTestMgmt_ckb_allAPX");
+// const actTestMgmt_dlstTests = document.getElementById("actTestMgmt_dlstTests");
+// const actTestMgmt_dlstFilters = document.getElementById("actTestMgmt_dlstFilters");
+const actTestMgmt_ckbMCQ = document.getElementById("actTestMgmt_ckb_allMCQ");
+const actTestMgmt_lstMCQ = new CheckedList("actTestsMgmt_lstMCQ");
+const actTestMgmt_ckbFRQ = document.getElementById("actTestMgmt_ckb_allFRQ");
+const actTestMgmt_lstFRQ = new CheckedList("actTestsMgmt_lstFRQ");
+const actTestMgmt_ckbAPX = document.getElementById("actTestMgmt_ckb_allAPX");
+const actTestMgmt_lstAPX = new CheckedList("actTestsMgmt_lstAPX");
 
 var actTestMgmt_questions = {
    _mcqRecs: [],
@@ -16,26 +23,51 @@ var actTestMgmt_questions = {
 };
 
 actTestMgmt_edtFilter.addEventListener("input", actTestMgmt_onFilterChange);
-actTestMgmt_ckb_allMCQ.addEventListener("change", function(event) { actTestMgmt_onCheckAll(event, actTestMgmt_questions._mcqRecs, actTestMgmt_lstMCQ); });
-actTestMgmt_ckb_allFRQ.addEventListener("change", function(event) { actTestMgmt_onCheckAll(event, actTestMgmt_questions._frqRecs, actTestMgmt_lstFRQ); });
-actTestMgmt_ckb_allAPX.addEventListener("change", function(event) { actTestMgmt_onCheckAll(event, actTestMgmt_questions._apxRecs, actTestMgmt_lstAPX); });
 
-function actTestMgmt_onOpen() {
-   actTestMgmt_lstMCQ.innerHTML = "";
-   actTestMgmt_lstFRQ.innerHTML = "";
-   actTestMgmt_lstAPX.innerHTML = "";
+actTestMgmt_ckbMCQ.addEventListener("change", actTestMgmt_onCheckAll);
+actTestMgmt_lstMCQ.setEventListener("check", actTestMgmt_onCheckQuestion);
+actTestMgmt_lstMCQ.setEventListener("select", actTestMgmt_onSelectQuestion);
+
+actTestMgmt_ckbFRQ.addEventListener("change", actTestMgmt_onCheckAll);
+actTestMgmt_lstFRQ.setEventListener("check", actTestMgmt_onCheckQuestion);
+actTestMgmt_lstFRQ.setEventListener("select", actTestMgmt_onSelectQuestion);
+
+actTestMgmt_ckbAPX.addEventListener("change", actTestMgmt_onCheckAll);
+actTestMgmt_lstAPX.setEventListener("check", actTestMgmt_onCheckQuestion);
+actTestMgmt_lstAPX.setEventListener("select", actTestMgmt_onSelectQuestion);
+
+// #region: exported methods
+export async function onCreate(sid, username, urlAPI, addLog) {
+   refUrlAPI = urlAPI;
+   refAddLog = addLog;
+}
+
+export async function onOpen() {
    actTestMgmt_edtFilter.value = "";
+   actTestMgmt_lstMCQ.clear();
+   actTestMgmt_lstFRQ.clear();
+   actTestMgmt_lstAPX.clear();
    // get the questions set
    var request = new  XMLHttpRequest();
-   request.open("GET", `${urlAPI}?cmd=query&type=qset`, true);
+   request.open("GET", `${refUrlAPI}?cmd=query&type=qset`, true);
    request.timeout = 2000;
    request.onload = onQueryQSetResponse;
    request.withCredentials = true;
    request.send();
 }
 
+export async function onApply() {
+   refAddLog("actTestMgmt_onApply called");
+   return true;
+}
+
+export async function onCancel() {
+   refAddLog("actTestMgmt_onCancel called");
+}
+// #endregion: exported methods
+
 function onQueryQSetResponse() {
-   jsonResponse = JSON.parse(this.response);
+   const jsonResponse = JSON.parse(this.response);
    if (this.status == 200) {
       // when successful or user already logged in, redirect to the AdminPanel page
       actTestMgmt_questions._mcqRecs = loadQSet('mcq|mcb', jsonResponse);
@@ -44,74 +76,45 @@ function onQueryQSetResponse() {
       initializeLists();
    } else {
       // otherwise display the response on the login page.
-      txtOutput.innerHTML = `[${this.status}] ${jsonResponse._error}`;
-      txtOutput.classList.add('err-div');
+      refAddLog(`[${this.status}] ${jsonResponse._error}`);
    }
 }
 
 function loadQSet(qTypes, jsonResponse) {
-   lstTypes = qTypes.split("|");
+   const lstTypes = qTypes.split("|");
    let lstQRec = [];
    for (const question of jsonResponse._qRecs) {
       if (!lstTypes.includes(question._qType)) {
          continue;
       }
-      question.filtered = false;
-      question.checked = false;
       lstQRec.push(question);
    }
    return lstQRec;
 }
 
-function initializeList(lstQRec, listElem) {
-   listElem.innerHTML = "";
-   for (const question of lstQRec) {
-      question.filtered = !question._qName.startsWith(actTestMgmt_edtFilter.value);
-      if (question.filtered) {
-         continue;
-      }
-      const li = document.createElement("li");
-      li.innerHTML = `<input type="checkbox" ${question.checked ? "checked" : ""}><label>${question._qName}</label>`;
-      const checkbox = li.querySelector("input[type='checkbox']");
-      const label = li.querySelector("label");
-      checkbox.addEventListener("change", function(event) {
-         actTestMgmt_onCheckQuestion(li, event, question);
-      });
-      label.addEventListener("click", function(event) {
-         actTestMgmt_onClickQuestion(li, event, question);
-      });
-      listElem.appendChild(li);
-   }
-}
-
 function initializeLists() {
-   initializeList(actTestMgmt_questions._mcqRecs, actTestMgmt_lstMCQ);
-   initializeList(actTestMgmt_questions._frqRecs, actTestMgmt_lstFRQ);
-   initializeList(actTestMgmt_questions._apxRecs, actTestMgmt_lstAPX);
+   actTestMgmt_lstMCQ.clear();
+   actTestMgmt_questions._mcqRecs.forEach(qRec => { actTestMgmt_lstMCQ.addItem(qRec._qName, qRec); })
+   actTestMgmt_lstFRQ.clear();
+   actTestMgmt_questions._frqRecs.forEach(qRec => { actTestMgmt_lstFRQ.addItem(qRec._qName, qRec); })
+   actTestMgmt_lstAPX.clear();
+   actTestMgmt_questions._apxRecs.forEach(qRec => { actTestMgmt_lstAPX.addItem(qRec._qName, qRec); })
 }
 
 function actTestMgmt_onFilterChange(event) {
-   initializeLists();
+   actTestMgmt_lstFRQ.filter(actTestMgmt_edtFilter.value);
+   actTestMgmt_lstMCQ.filter(actTestMgmt_edtFilter.value);
+   actTestMgmt_lstAPX.filter(actTestMgmt_edtFilter.value);
 }
 
-function actTestMgmt_onCheckAll(event, lstQRec, listElem) {
-   lstQRec.filter(q => !q.filtered).forEach(q => { q.checked = event.target.checked; });
-   initializeLists(lstQRec, listElem);
+function actTestMgmt_onCheckAll(event) {
+   refAddLog("actTestMgmt_onCheckAll called");
 }
 
-function actTestMgmt_onCheckQuestion(li, event, question) {
-   question.checked = event.target.checked;
+function actTestMgmt_onCheckQuestion(event) {
+   refAddLog("actTestMgmt_onCheckQuestion called");
 }
 
-function actTestMgmt_onClickQuestion(li, event, question) {
-   li.classList.toggle("selected-li");
-}
-
-function actTestMgmt_onApply() {
-   addLog("actTestMgmt_onApply called");
-   return true;
-}
-
-function actTestMgmt_onCancel() {
-   addLog("actTestMgmt_onCancel called");
+function actTestMgmt_onSelectQuestion(event) {
+   refAddLog("actTestMgmt_onSelectQuestion called");
 }

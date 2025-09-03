@@ -4,7 +4,6 @@
     <head>
         <meta charset="ISO-8859-1">
         <link rel="stylesheet" href="css/actUserMgmt.css?ver=1.2">
-        <script defer src="js/actUserMgmt.js?ver=1.1"></script>
     </head>
     <div id="actUserMgmt_div" class="actUserMgmt-style">
         <!-- Controls for setting [Name][Password] -->
