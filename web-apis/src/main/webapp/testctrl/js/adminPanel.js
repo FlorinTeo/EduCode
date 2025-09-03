@@ -129,13 +129,13 @@ function addLog(logText) {
 function selectAction(actName) {
     Array.from(dlgActionPane.children).forEach(actDiv => actDiv.style.display = 'none');
     if (actMap[actName].div == null) {
-        fetch(`${actName}.jsp`)
+        fetch(`${actName}.jsp?ver=1.1`)
             .then(res => res.text())
             .then(html => { dlgActionPane.insertAdjacentHTML('beforeend', html); })
             .then(() => {
                 actMap[actName].div = document.getElementById(`${actName}_div`);
                 const script = document.createElement(`script`);
-                script.src = `js/${actName}.js?ver=1.3`;
+                script.src = `js/${actName}.js?ver=1.4`;
                 script.onload = () => {
                     actMap[actName].onCreate = window[`${actName}_onCreate`];
                     actMap[actName].onOpen = window[`${actName}_onOpen`];

@@ -4,8 +4,9 @@
 
     <head>
         <meta charset="ISO-8859-1">
-        <link rel="stylesheet" href="css/actTestMgmt.css?ver=1.1">
-        <script defer src="js/actTestMgmt.js?ver=1.1"></script>
+        <link rel="stylesheet" href="css/actTestMgmt.css?ver=1.2">
+        <link rel="stylesheet" href="css/ctrlCheckedList.css?ver=1.0">
+        <script defer src="js/actTestMgmt.js?ver=1.4"></script>
     </head>
     <div id="actTestMgmt_div" class="actTestMgmt-style">
         <!-- Top (level 0) table: 2 rows, 1 column -->

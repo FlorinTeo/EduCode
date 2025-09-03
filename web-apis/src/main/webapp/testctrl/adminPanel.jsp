@@ -5,18 +5,18 @@
         <meta charset="ISO-8859-1">
         <!-- Text on the browser tab: "IR Host" -->
         <title>Tests Manager</title>
-        <link rel="stylesheet" href="css/ctrlPanel.css?ver=1.0">
+        <link rel="stylesheet" href="css/adminPanel.css?ver=1.0">
         <!-- <script defer src="js/actTestMgmt.js?ver=1.0"></script>
         <script defer src="js/actSessionMgmt.js?ver=1.0"></script>
         <script defer src="js/actUserMgmt.js?ver=1.0"></script> -->
-        <script defer src="js/ctrlPanel.js?ver=1.0"></script>
+        <script defer src="js/adminPanel.js?ver=1.0"></script>
     </head>
     <body>
         <div class="main-style">
             <!----==== Title bar ====---->
             <table class="title-style">
                 <tr>
-                    <td><span>Tests Manager </span><span class="title-highlight">Control Panel</span></td>
+                    <td><span>Tests Manager </span><span class="title-highlight">Admin Panel</span></td>
                     <td><span class="title-sid" id="titleSid"></span> <span class="title-name" id="titleName"></span></td>
                     <td><input id="btnLogout" type="submit" value="logout" ></td>
                 </tr>

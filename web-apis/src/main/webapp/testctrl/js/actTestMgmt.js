@@ -37,7 +37,7 @@ function actTestMgmt_onOpen() {
 function onQueryQSetResponse() {
    jsonResponse = JSON.parse(this.response);
    if (this.status == 200) {
-      // when successful or user already logged in, redirect to the CtrlPanel page
+      // when successful or user already logged in, redirect to the AdminPanel page
       actTestMgmt_questions._mcqRecs = loadQSet('mcq|mcb', jsonResponse);
       actTestMgmt_questions._frqRecs = loadQSet('frq', jsonResponse);
       actTestMgmt_questions._apxRecs = loadQSet('apx', jsonResponse);
@@ -73,8 +73,12 @@ function initializeList(lstQRec, listElem) {
       const li = document.createElement("li");
       li.innerHTML = `<input type="checkbox" ${question.checked ? "checked" : ""}><label>${question._qName}</label>`;
       const checkbox = li.querySelector("input[type='checkbox']");
+      const label = li.querySelector("label");
       checkbox.addEventListener("change", function(event) {
-         actTestMgmt_onCheckQuestion(event, question);
+         actTestMgmt_onCheckQuestion(li, event, question);
+      });
+      label.addEventListener("click", function(event) {
+         actTestMgmt_onClickQuestion(li, event, question);
       });
       listElem.appendChild(li);
    }
@@ -95,8 +99,12 @@ function actTestMgmt_onCheckAll(event, lstQRec, listElem) {
    initializeLists(lstQRec, listElem);
 }
 
-function actTestMgmt_onCheckQuestion(event, question) {
+function actTestMgmt_onCheckQuestion(li, event, question) {
    question.checked = event.target.checked;
+}
+
+function actTestMgmt_onClickQuestion(li, event, question) {
+   li.classList.toggle("selected-li");
 }
 
 function actTestMgmt_onApply() {
