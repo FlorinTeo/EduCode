@@ -60,7 +60,10 @@ export async function onOpen() {
 }
 
 export async function onApply() {
-   refAddLog("actTestMgmt_onApply called");
+   let qMCQs = actTestMgmt_questions._mcqRecs.filter(qRec => qRec.checked)
+   let qFRQs = actTestMgmt_questions._frqRecs.filter(qRec => qRec.checked)
+   let qAPXs = actTestMgmt_questions._apxRecs.filter(qRec => qRec.checked)
+   refAddLog(`actTestMgmt_onApply: mcq:${qMCQs.length}, frq:${qFRQs.length}, apx:${qAPXs.length}`);
    return true;
 }
 
@@ -112,21 +115,31 @@ function actTestMgmt_onFilterChange(event) {
 
 function actTestMgmt_onCheckAll(event) {
    if (event.target === actTestMgmt_ckbMCQ) {
-      refAddLog("actTestMgmt_onCheckAll(actTestMgmt_lstMCQ) called");
       actTestMgmt_lstMCQ.check(event.target.checked);
    } else if (event.target === actTestMgmt_ckbFRQ) {
-      refAddLog("actTestMgmt_onCheckAll(actTestMgmt_lstFRQ) called");
       actTestMgmt_lstFRQ.check(event.target.checked);
    } else if (event.target === actTestMgmt_ckbAPX) {
-      refAddLog("actTestMgmt_onCheckAll(actTestMgmt_lstAPX) called");
       actTestMgmt_lstAPX.check(event.target.checked);
    }
 }
 
 function actTestMgmt_onCheckQuestion(event) {
-   refAddLog("actTestMgmt_onCheckQuestion called");
+   let question = event.metadata;
+   question.checked = event.checked;
 }
 
 function actTestMgmt_onSelectQuestion(event) {
+   if (event.target && event.selected) {
+      if (event.host === actTestMgmt_lstMCQ) {
+         actTestMgmt_lstFRQ.select(false);
+         actTestMgmt_lstAPX.select(false);
+      } else if (event.host === actTestMgmt_lstFRQ) {
+         actTestMgmt_lstMCQ.select(false);
+         actTestMgmt_lstAPX.select(false);
+      } else if (event.host === actTestMgmt_lstAPX) {
+         actTestMgmt_lstMCQ.select(false);
+         actTestMgmt_lstFRQ.select(false);
+      }
+   }
    refAddLog("actTestMgmt_onSelectQuestion called");
 }

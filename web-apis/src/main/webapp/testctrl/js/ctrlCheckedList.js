@@ -48,7 +48,19 @@ export class CheckedList {
     check(state) {
         this.#liList.filter(li => !li.filtered).forEach(li => {
             li.checkbox.checked = state;
-            this.#callHandler("check", {host: this, innerTarget: li});
+            this.#callHandler("check", {host: this, target: undefined, metadata: li.metadata, checked: state});
+        });
+    }
+
+    select(state) {
+        this.#liList.filter(li => li.selected != state).forEach(li => {
+            li.selected = state;
+            if (li.selected) {
+                li.classList.add("selected-li");
+            } else {
+                li.classList.remove("selected-li");
+            }
+            this.#callHandler("select", {host: this, target: undefined, metadata: li.metadata, selected: state});
         });
     }
 
@@ -64,15 +76,26 @@ export class CheckedList {
 
         const checkedListInstance = this;
         li.checkbox.addEventListener("change", function(event) {
-            event.host = this;
-            event.innerTarget = li;
+            event.host = checkedListInstance;
+            event.metadata = li.metadata;
+            event.checked = li.checkbox.checked;
             checkedListInstance.#callHandler("check", event);
         });
         li.label.addEventListener("click", function(event) {
-            event.host = this;
-            event.innerTarget = li;
+            checkedListInstance.#liList.filter(pli => pli.selected && pli !== li).forEach(pli => {
+                pli.selected = false;
+                pli.classList.remove("selected-li");
+                checkedListInstance.#callHandler("select", {host: checkedListInstance, target: pli.label, metadata: pli.metadata, selected: false});
+            });
             li.selected = !li.selected;
-            li.classList.toggle("selected-li");
+            if (li.selected) {
+                li.classList.add("selected-li");
+            } else {
+                li.classList.remove("selected-li");
+            }
+            event.host = checkedListInstance;
+            event.metadata = li.metadata;
+            event.selected = li.selected;
             checkedListInstance.#callHandler("select", event);
         });
         this.#liList.push(li);
