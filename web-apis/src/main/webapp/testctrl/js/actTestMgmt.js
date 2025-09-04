@@ -141,5 +141,4 @@ function actTestMgmt_onSelectQuestion(event) {
          actTestMgmt_lstFRQ.select(false);
       }
    }
-   refAddLog("actTestMgmt_onSelectQuestion called");
 }

@@ -118,7 +118,7 @@ export function addLog(logText) {
     
     const row = tblLog.insertRow(-1);
     row.insertCell(0).textContent = logTime;
-    row.insertCell(1).textContent = logText;
+    row.insertCell(1).textContent = `[*] ${logText}`;
     if (tblLog.rows.length > 100) {
         tblLog.deleteRow(0);
     }
