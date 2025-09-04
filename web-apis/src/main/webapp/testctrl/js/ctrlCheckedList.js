@@ -81,7 +81,10 @@ export class CheckedList {
             event.checked = li.checkbox.checked;
             checkedListInstance.#callHandler("check", event);
         });
-        li.label.addEventListener("click", function(event) {
+        li.checkbox.addEventListener("click", function(event) {
+            event.stopPropagation();
+        });
+        li.addEventListener("click", function(event) {
             checkedListInstance.#liList.filter(pli => pli.selected && pli !== li).forEach(pli => {
                 pli.selected = false;
                 pli.classList.remove("selected-li");
