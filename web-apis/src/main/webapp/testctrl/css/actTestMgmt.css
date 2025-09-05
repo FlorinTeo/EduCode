@@ -52,3 +52,14 @@
     padding-left: 0;
     margin: 0;
 }
+
+.refText {
+  font-family: Consolas;
+}
+.refTd, .ansTd {
+  vertical-align: top;
+}
+.ansTd {
+  border: 2px solid #003399;
+  background-color: #99ccff;
+}

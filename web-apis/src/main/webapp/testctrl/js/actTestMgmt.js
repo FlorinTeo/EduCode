@@ -15,6 +15,7 @@ const actTestMgmt_ckbFRQ = document.getElementById("actTestMgmt_ckb_allFRQ");
 const actTestMgmt_lstFRQ = new CheckedList("actTestsMgmt_lstFRQ");
 const actTestMgmt_ckbAPX = document.getElementById("actTestMgmt_ckb_allAPX");
 const actTestMgmt_lstAPX = new CheckedList("actTestsMgmt_lstAPX");
+const actTestMgmt_divQContent = document.getElementById("actTestMgmt_divQContent");
 
 var actTestMgmt_questions = {
    _mcqRecs: [],
@@ -123,12 +124,12 @@ function actTestMgmt_onCheckAll(event) {
    }
 }
 
-function actTestMgmt_onCheckQuestion(event) {
+async function actTestMgmt_onCheckQuestion(event) {
    let question = event.metadata;
    question.checked = event.checked;
 }
 
-function actTestMgmt_onSelectQuestion(event) {
+async function actTestMgmt_onSelectQuestion(event) {
    if (event.target && event.selected) {
       if (event.host === actTestMgmt_lstMCQ) {
          actTestMgmt_lstFRQ.select(false);
@@ -140,5 +141,10 @@ function actTestMgmt_onSelectQuestion(event) {
          actTestMgmt_lstMCQ.select(false);
          actTestMgmt_lstFRQ.select(false);
       }
+
+      // TODO: display question content in actTestMgmt_divQContent
+      const res = await fetch(`qSample-div.jsp`);
+      const html = await res.text();
+      actTestMgmt_divQContent.innerHTML = html;
    }
 }
