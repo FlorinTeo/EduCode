@@ -1,5 +1,5 @@
  <table class="actTestMgmt_tbl_mcq"> <!--~~~~~~~~ MULTIPLE CHOICE QUESTION (MCQ) ~~~~~~~~-->
-    <tr><td>ap1.Q1.</td><td><img src="../../lwhs/.template/ap4.Q5/ansQ5_B91E.png"></td></tr>
+    <tr><td>ap4.Q5.</td><td><img src="../../lwhs/.template/ap4.Q5/ansQ5_B91E.png"></td></tr>
     <tr><td></td><td>
     <table class="actTestMgmt_tbl_mcqChoice">
       <tr><td>(A)</td><td><img src="../../lwhs/.template/ap4.Q5/Q5a_A907.png"></td></tr>
