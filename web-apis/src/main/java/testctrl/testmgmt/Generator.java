@@ -117,10 +117,10 @@ public class Generator {
         return _pRoot.toAbsolutePath().toString();
     }
 
-    public Collection<QRec> getQRecs() {
-        List<QRec> qRecs = new LinkedList<QRec>();
+    public Collection<QHeader> getQRecs() {
+        List<QHeader> qRecs = new LinkedList<QHeader>();
         for (Question q : _qList) {
-            qRecs.add(q.getQRec());
+            qRecs.add(q.getQHeader());
         }
         return qRecs;
     }

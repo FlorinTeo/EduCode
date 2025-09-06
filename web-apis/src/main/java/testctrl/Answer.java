@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import com.google.gson.Gson;
 
-import testctrl.testmgmt.QRec;
+import testctrl.testmgmt.QHeader;
 
 public class Answer {
 
@@ -35,19 +35,19 @@ public class Answer {
     }
 
     public class QList extends Answer {
-        public QRec[] _qRecs;
+        public QHeader[] _qList;
 
-        public QList(Collection<QRec> qRecs) {
-            _qRecs = qRecs.toArray(new QRec[0]);
+        public QList(Collection<QHeader> qRecs) {
+            _qList = qRecs.toArray(new QHeader[0]);
         }
     }
 
     public class QDiv extends Answer {
-        public QRec _qRec;
+        public QHeader _qHeader;
         public String _qDiv;
 
-        public QDiv(QRec qRec, String qDiv) {
-            _qRec = qRec;
+        public QDiv(QHeader qHeader, String qDiv) {
+            _qHeader = qHeader;
             _qDiv = qDiv;
         }
     }

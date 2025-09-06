@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import testctrl.testmgmt.Generator;
-import testctrl.testmgmt.QRec;
+import testctrl.testmgmt.QHeader;
 import testctrl.testmgmt.Question;
 
 @WebServlet("/testctrl")
@@ -187,7 +187,7 @@ public class Servlet extends HttpServlet{
         switch(type) {
             case "qset":
                 // http://localhost:8080/web-apis/testctrl?cmd=query&type=qset
-                Collection<QRec> qRecs = gen.getQRecs();
+                Collection<QHeader> qRecs = gen.getQRecs();
                 _context.Log(new LogEntry("[query:qset] Returning %d question records", qRecs.size()));
                 return new Answer().new QList(qRecs);
             case "qtest":
@@ -196,7 +196,7 @@ public class Servlet extends HttpServlet{
                 // http://localhost:8080/web-apis/testctrl?cmd=query&type=qanswer&qid=<question>
                 String qID = params.get("qid")[0];
                 Question q = gen.getQuestion(qID);
-                return new Answer().new QDiv(q.getQRec(), q.getDiv(type.equalsIgnoreCase("qanswer")));
+                return new Answer().new QDiv(q.getQHeader(), q.getDiv(type.equalsIgnoreCase("qanswer")));
             default:
                 return new Answer().new Err("Unknown query type!");
         }

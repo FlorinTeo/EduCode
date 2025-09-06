@@ -261,8 +261,8 @@ public class Question {
         return hAppendix;
     }
 
-    public QRec getQRec() {
-        return new QRec(getName(), getType());
+    public QHeader getQHeader() {
+        return new QHeader(getName(), getType());
     }
     
     public String getDiv(boolean answerDiv) {
