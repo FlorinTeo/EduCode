@@ -42,6 +42,16 @@ public class Answer {
         }
     }
 
+    public class QDiv extends Answer {
+        public QRec _qRec;
+        public String _qDiv;
+
+        public QDiv(QRec qRec, String qDiv) {
+            _qRec = qRec;
+            _qDiv = qDiv;
+        }
+    }
+
     @Override
     public String toString() {
         Gson gson = new Gson();

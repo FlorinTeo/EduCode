@@ -261,6 +261,30 @@ public class Question {
         return hAppendix;
     }
 
+    public QRec getQRec() {
+        return new QRec(getName(), getType());
+    }
+    
+    public String getDiv(boolean answerDiv) {
+        String qType = getType();
+        switch(qType) {
+        case Question._MCQ:
+            break;
+        case Question._MCB:
+            break;
+        case Question._FRQ:
+            break;
+        case Question._APX:
+            break;
+        default:
+            break;
+        }
+        return String.format("Returning %s div for question %s of type %s",
+            answerDiv ? "test" : "answer",
+            getName(),
+            getType());
+    }
+
     @Override
     public String toString() {
         return String.format("%s:pxQ=%d,pxA=%d", _meta.name, _pxHeightQ, _pxHeightA);

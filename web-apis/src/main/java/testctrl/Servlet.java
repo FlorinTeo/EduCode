@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import testctrl.testmgmt.Generator;
 import testctrl.testmgmt.QRec;
+import testctrl.testmgmt.Question;
 
 @WebServlet("/testctrl")
 public class Servlet extends HttpServlet{
@@ -76,6 +77,8 @@ public class Servlet extends HttpServlet{
                     break;
                 case "query":
                     // http://localhost:8080/web-apis/testctrl?cmd=query&type=qset
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=qtest&name=<name>
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=qanswer&name=<name>
                     answer = executeCmdQuery(httpSession, params);
                     break;
                 default:
@@ -123,6 +126,7 @@ public class Servlet extends HttpServlet{
         String type = params.get("type")[0];
         switch(type) {
             case "log":
+                // http://localhost:8080/web-apis/testctrl?cmd=status&type=log
                 return new Answer().new Logs(session.purgeLog());
             default:
                 return new Answer().new Err("Unknown status type!");
@@ -137,6 +141,7 @@ public class Servlet extends HttpServlet{
         String op = params.get("op")[0];
         switch(op) {
             case "setusr":
+                // http://localhost:8080/web-apis/testctrl?cmd=set&op=setusr&name=<name>&pwd=<password>
                 checkTrue(params.containsKey("name"), "Missing 'name' parameter!");
                 checkTrue(params.containsKey("pwd"), "Missing 'pwd' parameter!");
                 String name = params.get("name")[0];
@@ -177,12 +182,21 @@ public class Servlet extends HttpServlet{
         checkTrue(session.getUser().hasRole("admin","teacher"), "Access denied!");
         session.touch();
         String type = params.get("type")[0];
+        Generator gen = _context.getGenerator();
+
         switch(type) {
             case "qset":
-                Generator gen = _context.getGenerator();
+                // http://localhost:8080/web-apis/testctrl?cmd=query&type=qset
                 Collection<QRec> qRecs = gen.getQRecs();
-                _context.Log(new LogEntry("[query:qset] Returning %d query records", qRecs.size()));
+                _context.Log(new LogEntry("[query:qset] Returning %d question records", qRecs.size()));
                 return new Answer().new QList(qRecs);
+            case "qtest":
+                // http://localhost:8080/web-apis/testctrl?cmd=query&type=qtest&qid=<question>
+            case "qanswer":
+                // http://localhost:8080/web-apis/testctrl?cmd=query&type=qanswer&qid=<question>
+                String qID = params.get("qid")[0];
+                Question q = gen.getQuestion(qID);
+                return new Answer().new QDiv(q.getQRec(), q.getDiv(type.equalsIgnoreCase("qanswer")));
             default:
                 return new Answer().new Err("Unknown query type!");
         }

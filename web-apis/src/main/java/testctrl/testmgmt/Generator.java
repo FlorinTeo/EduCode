@@ -117,24 +117,10 @@ public class Generator {
         return _pRoot.toAbsolutePath().toString();
     }
 
-    /**
-     * Gets statistics on the set of questions loaded in this generator.
-     * @return printable string with questions stats.
-     */
-    public String getQuestions() {
-        String output = "";
-        output += String.format("Count: %d\n", _qList.size());
-        output += _qList.toString();
-        return output;
-    }
-
     public Collection<QRec> getQRecs() {
         List<QRec> qRecs = new LinkedList<QRec>();
         for (Question q : _qList) {
-            QRec qRec = new QRec();
-            qRec._qName = q.getName();
-            qRec._qType = q.getType();
-            qRecs.add(qRec);
+            qRecs.add(q.getQRec());
         }
         return qRecs;
     }
@@ -207,5 +193,9 @@ public class Generator {
             }
             _webDoc.genTestHtml(mVariant, pVariant);
         }
+    }
+
+    public Question getQuestion(String qID) {
+        return _qMap.get(qID);
     }
 }
