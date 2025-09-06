@@ -4,7 +4,7 @@
 
     <head>
         <meta charset="ISO-8859-1">
-        <link rel="stylesheet" href="css/actTestMgmt.css?ver=1.5">
+        <link rel="stylesheet" href="css/actTestMgmt.css?ver=2.0">
         <script defer type="module" src="js/actTestMgmt.js?ver=1.5"></script>
     </head>
     <div id="actTestMgmt_div" class="actTestMgmt-style">

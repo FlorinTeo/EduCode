@@ -143,7 +143,7 @@ async function actTestMgmt_onSelectQuestion(event) {
       }
 
       // TODO: display question content in actTestMgmt_divQContent
-      const res = await fetch(`qSample-div.jsp`);
+      const res = await fetch(`div-mcqTest.jsp`);
       const html = await res.text();
       actTestMgmt_divQContent.innerHTML = html;
    }

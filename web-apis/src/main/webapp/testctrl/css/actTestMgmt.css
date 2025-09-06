@@ -28,9 +28,9 @@
 .actTestMgmt-lvl1-table div {
     overflow: auto;
     border: 1px solid #000;
-    background-color: #f2ffe5;
-    height: 100%;
+    background-color: #ffffff;
     width: 100%;
+    height: 100%;
 }
 
 .actTestMgmt-lvl2-table {
@@ -53,13 +53,30 @@
     margin: 0;
 }
 
-.refText {
+.actTestMgmt_tbl_mcq {
   font-family: Consolas;
-}
-.refTd, .ansTd {
+  border-collapse: collapse;
   vertical-align: top;
+  table-layout: auto;
+  width: 100%;
 }
-.ansTd {
-  border: 2px solid #003399;
-  background-color: #99ccff;
+.actTestMgmt_tbl_mcq td { border: none; padding: 0 !important; }
+.actTestMgmt_tbl_mcq td:first-child { width: 1px; white-space: nowrap; } 
+.actTestMgmt_tbl_mcq td:last-child { width: 99%; }
+
+.actTestMgmt_tbl_mcqChoice {
+  font-family: Consolas;
+  border-collapse: collapse;
+  vertical-align: top;
+  table-layout: auto;
+  width: 100%;
 }
+.actTestMgmt_tbl_mcqChoice td { border: none; padding: 0 !important; }
+.actTestMgmt_tbl_mcqChoice td:first-child { width: 1px; white-space: nowrap; } 
+.actTestMgmt_tbl_mcqChoice td:last-child { width: 99%; }
+
+.actTestMgmt_tbl_mcqAnswer {
+  background: #d1f1fd;
+  border: 2px solid #0059fd !important;
+}
+
