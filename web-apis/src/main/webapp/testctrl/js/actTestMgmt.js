@@ -90,7 +90,7 @@ function onQueryQSetResponse() {
 function loadQSet(qTypes, jsonResponse) {
    const lstTypes = qTypes.split("|");
    let lstQRec = [];
-   for (const question of jsonResponse._qRecs) {
+   for (const question of jsonResponse._qList) {
       if (!lstTypes.includes(question._qType)) {
          continue;
       }
