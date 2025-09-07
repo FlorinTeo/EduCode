@@ -51,6 +51,7 @@ export async function onOpen() {
    actTestMgmt_lstFRQ.clear();
    actTestMgmt_ckbAPX.checked = false;
    actTestMgmt_lstAPX.clear();
+   actTestMgmt_divQContent.innerHTML = "";
    // get the questions set
    var request = new  XMLHttpRequest();
    request.open("GET", `${refUrlAPI}?cmd=query&type=qset`, true);
@@ -130,10 +131,12 @@ async function actTestMgmt_onCheckQuestion(event) {
 }
 
 async function actTestMgmt_onSelectQuestion(event) {
+   let urlAPI_query = undefined;
    if (event.target && event.selected) {
       if (event.host === actTestMgmt_lstMCQ) {
          actTestMgmt_lstFRQ.select(false);
          actTestMgmt_lstAPX.select(false);
+         urlAPI_query = `${refUrlAPI}?cmd=query&type=qanswer&qid=${event.metadata._qName}`;
       } else if (event.host === actTestMgmt_lstFRQ) {
          actTestMgmt_lstMCQ.select(false);
          actTestMgmt_lstAPX.select(false);
@@ -141,10 +144,24 @@ async function actTestMgmt_onSelectQuestion(event) {
          actTestMgmt_lstMCQ.select(false);
          actTestMgmt_lstFRQ.select(false);
       }
-
-      // TODO: display question content in actTestMgmt_divQContent
-      const res = await fetch(`div-mcqTemplate.jsp`);
-      const html = await res.text();
-      actTestMgmt_divQContent.innerHTML = html;
    }
+
+   // Display question content in actTestMgmt_divQContent
+   if (urlAPI_query) {
+      refAddLog(`actTestMgmt_onSelectQuestion issuing GET(${urlAPI_query})`);
+      var request = new  XMLHttpRequest();
+      request.open("GET",  urlAPI_query, true);
+      request.timeout = 2000;
+      request.onload = actTestMgmt_onDivQueryResponse;
+      request.withCredentials = true;
+      request.send();
+   } else {
+      actTestMgmt_divQContent.innerHTML = "";
+   }
+}
+
+function actTestMgmt_onDivQueryResponse() {
+   var jsonResponse = JSON.parse(this.response);
+   const html = (this.status == 200) ? jsonResponse._qDiv : jsonResponse._error;
+   actTestMgmt_divQContent.innerHTML = html;
 }
