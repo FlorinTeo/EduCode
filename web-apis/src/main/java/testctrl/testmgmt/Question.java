@@ -270,7 +270,6 @@ public class Question {
     
     public String getDiv(String divTemplate, boolean answerDiv) throws IOException {
         String qType = getType();
-        System.out.println("qType: '" + qType + "' == '" + Question._MCQ + "' ? " + qType.equals(Question._MCQ));
         switch(qType) {
             case Question._MCQ:
                 return getDivMCQ(divTemplate, answerDiv);
@@ -290,7 +289,19 @@ public class Question {
     }
 
     public String getDivMCQ(String divTemplate, boolean answerDiv) throws IOException {
-        return divTemplate;
+        String qDiv = divTemplate.replaceAll("#QUID#", _meta.name);
+
+        qDiv = qDiv.replace("#QANS#", _meta.answer);
+        for (Map.Entry<String, String> kvp : _meta.choices.entrySet()) {
+            qDiv = qDiv.replace("#QOPT" + kvp.getKey() + "#", kvp.getValue());
+            if (_meta.correct.equalsIgnoreCase(kvp.getKey())) {
+                qDiv = qDiv.replace("#ANSSTL" + kvp.getKey() + "#", "class=\"actTestMgmt_tbl_mcqAnswer\"");
+            } else {
+                qDiv = qDiv.replace("#ANSSTL" + kvp.getKey() + "#", "");
+            }
+        }
+
+        return qDiv;
     }
 
     @Override
