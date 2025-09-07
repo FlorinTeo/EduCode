@@ -77,8 +77,8 @@ public class Servlet extends HttpServlet{
                     break;
                 case "query":
                     // http://localhost:8080/web-apis/testctrl?cmd=query&type=qset
-                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=qtest&name=<name>
-                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=qanswer&name=<name>
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=qtest&qid=<name>
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=qanswer&qid=<name>
                     answer = executeCmdQuery(httpSession, params);
                     break;
                 default:
@@ -190,13 +190,15 @@ public class Servlet extends HttpServlet{
                 Collection<QHeader> qRecs = gen.getQRecs();
                 _context.Log(new LogEntry("[query:qset] Returning %d question records", qRecs.size()));
                 return new Answer().new QList(qRecs);
-            case "qtest":
-                // http://localhost:8080/web-apis/testctrl?cmd=query&type=qtest&qid=<question>
             case "qanswer":
+                // http://localhost:8080/web-apis/testctrl?cmd=query&type=qtest&qid=<question>
+            case "qtest":
                 // http://localhost:8080/web-apis/testctrl?cmd=query&type=qanswer&qid=<question>
                 String qID = params.get("qid")[0];
                 Question q = gen.getQuestion(qID);
-                return new Answer().new QDiv(q.getQHeader(), q.getDiv(type.equalsIgnoreCase("qanswer")));
+                String divTemplate = _context.getDivMCQTemplate();
+                boolean isAnswer = type.equalsIgnoreCase("qanswer");
+                return new Answer().new QDiv(q.getQHeader(), q.getDiv(divTemplate, isAnswer));
             default:
                 return new Answer().new Err("Unknown query type!");
         }

@@ -1,6 +1,7 @@
 package testctrl.testmgmt;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +16,8 @@ import javax.imageio.ImageIO;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import testctrl.Context;
 
 public class Question {
     private static final Gson _GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -265,24 +268,29 @@ public class Question {
         return new QHeader(getName(), getType());
     }
     
-    public String getDiv(boolean answerDiv) {
+    public String getDiv(String divTemplate, boolean answerDiv) throws IOException {
         String qType = getType();
+        System.out.println("qType: '" + qType + "' == '" + Question._MCQ + "' ? " + qType.equals(Question._MCQ));
         switch(qType) {
-        case Question._MCQ:
-            break;
-        case Question._MCB:
-            break;
-        case Question._FRQ:
-            break;
-        case Question._APX:
-            break;
-        default:
-            break;
+            case Question._MCQ:
+                return getDivMCQ(divTemplate, answerDiv);
+            case Question._MCB:
+                break;
+            case Question._FRQ:
+                break;
+            case Question._APX:
+                break;
+            default:
+                break;
         }
         return String.format("Returning %s div for question %s of type %s",
             answerDiv ? "test" : "answer",
             getName(),
             getType());
+    }
+
+    public String getDivMCQ(String divTemplate, boolean answerDiv) throws IOException {
+        return divTemplate;
     }
 
     @Override

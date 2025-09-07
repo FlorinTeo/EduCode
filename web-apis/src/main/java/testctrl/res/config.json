@@ -1,5 +1,5 @@
 {
-	"tests_root": "..\\lwhs",
+	"tests_root": "../lwhs",
 	"users": [
 		{
 			"username": "tstave",

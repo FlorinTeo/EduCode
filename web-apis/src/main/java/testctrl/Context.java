@@ -1,7 +1,9 @@
 package testctrl;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -46,6 +48,7 @@ public class Context extends TimerTask {
     private Timer _timer;
     // Test management fields
     private Generator _generator;
+    private String _div_mcqTemplate;
     // #endregion: [Private] Instance variables for TestCtrl context.
 
     public Context(ServletContext servletContext) {
@@ -141,8 +144,15 @@ public class Context extends TimerTask {
 
         // Load server configuration from WEB-INF/classes/testctrl/res/config.json
         _config = loadConfig();
-        String rootPath = _servletContext.getRealPath("") + _config.tests_root;
-        _generator = new Generator(rootPath);
+        
+        // load the tests set
+        String testsPath = _servletContext.getRealPath("") + _config.tests_root;
+        _generator = new Generator(testsPath);
+
+        // load the auxiliary div templates
+        String templatePath = _servletContext.getRealPath("") + "testctrl/div-mcqTemplate.jsp";
+        Path path_mcqTemplate = Paths.get(templatePath);
+        _div_mcqTemplate = Files.readString(path_mcqTemplate, StandardCharsets.UTF_8);
 
         synchronized(_state) {
             _state = State.READY;
@@ -221,6 +231,9 @@ public class Context extends TimerTask {
     // #endregion: [Public] Session management methods
 
     // #region: [Public] Question-set methods
+    public String getDivMCQTemplate() {
+        return _div_mcqTemplate;
+    }
     public Generator getGenerator() {
         return _generator;
     }
