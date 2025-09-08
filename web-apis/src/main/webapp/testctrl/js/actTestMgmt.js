@@ -148,7 +148,6 @@ async function actTestMgmt_onSelectQuestion(event) {
 
    // Display question content in actTestMgmt_divQContent
    if (urlAPI_query) {
-      refAddLog(`actTestMgmt_onSelectQuestion issuing GET(${urlAPI_query})`);
       var request = new  XMLHttpRequest();
       request.open("GET",  urlAPI_query, true);
       request.timeout = 2000;

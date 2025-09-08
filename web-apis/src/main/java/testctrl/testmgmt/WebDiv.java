@@ -9,13 +9,13 @@ import java.util.Map;
 public class WebDiv {
 
     private String _divMCQTemplate;
-    // private String _divMCBTemplate;
+    private String _divMCBTemplate;
     // private String _divFRQTemplate;
     // private String _divAPXTemplate;
     
     public WebDiv(String templatesRoot) throws IOException {
         _divMCQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-mcqTemplate.jsp"), StandardCharsets.UTF_8);
-        // _divMCBTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-mcbTemplate.jsp"), StandardCharsets.UTF_8);
+        _divMCBTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-mcbTemplate.jsp"), StandardCharsets.UTF_8);
         // _divFRQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-frqTemplate.jsp"), StandardCharsets.UTF_8);
         // _divAPXTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-apxTemplate.jsp"), StandardCharsets.UTF_8);
     }
@@ -24,9 +24,9 @@ public class WebDiv {
         String qType = q.getType();
         switch(qType) {
             case Question._MCQ:
-                return getDivMCQ(q, isAnswer);
+                return getDivMCQ(q, isAnswer, null);
             case Question._MCB:
-                break;
+                return getDivMCB(q, isAnswer);
             case Question._FRQ:
                 break;
             case Question._APX:
@@ -40,20 +40,36 @@ public class WebDiv {
             q.getType());
     }
 
-    private String getDivMCQ(Question q, boolean answerDiv) {
+    private String getDivMCQ(Question q, boolean isAnswer, Question parentQ) {
+        // replace #QUID# identifying the question
         String qDiv = _divMCQTemplate.replaceAll("#QUID#", q.getName());
+        // replace #QDIR# locating the question directory
+        qDiv = qDiv.replaceAll("#QDIR#", parentQ != null ? parentQ.getName() + "/" + q.getName() : q.getName());
+        // replace #QTXT# providing the question's text (content)
         QMeta meta = q.getMeta();
-
-        qDiv = qDiv.replace("#QANS#", meta.answer);
+        qDiv = qDiv.replace("#QTXT#", isAnswer ? meta.answer : meta.question);
+        // replace #QOPT# pointing to each option for this question
         for (Map.Entry<String, String> kvp : meta.choices.entrySet()) {
             qDiv = qDiv.replace("#QOPT" + kvp.getKey() + "#", kvp.getValue());
-            if (meta.correct.equalsIgnoreCase(kvp.getKey())) {
+            // replace #ANSSTL# with style to apply to this option (either highlighing or hiding the answer)
+            if (isAnswer & meta.correct.equalsIgnoreCase(kvp.getKey())) {
                 qDiv = qDiv.replace("#ANSSTL" + kvp.getKey() + "#", "class=\"actTestMgmt_tbl_mcqAnswer\"");
             } else {
                 qDiv = qDiv.replace("#ANSSTL" + kvp.getKey() + "#", "");
             }
         }
 
+        return qDiv;
+    }
+
+    private String getDivMCB(Question q, boolean isAnswer) {
+        String qDiv = _divMCBTemplate.replaceAll("#QUID#", q.getName());
+        qDiv = qDiv.replaceAll("#QDIR#", q.getName());
+        QMeta meta = q.getMeta();
+        qDiv = qDiv.replace("#QTXT#", isAnswer ? meta.answer : meta.question);
+        for (Question bq : q.getBQuestions()) {
+            qDiv += "<br>" + getDivMCQ(bq, isAnswer, q);
+        }
         return qDiv;
     }
 }
