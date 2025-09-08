@@ -15,10 +15,10 @@ public class WebDiv {
     private String _divAPXTemplate;
     
     public WebDiv(String templatesRoot) throws IOException {
-        _divMCQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-mcqTemplate.jsp"), StandardCharsets.UTF_8);
-        _divMCBTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-mcbTemplate.jsp"), StandardCharsets.UTF_8);
-        _divFRQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-frqTemplate.jsp"), StandardCharsets.UTF_8);
-        _divAPXTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-apxTemplate.jsp"), StandardCharsets.UTF_8);
+        _divMCQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/divs/div-mcqTemplate.jsp"), StandardCharsets.UTF_8);
+        _divMCBTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/divs/div-mcbTemplate.jsp"), StandardCharsets.UTF_8);
+        _divFRQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/divs/div-frqTemplate.jsp"), StandardCharsets.UTF_8);
+        _divAPXTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/divs/div-apxTemplate.jsp"), StandardCharsets.UTF_8);
     }
 
     public String getDiv(Question q, boolean isAnswer) {
