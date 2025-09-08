@@ -3,6 +3,7 @@ const sid = (new URLSearchParams(window.location.search)).get("sid");
 const username = (new URLSearchParams(window.location.search)).get("name");
 const urlAPI = window.location.origin + "/web-apis/testctrl";
 const urlLoginJSP = window.location.origin + "/web-apis/testctrl/login.jsp";
+const actVer = "1.6";
 // #endregion: page parameters
 
 const txtTitleSid = document.getElementById("titleSid");
@@ -128,13 +129,13 @@ export function addLog(logText) {
 async function selectAction(actName) {
     Array.from(dlgActionPane.children).forEach(actDiv => actDiv.style.display = 'none');
     if (actMap[actName].div == null) {
-        const res = await fetch(`${actName}.jsp?ver=1.0`);
+        const res = await fetch(`${actName}.jsp?ver=${actVer}`);
         const html = await res.text();
         // the dialog action pane needs to be inserted ahead of loading the module!
         dlgActionPane.insertAdjacentHTML('beforeend', html);
 
         // module is trying to load elements from the dlgActionPane, which needs to be in the document!
-        const module = await import(`./${actName}.js?ver=1.5`);
+        const module = await import(`./${actName}.js?ver=1.6`);
 
         actMap[actName].div = document.getElementById(`${actName}_div`);
         actMap[actName].onCreate = module.onCreate;

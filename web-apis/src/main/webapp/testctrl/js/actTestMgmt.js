@@ -136,7 +136,6 @@ async function actTestMgmt_onSelectQuestion(event) {
       if (event.host === actTestMgmt_lstMCQ) {
          actTestMgmt_lstFRQ.select(false);
          actTestMgmt_lstAPX.select(false);
-         urlAPI_query = `${refUrlAPI}?cmd=query&type=qanswer&qid=${event.metadata._qName}`;
       } else if (event.host === actTestMgmt_lstFRQ) {
          actTestMgmt_lstMCQ.select(false);
          actTestMgmt_lstAPX.select(false);
@@ -144,6 +143,7 @@ async function actTestMgmt_onSelectQuestion(event) {
          actTestMgmt_lstMCQ.select(false);
          actTestMgmt_lstFRQ.select(false);
       }
+      urlAPI_query = `${refUrlAPI}?cmd=query&type=qanswer&qid=${event.metadata._qName}`;
    }
 
    // Display question content in actTestMgmt_divQContent

@@ -4,20 +4,21 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 public class WebDiv {
 
     private String _divMCQTemplate;
     private String _divMCBTemplate;
-    // private String _divFRQTemplate;
-    // private String _divAPXTemplate;
+    private String _divFRQTemplate;
+    private String _divAPXTemplate;
     
     public WebDiv(String templatesRoot) throws IOException {
         _divMCQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-mcqTemplate.jsp"), StandardCharsets.UTF_8);
         _divMCBTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-mcbTemplate.jsp"), StandardCharsets.UTF_8);
-        // _divFRQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-frqTemplate.jsp"), StandardCharsets.UTF_8);
-        // _divAPXTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-apxTemplate.jsp"), StandardCharsets.UTF_8);
+        _divFRQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-frqTemplate.jsp"), StandardCharsets.UTF_8);
+        _divAPXTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/div-apxTemplate.jsp"), StandardCharsets.UTF_8);
     }
 
     public String getDiv(Question q, boolean isAnswer) {
@@ -28,16 +29,12 @@ public class WebDiv {
             case Question._MCB:
                 return getDivMCB(q, isAnswer);
             case Question._FRQ:
-                break;
+                return getDivFRQ(q, isAnswer);
             case Question._APX:
-                break;
+                return getDivAPX(q);
             default:
                 throw new IllegalArgumentException(String.format("Question type '%s' is not supported!", qType));
         }
-        return String.format("Returning %s div for question %s of type %s",
-            isAnswer ? "answer" : "test",
-            q.getName(),
-            q.getType());
     }
 
     private String getDivMCQ(Question q, boolean isAnswer, Question parentQ) {
@@ -70,6 +67,49 @@ public class WebDiv {
         for (Question bq : q.getBQuestions()) {
             qDiv += "<br>" + getDivMCQ(bq, isAnswer, q);
         }
+        return qDiv;
+    }
+
+    private String getDivFRQ(Question q, boolean isAnswer) {
+        final String qPage = "##QPAGE##";
+        int iStart = _divFRQTemplate.indexOf(qPage) + qPage.length();
+        int iEnd = _divFRQTemplate.indexOf(qPage, iStart);
+        
+        String pDivTemplate = _divFRQTemplate.substring(iStart, iEnd).trim();
+        QMeta meta = q.getMeta();
+        List<String> pages = isAnswer ? meta.solutionPages : meta.textPages;
+        String qPageBlocks = "";
+        for (String page  : pages) {
+            qPageBlocks += pDivTemplate
+                .replaceAll("#QDIR#", q.getName())
+                .replaceAll("#QTXT#", page);
+            qPageBlocks += "<br>";
+        }
+
+        String qDiv = _divFRQTemplate.substring(_divFRQTemplate.indexOf("-->", iEnd) + 3).trim();
+        qDiv = qDiv.replaceAll("#QUID#", q.getName());
+        qDiv = qDiv.replaceAll(qPage, qPageBlocks);
+        return qDiv;
+    }
+
+    private String getDivAPX(Question q) {
+        final String qPage = "##QPAGE##";
+        int iStart = _divAPXTemplate.indexOf(qPage) + qPage.length();
+        int iEnd = _divAPXTemplate.indexOf(qPage, iStart);
+        
+        String pDivTemplate = _divAPXTemplate.substring(iStart, iEnd).trim();
+        QMeta meta = q.getMeta();
+        String qPageBlocks = "";
+        for (String page  : meta.textPages) {
+            qPageBlocks += pDivTemplate
+                .replaceAll("#QDIR#", q.getName())
+                .replaceAll("#QTXT#", page);
+            qPageBlocks += "<br>";
+        }
+
+        String qDiv = _divAPXTemplate.substring(_divAPXTemplate.indexOf("-->", iEnd) + 3).trim();
+        qDiv = qDiv.replaceAll("#QUID#", q.getName());
+        qDiv = qDiv.replaceAll(qPage, qPageBlocks);
         return qDiv;
     }
 }
