@@ -1,4 +1,4 @@
- <table class="actTestMgmt_tbl_mcq"> <!--~~~~~~~~ MULTIPLE CHOICE QUESTION (MCQ) ~~~~~~~~-->
+ <table class="actTestMgmt_tbl_div"> <!--~~~~~~~~ MULTIPLE CHOICE QUESTION (MCQ) ~~~~~~~~-->
     <tr><td><b>#QUID#&nbsp;</b></td><td><img src="../../lwhs/.template/#QDIR#/#QTXT#"></td></tr>
     <tr><td></td><td>
     <table class="actTestMgmt_tbl_mcqChoice">

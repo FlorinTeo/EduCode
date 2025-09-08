@@ -53,16 +53,16 @@
     margin: 0;
 }
 
-.actTestMgmt_tbl_mcq {
+.actTestMgmt_tbl_div {
   font-family: Consolas;
   border-collapse: collapse;
   vertical-align: top;
   table-layout: auto;
   width: 100%;
 }
-.actTestMgmt_tbl_mcq td { border: none; padding: 0 !important; }
-.actTestMgmt_tbl_mcq td:first-child { width: 1px; white-space: nowrap; } 
-.actTestMgmt_tbl_mcq td:last-child { width: 99%; }
+.actTestMgmt_tbl_div td { border: none; padding: 0 !important; }
+.actTestMgmt_tbl_div td:first-child { width: 1px; white-space: nowrap; } 
+.actTestMgmt_tbl_div td:last-child { width: 99%; }
 
 .actTestMgmt_tbl_mcqChoice {
   font-family: Consolas;

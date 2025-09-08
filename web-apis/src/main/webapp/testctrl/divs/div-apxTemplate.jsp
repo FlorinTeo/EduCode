@@ -1,6 +1,6 @@
  <!--
  ##QPAGE##<img src="../../lwhs/.template/#QDIR#/#QTXT#">##QPAGE##
   -->
- <table class="actTestMgmt_tbl_mcq"> <!--~~~~~~~~ FREE RESPONSE QUESTION (FRQ) ~~~~~~~~-->
+ <table class="actTestMgmt_tbl_div"> <!--~~~~~~~~ FREE RESPONSE QUESTION (FRQ) ~~~~~~~~-->
     <tr><td><b>#QUID#&nbsp;</b></td><td>##QPAGE##</td></tr>
   </table><br> <!--~~~~~~~~ MULTIPLE CHOICE QUESTIONS (FRQ) ~~~~~~~~-->

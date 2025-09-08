@@ -23,7 +23,7 @@
                         <table class="actTestMgmt-lvl2-table">
                             <tr><td>
                                 <!-- Edit field for question lists filter -->
-                                <input id="actTestMgmt_edtFilter" list="actTestMgmt_dlstFilters" style="width: 100%;">
+                                <input id="actTestMgmt_edtFilter" style="width: 100%;">
                             </td></tr>
                             <tr><td>
                                 <input id="actTestMgmt_ckb_allMCQ" type="checkbox"><b>Multiple Choice (MCQ):</b>
@@ -55,9 +55,5 @@
         </table>
     </div>
     <datalist id="actTestMgmt_dlstTests">
-    </datalist>
-    <datalist id="actTestMgmt_dlstFilters">
-        <option value="ap">
-        <option value="ds">
     </datalist>
     </html>
