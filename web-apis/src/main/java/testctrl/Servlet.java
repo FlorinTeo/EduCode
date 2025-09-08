@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpSession;
 import testctrl.testmgmt.Generator;
 import testctrl.testmgmt.QHeader;
 import testctrl.testmgmt.Question;
+import testctrl.testmgmt.WebDiv;
 
 @WebServlet("/testctrl")
 public class Servlet extends HttpServlet{
@@ -183,6 +184,7 @@ public class Servlet extends HttpServlet{
         session.touch();
         String type = params.get("type")[0];
         Generator gen = _context.getGenerator();
+        WebDiv webDiv = _context.getWebDiv();
 
         switch(type) {
             case "qset":
@@ -195,10 +197,9 @@ public class Servlet extends HttpServlet{
             case "qtest":
                 // http://localhost:8080/web-apis/testctrl?cmd=query&type=qanswer&qid=<question>
                 String qID = params.get("qid")[0];
-                Question q = gen.getQuestion(qID);
-                String divTemplate = _context.getDivMCQTemplate();
                 boolean isAnswer = type.equalsIgnoreCase("qanswer");
-                return new Answer().new QDiv(q.getQHeader(), q.getDiv(divTemplate, isAnswer));
+                Question q = gen.getQuestion(qID);
+                return new Answer().new QDiv(q.getQHeader(), webDiv.getDiv(q, isAnswer));
             default:
                 return new Answer().new Err("Unknown query type!");
         }

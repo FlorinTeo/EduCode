@@ -1,9 +1,7 @@
 package testctrl;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -19,6 +17,7 @@ import com.google.gson.GsonBuilder;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import testctrl.testmgmt.Generator;
+import testctrl.testmgmt.WebDiv;
 
 public class Context extends TimerTask {
     private final static int _DELAY_START = 8; // trigger servlet initialization asynchronously, with 8ms delay
@@ -48,7 +47,7 @@ public class Context extends TimerTask {
     private Timer _timer;
     // Test management fields
     private Generator _generator;
-    private String _div_mcqTemplate;
+    private WebDiv _webDiv;
     // #endregion: [Private] Instance variables for TestCtrl context.
 
     public Context(ServletContext servletContext) {
@@ -145,14 +144,13 @@ public class Context extends TimerTask {
         // Load server configuration from WEB-INF/classes/testctrl/res/config.json
         _config = loadConfig();
         
-        // load the tests set
-        String testsPath = _servletContext.getRealPath("") + _config.tests_root;
-        _generator = new Generator(testsPath);
+        // load the tests generator engine
+        String questionsRoot = _servletContext.getRealPath("") + _config.tests_root;
+        _generator = new Generator(questionsRoot);
 
-        // load the auxiliary div templates
-        String templatePath = _servletContext.getRealPath("") + "testctrl/div-mcqTemplate.jsp";
-        Path path_mcqTemplate = Paths.get(templatePath);
-        _div_mcqTemplate = Files.readString(path_mcqTemplate, StandardCharsets.UTF_8);
+        // load the web div engine
+        String templatesRoot = _servletContext.getRealPath("");
+        _webDiv = new WebDiv(templatesRoot);
 
         synchronized(_state) {
             _state = State.READY;
@@ -231,11 +229,12 @@ public class Context extends TimerTask {
     // #endregion: [Public] Session management methods
 
     // #region: [Public] Question-set methods
-    public String getDivMCQTemplate() {
-        return _div_mcqTemplate;
-    }
     public Generator getGenerator() {
         return _generator;
+    }
+
+    public WebDiv getWebDiv() {
+        return _webDiv;
     }
     // //#endregion: [Public] Question-set methods
 }

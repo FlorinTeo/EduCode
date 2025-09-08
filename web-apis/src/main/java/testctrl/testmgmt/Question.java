@@ -17,8 +17,6 @@ import javax.imageio.ImageIO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import testctrl.Context;
-
 public class Question {
     private static final Gson _GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -148,6 +146,10 @@ public class Question {
         return _meta.type;
     }
 
+    public QMeta getMeta() {
+        return _meta;
+    }
+
     public String getMetaLine(boolean shuffle) {
         List<String> choices = new LinkedList<String>(_meta.choices.keySet());
         if (shuffle) {
@@ -266,42 +268,6 @@ public class Question {
 
     public QHeader getQHeader() {
         return new QHeader(getName(), getType());
-    }
-    
-    public String getDiv(String divTemplate, boolean answerDiv) throws IOException {
-        String qType = getType();
-        switch(qType) {
-            case Question._MCQ:
-                return getDivMCQ(divTemplate, answerDiv);
-            case Question._MCB:
-                break;
-            case Question._FRQ:
-                break;
-            case Question._APX:
-                break;
-            default:
-                break;
-        }
-        return String.format("Returning %s div for question %s of type %s",
-            answerDiv ? "test" : "answer",
-            getName(),
-            getType());
-    }
-
-    public String getDivMCQ(String divTemplate, boolean answerDiv) throws IOException {
-        String qDiv = divTemplate.replaceAll("#QUID#", _meta.name);
-
-        qDiv = qDiv.replace("#QANS#", _meta.answer);
-        for (Map.Entry<String, String> kvp : _meta.choices.entrySet()) {
-            qDiv = qDiv.replace("#QOPT" + kvp.getKey() + "#", kvp.getValue());
-            if (_meta.correct.equalsIgnoreCase(kvp.getKey())) {
-                qDiv = qDiv.replace("#ANSSTL" + kvp.getKey() + "#", "class=\"actTestMgmt_tbl_mcqAnswer\"");
-            } else {
-                qDiv = qDiv.replace("#ANSSTL" + kvp.getKey() + "#", "");
-            }
-        }
-
-        return qDiv;
     }
 
     @Override
