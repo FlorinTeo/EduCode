@@ -9,7 +9,11 @@ export class CheckedList {
         this.#liList
             .forEach(li => {
                 if (li.filtered) {
-                    li.classList.remove("selected-li");
+                    if (li.selected) {
+                        li.selected = false;
+                        li.classList.remove("selected-li");
+                        this.#callHandler("select", {host: this, target: undefined, metadata: li.metadata, selected: li.selected})
+                    }
                 } else {
                     this.#ulElem.appendChild(li);
                 }
