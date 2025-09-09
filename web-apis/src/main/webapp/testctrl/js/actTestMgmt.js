@@ -16,6 +16,7 @@ const actTestMgmt_lstFRQ = new CheckedList("actTestsMgmt_lstFRQ");
 const actTestMgmt_ckbAPX = document.getElementById("actTestMgmt_ckb_allAPX");
 const actTestMgmt_lstAPX = new CheckedList("actTestsMgmt_lstAPX");
 const actTestMgmt_divQContent = document.getElementById("actTestMgmt_divQContent");
+const actTestMgmt_tglSolution = document.getElementById("actTestMgmt_tglSolution");
 
 var actTestMgmt_questions = {
    _mcqRecs: [],
@@ -131,7 +132,6 @@ async function actTestMgmt_onCheckQuestion(event) {
 }
 
 async function actTestMgmt_onSelectQuestion(event) {
-   let urlAPI_query = undefined;
    if (event.target && event.selected) {
       if (event.host === actTestMgmt_lstMCQ) {
          actTestMgmt_lstFRQ.select(false);
@@ -143,20 +143,20 @@ async function actTestMgmt_onSelectQuestion(event) {
          actTestMgmt_lstMCQ.select(false);
          actTestMgmt_lstFRQ.select(false);
       }
-      urlAPI_query = `${refUrlAPI}?cmd=query&type=qanswer&qid=${event.metadata._qName}`;
-   }
-
-   // Display question content in actTestMgmt_divQContent
-   if (urlAPI_query) {
-      var request = new  XMLHttpRequest();
-      request.open("GET",  urlAPI_query, true);
-      request.timeout = 2000;
-      request.onload = actTestMgmt_onDivQueryResponse;
-      request.withCredentials = true;
-      request.send();
+      actTestMgmt_divQuerySend(event.metadata._qName, actTestMgmt_tglSolution.checked)
    } else {
       actTestMgmt_divQContent.innerHTML = "";
    }
+}
+
+function actTestMgmt_divQuerySend(qName, isAnswer) {
+   const urlAPI_query = `${refUrlAPI}?cmd=query&type=${isAnswer ? "qanswer" : "qtest"}&qid=${qName}`;
+   var request = new  XMLHttpRequest();
+   request.open("GET",  urlAPI_query, true);
+   request.timeout = 2000;
+   request.onload = actTestMgmt_onDivQueryResponse;
+   request.withCredentials = true;
+   request.send();
 }
 
 function actTestMgmt_onDivQueryResponse() {
