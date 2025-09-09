@@ -18,11 +18,12 @@ const actTestMgmt_lstAPX = new CheckedList("actTestsMgmt_lstAPX");
 const actTestMgmt_divQContent = document.getElementById("actTestMgmt_divQContent");
 const actTestMgmt_tglSolution = document.getElementById("actTestMgmt_tglSolution");
 
-var actTestMgmt_questions = {
+const actTestMgmt_questions = {
    _mcqRecs: [],
    _frqRecs: [],
    _apxRecs: []
 };
+let actTestMgmt_qSelected = undefined;
 
 actTestMgmt_edtFilter.addEventListener("input", actTestMgmt_onFilterChange);
 
@@ -37,6 +38,8 @@ actTestMgmt_lstFRQ.setEventListener("select", actTestMgmt_onSelectQuestion);
 actTestMgmt_ckbAPX.addEventListener("change", actTestMgmt_onCheckAll);
 actTestMgmt_lstAPX.setEventListener("check", actTestMgmt_onCheckQuestion);
 actTestMgmt_lstAPX.setEventListener("select", actTestMgmt_onSelectQuestion);
+
+actTestMgmt_tglSolution.addEventListener("change", actTestMgmt_onToggleSolution); 
 
 // #region: exported methods
 export async function onCreate(sid, username, urlAPI, addLog) {
@@ -143,9 +146,17 @@ async function actTestMgmt_onSelectQuestion(event) {
          actTestMgmt_lstMCQ.select(false);
          actTestMgmt_lstFRQ.select(false);
       }
-      actTestMgmt_divQuerySend(event.metadata._qName, actTestMgmt_tglSolution.checked)
+      actTestMgmt_qSelected = event.metadata;
+      actTestMgmt_divQuerySend(actTestMgmt_qSelected._qName, actTestMgmt_tglSolution.checked)
    } else {
+      actTestMgmt_qSelected = undefined;
       actTestMgmt_divQContent.innerHTML = "";
+   }
+}
+
+async function actTestMgmt_onToggleSolution(event) {
+   if (actTestMgmt_qSelected) {
+      actTestMgmt_divQuerySend(actTestMgmt_qSelected._qName, actTestMgmt_tglSolution.checked);
    }
 }
 
