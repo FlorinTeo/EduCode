@@ -11,9 +11,22 @@
         <!-- Top (level 0) table: 2 rows, 1 column -->
         <table class="actTestMgmt-lvl0-table">
             <tr><td>
-                Test name:
-                <!-- Edit field for test name -->
-                <input id="actTestMgmt_edtTestName" list="actTestMgmt_dlstTests" style="width: 185px;">
+                <table class="actTestMgmt-flex-row">
+                <tr>
+                    <!-- Edit field for test name -->
+                    <td>
+                        Test name:<input id="actTestMgmt_edtTestName" list="actTestMgmt_dlstTests" style="width: 185px;">
+                    </td>
+                    <td>Solution</td>
+                    <td>
+                        <!-- Toggle field for displaying the answer -->
+                        <label class="actTestMgmt_lblSolution">
+                            <input type="checkbox" id="actTestMgmt_tglSolution">
+                            <span class="actTestMgmt_spnSolution"></span>
+                        </label>
+                    </td>
+                </tr>
+                </table>
             </td></tr>
             <tr><td>
                 <!-- Inner (level 1) table: 1 row, 2 columns -->
