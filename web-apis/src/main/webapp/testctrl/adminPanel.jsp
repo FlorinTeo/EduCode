@@ -7,7 +7,7 @@
         <title>Tests Manager</title>
         <link rel="stylesheet" href="css/ctrlCheckedList.css?ver=1.0">
         <link rel="stylesheet" href="css/adminPanel.css?ver=1.0">
-        <script defer type="module" src="js/adminPanel.js?ver=1.0"></script>
+        <script defer type="module" src="js/adminPanel.js?ver=1.1"></script>
     </head>
     <body>
         <div class="main-style">

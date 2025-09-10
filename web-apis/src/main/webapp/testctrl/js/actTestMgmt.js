@@ -1,4 +1,4 @@
-import { CheckedList } from "./ctrlCheckedList.js?ver=1.2";
+import { CheckedList } from "./ctrlCheckedList.js?ver=1.5";
 
 // #region: page referenced parameters
 let refUrlAPI;

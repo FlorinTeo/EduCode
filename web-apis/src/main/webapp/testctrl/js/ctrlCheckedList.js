@@ -29,8 +29,27 @@ export class CheckedList {
 
     constructor(htmlId) {
         this.#ulElem = document.getElementById(htmlId);
+        this.#ulElem.tabIndex = 0;
+        this.#ulElem.addEventListener("keydown", this.onKeyDownEvent);
+        this.#ulElem.host = this;
         this.#fnHandlers = {};
         this.clear();
+    }
+
+    async onKeyDownEvent(event) {
+        event.preventDefault();
+        let dir = undefined;
+        switch(event.key) {
+            case "ArrowUp":
+                dir = -1;
+                break;
+            case "ArrowDown":
+                dir = 1;
+                break;
+        }
+        if (dir) {
+            this.host.reSelect(dir);
+        }
     }
 
     clear() {
@@ -66,6 +85,28 @@ export class CheckedList {
             }
             this.#callHandler("select", {host: this, target: undefined, metadata: li.metadata, selected: state});
         });
+    }
+
+    reSelect(dir) {
+        const iCrtSel = this.#liList.findIndex(li => li.selected);
+        if (iCrtSel < 0) {
+            // selection key pressed but no current selection => no move
+            return false;
+        }
+
+        const iNewSel = Math.min(Math.max(iCrtSel + dir, 0), this.#liList.length-1);
+        if (iNewSel == iCrtSel) {
+            // current selection already at the edge of the list => no move
+            return false;
+        }
+
+        this.#liList[iCrtSel].selected = false;
+        this.#liList[iCrtSel].classList.remove("selected-li");
+        this.#callHandler("select", {host: this, target: this.#liList[iCrtSel].label, metadata: this.#liList[iCrtSel].metadata, selected: false});
+        this.#liList[iNewSel].selected = true;
+        this.#liList[iNewSel].classList.add("selected-li");
+        this.#liList[iNewSel].scrollIntoView({ block: "nearest" });
+        this.#callHandler("select", {host: this, target: this.#liList[iNewSel].label, metadata: this.#liList[iNewSel].metadata, selected: true});
     }
 
     addItem(liText, metadata) {
