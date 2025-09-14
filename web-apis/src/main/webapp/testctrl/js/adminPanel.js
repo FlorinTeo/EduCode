@@ -167,7 +167,8 @@ async function onActionDlgApply(e) {
     e.preventDefault();
     const actName = Object.keys(actMap).find(key => actMap[key].div && actMap[key].div.style.display !== "none");
     if (actName && actMap[actName].onApply) {
-        if (actMap[actName].onApply()) {
+        let result = await actMap[actName].onApply();
+        if (result) {
             dlgAction.close();
         }
     }

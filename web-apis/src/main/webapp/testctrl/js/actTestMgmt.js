@@ -5,7 +5,7 @@ let refUrlAPI;
 let refAddLog;
 // #endregion page referenced parameters
 
-//const actTestMgmt_edtTestName = document.getElementById("actTestMgmt_edtTestName");
+const actTestMgmt_edtTestName = document.getElementById("actTestMgmt_edtTestName");
 const actTestMgmt_edtFilter = document.getElementById("actTestMgmt_edtFilter");
 // const actTestMgmt_dlstTests = document.getElementById("actTestMgmt_dlstTests");
 // const actTestMgmt_dlstFilters = document.getElementById("actTestMgmt_dlstFilters");
@@ -66,6 +66,10 @@ export async function onOpen() {
 }
 
 export async function onApply() {
+   if (actTestMgmt_edtTestName.value === "") {
+      alert("Please provide test name!");
+      return false;
+   }
    let qMCQs = actTestMgmt_questions._mcqRecs.filter(qRec => qRec.checked)
    let qFRQs = actTestMgmt_questions._frqRecs.filter(qRec => qRec.checked)
    let qAPXs = actTestMgmt_questions._apxRecs.filter(qRec => qRec.checked)
