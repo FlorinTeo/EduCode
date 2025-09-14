@@ -5,6 +5,7 @@ let refUrlAPI;
 let refAddLog;
 // #endregion page referenced parameters
 
+// #region: action contants
 const actTestMgmt_edtTestName = document.getElementById("actTestMgmt_edtTestName");
 const actTestMgmt_edtFilter = document.getElementById("actTestMgmt_edtFilter");
 const actTestMgmt_ckbMCQ = document.getElementById("actTestMgmt_ckb_allMCQ");
@@ -22,7 +23,9 @@ const actTestMgmt_questions = {
    _apxRecs: []
 };
 let actTestMgmt_qSelected = undefined;
+// #endregion: action constants
 
+// #region: register event listeners
 actTestMgmt_tglSolution.addEventListener("change", actTestMgmt_onToggleSolution); 
 actTestMgmt_edtFilter.addEventListener("input", actTestMgmt_onFilterChange);
 actTestMgmt_ckbMCQ.addEventListener("change", actTestMgmt_onCheckAll);
@@ -34,6 +37,7 @@ actTestMgmt_lstFRQ.setEventListener("select", actTestMgmt_onSelectQuestion);
 actTestMgmt_ckbAPX.addEventListener("change", actTestMgmt_onCheckAll);
 actTestMgmt_lstAPX.setEventListener("check", actTestMgmt_onCheckQuestion);
 actTestMgmt_lstAPX.setEventListener("select", actTestMgmt_onSelectQuestion);
+// #endregion: register event listeners
 
 // #region: exported methods
 /**
@@ -88,7 +92,6 @@ export async function onCancel() {
 }
 // #endregion: exported methods
 
-
 /**
  * Extracts the list of query records (mapped to the jsonResponse) of a given type
  * from the backend json response.
@@ -136,6 +139,7 @@ function initializeLists() {
    actTestMgmt_questions._apxRecs.forEach(qRec => { actTestMgmt_lstAPX.addItem(qRec._qName, qRec); })
 }
 
+// #region: action's event handlers
 /**
  * Handler called each time the user types a character in the filter input element.
  */
@@ -220,3 +224,4 @@ function actTestMgmt_onDivQueryResponse() {
    const html = (this.status == 200) ? jsonResponse._qDiv : jsonResponse._error;
    actTestMgmt_divQContent.innerHTML = html;
 }
+// #endregion: action's event handlers
