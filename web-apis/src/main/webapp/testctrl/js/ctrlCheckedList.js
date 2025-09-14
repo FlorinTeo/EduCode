@@ -8,7 +8,7 @@ export class CheckedList {
         this.#ulElem.innerHTML = "";
         this.#liList
             .forEach(li => {
-                if (li.filtered) {
+                if (!li.filtered) {
                     if (li.selected) {
                         li.selected = false;
                         li.classList.remove("selected-li");
@@ -61,15 +61,24 @@ export class CheckedList {
         this.#fnHandlers[eventName] = fnHandler;
     }
 
+    /**
+     * Filters out the list items if they do not match the given pattern.
+     * The pattern gives either a matching prefix or a special value indicating
+     * custom filtering (i.e. filterout elements which were not checked)
+     */
     filter(pattern) {
         this.#liList.forEach(li => {
-            li.filtered = !li.label.textContent.startsWith(pattern);
+            if (pattern === "#") {
+                li.filtered = li.checkbox.checked;
+            } else {
+                li.filtered = li.label.textContent.startsWith(pattern);
+            }
         });
         this.#reset();
     }
 
     check(state) {
-        this.#liList.filter(li => !li.filtered).forEach(li => {
+        this.#liList.filter(li => li.filtered).forEach(li => {
             li.checkbox.checked = state;
             this.#callHandler("check", {host: this, target: undefined, metadata: li.metadata, checked: state});
         });
@@ -114,7 +123,7 @@ export class CheckedList {
         li.innerHTML = `<input type="checkbox"><label>${liText}</label>`;
         li.checkbox = li.querySelector("input[type='checkbox']");
         li.label = li.querySelector("label");
-        li.filtered = false;
+        li.filtered = true;
         li.selected = false;
         li.checked = false;
         li.metadata = metadata;

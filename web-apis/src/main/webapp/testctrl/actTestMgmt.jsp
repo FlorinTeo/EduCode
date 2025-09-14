@@ -15,7 +15,7 @@
                 <tr>
                     <!-- Edit field for test name -->
                     <td>
-                        Test name:<input id="actTestMgmt_edtTestName" style="width: 185px;">
+                        Test name:<input id="actTestMgmt_edtTestName" style="width: 185px;" autocomplete="off">
                     </td>
                     <td>Solution</td>
                     <td>
@@ -36,7 +36,7 @@
                         <table class="actTestMgmt-lvl2-table">
                             <tr><td>
                                 <!-- Edit field for question lists filter -->
-                                <input id="actTestMgmt_edtFilter" style="width: 100%;">
+                                <input id="actTestMgmt_edtFilter" style="width: 100%;" autocomplete="off">
                             </td></tr>
                             <tr><td>
                                 <input id="actTestMgmt_ckb_allMCQ" type="checkbox"><b>Multiple Choice (MCQ):</b>

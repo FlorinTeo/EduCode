@@ -3,7 +3,7 @@ const sid = (new URLSearchParams(window.location.search)).get("sid");
 const username = (new URLSearchParams(window.location.search)).get("name");
 const urlAPI = window.location.origin + "/web-apis/testctrl";
 const urlLoginJSP = window.location.origin + "/web-apis/testctrl/login.jsp";
-const actVer = "1.21";
+const actVer = "1.22";
 // #endregion: page parameters
 
 const txtTitleSid = document.getElementById("titleSid");
@@ -126,8 +126,13 @@ export function addLog(logText) {
     divLogContent.scrollTop = divLogContent.scrollHeight;
 }
 // #endregion: helper methodss
+
 async function selectAction(actName) {
     Array.from(dlgActionPane.children).forEach(actDiv => actDiv.style.display = 'none');
+
+    // If the div for this action is not yet loaded, fetch its .jsp and load its .js module.
+    // Use the .jsp to extract the div and insert it into the document
+    // Use the .js to get the action handlers
     if (actMap[actName].div == null) {
         const res = await fetch(`${actName}.jsp?ver=${actVer}`);
         const html = await res.text();
@@ -149,6 +154,8 @@ async function selectAction(actName) {
             await actMap[actName].onOpen();
         }
     } else {
+        // the action was previously loaded so its div and handlers are available
+        // just need to display the div and call its onOpen() handler
         actMap[actName].div.style.display = 'block';
         if (actMap[actName].onOpen) {
             await actMap[actName].onOpen();
