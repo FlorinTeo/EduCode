@@ -61,12 +61,8 @@ export async function onOpen() {
    actTestMgmt_lstAPX.clear();
    actTestMgmt_divQContent.innerHTML = "";
    // get the questions set
-   var request = new  XMLHttpRequest();
-   request.open("GET", `${refUrlAPI}?cmd=query&type=qset`, true);
-   request.timeout = 2000;
-   request.onload = onQueryQSetResponse;
-   request.withCredentials = true;
-   request.send();
+   requestQueryQSet();
+
 }
 
 /**
@@ -93,6 +89,37 @@ export async function onCancel() {
 // #endregion: exported methods
 
 /**
+ * Backend API requestfor getting the list of all available questions (`${refUrlAPI}?cmd=query&type=qset`)
+ */
+function requestQueryQSet() {
+   var request = new  XMLHttpRequest();
+   request.open("GET", `${refUrlAPI}?cmd=query&type=qset`, true);
+   request.timeout = 2000;
+   request.onload = onResponseQueryQSet;
+   request.withCredentials = true;
+   request.send();
+}
+
+/**
+ * Backend response handler for `${refUrlAPI}?cmd=query&type=qset`.
+ * Load the list of all available questions (mcq, mcb, frq, apx) into the global container 
+ * of the three lists: _mcqRecs, _frqRecs, _apxRecs. Called from onOpen().
+ */
+function onResponseQueryQSet() {
+   const jsonResponse = JSON.parse(this.response);
+   if (this.status == 200) {
+      // when successful or user already logged in, redirect to the AdminPanel page
+      actTestMgmt_questions._mcqRecs = loadQSet('mcq|mcb', jsonResponse);
+      actTestMgmt_questions._frqRecs = loadQSet('frq', jsonResponse);
+      actTestMgmt_questions._apxRecs = loadQSet('apx', jsonResponse);
+      initializeLists();
+   } else {
+      // otherwise display the response on the login page.
+      refAddLog(`[${this.status}] ${jsonResponse._error}`);
+   }
+}
+
+/**
  * Extracts the list of query records (mapped to the jsonResponse) of a given type
  * from the backend json response.
  */
@@ -106,25 +133,6 @@ function loadQSet(qTypes, jsonResponse) {
       lstQRec.push(question);
    }
    return lstQRec;
-}
-
-/**
- * Backend response handler for `${refUrlAPI}?cmd=query&type=qset`, loading the 
- * list of all available questions (mcq, mcb, frq, apx) into the global container 
- * of the three lists: _mcqRecs, _frqRecs, _apxRecs. Called from onOpen().
- */
-function onQueryQSetResponse() {
-   const jsonResponse = JSON.parse(this.response);
-   if (this.status == 200) {
-      // when successful or user already logged in, redirect to the AdminPanel page
-      actTestMgmt_questions._mcqRecs = loadQSet('mcq|mcb', jsonResponse);
-      actTestMgmt_questions._frqRecs = loadQSet('frq', jsonResponse);
-      actTestMgmt_questions._apxRecs = loadQSet('apx', jsonResponse);
-      initializeLists();
-   } else {
-      // otherwise display the response on the login page.
-      refAddLog(`[${this.status}] ${jsonResponse._error}`);
-   }
 }
 
 /**
@@ -216,7 +224,7 @@ function actTestMgmt_divQuerySend(qName, isAnswer) {
 }
 
 /**
- * Backend response handler for `${refUrlAPI}?cmd=query&type=qanswer|qtest`. This is returning
+ * Backend API response handler for `${refUrlAPI}?cmd=query&type=qanswer|qtest`. This is returning
  * the <div> element containing the query content - either the test or the answer versions.
  */
 function actTestMgmt_onDivQueryResponse() {
