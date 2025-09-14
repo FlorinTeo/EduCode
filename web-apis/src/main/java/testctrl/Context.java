@@ -162,12 +162,12 @@ public class Context extends TimerTask {
     private void runHeartbeat() {
         synchronized(_state) {
             _state = State.CLEANING;
-            System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
+            //System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
         }
         pruneSessions();
         synchronized(_state) {
             _state = State.READY;
-            System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
+            //System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
         }
     }
     // #endregion: [Private] Async runners

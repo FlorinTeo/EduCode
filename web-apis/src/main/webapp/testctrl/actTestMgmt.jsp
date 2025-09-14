@@ -15,7 +15,7 @@
                 <tr>
                     <!-- Edit field for test name -->
                     <td>
-                        Test name:<input id="actTestMgmt_edtTestName" list="actTestMgmt_dlstTests" style="width: 185px;">
+                        Test name:<input id="actTestMgmt_edtTestName" style="width: 185px;">
                     </td>
                     <td>Solution</td>
                     <td>
@@ -67,6 +67,4 @@
             </td></tr>
         </table>
     </div>
-    <datalist id="actTestMgmt_dlstTests">
-    </datalist>
     </html>
