@@ -73,8 +73,7 @@ export async function onApply() {
       alert("Please provide test name!");
       return false;
    }
-   requestSetVTest(actTestMgmt_edtTestName.value);
-   return true;
+   return requestSetVerTest(actTestMgmt_edtTestName.value);
 }
 
 /**
@@ -226,22 +225,27 @@ function onResponseQueryQSet() {
 // #endregion: ..?cmd=query&type=qset
 
 // #region: ..?cmd=set&op=vtest&name=vtestName&args=qName1,qName2,...
-function requestSetVTest(vtestName) {
+function requestSetVerTest(vtestName) {
    let qMCQ_Names = actTestMgmt_questions._mcqRecs.filter(qRec => qRec.checked).map(qRec => qRec._qName);
    let qFRQ_Names = actTestMgmt_questions._frqRecs.filter(qRec => qRec.checked).map(qRec => qRec._qName);
    let qAPX_Names = actTestMgmt_questions._apxRecs.filter(qRec => qRec.checked).map(qRec => qRec._qName);
    let qAll_Names = [...qMCQ_Names, ...qFRQ_Names, ...qAPX_Names].join(",");
-   //refAddLog(`${refUrlAPI}?cmd=set&op=vtest&name=${vtestName}&args=${qAll_Names}`);
+
+   if (qAll_Names.length == 0) {
+      alert("Please select at least one question!");
+      return false;
+   }
 
    var request = new  XMLHttpRequest();
    request.open("GET", `${refUrlAPI}?cmd=set&op=vtest&name=${vtestName}&args=${qAll_Names}`, true);
    request.timeout = 2000;
-   request.onload = onResponseQueryQSet;
+   request.onload = onResponseSetVerTest;
    request.withCredentials = true;
    request.send();
+   return true;
 }
 
-function onResponseSetTests() {
+function onResponseSetVerTest() {
    // deserialize Answer.Msg response
    const jsonResponse = JSON.parse(this.response);
    if (this.status != 200) {

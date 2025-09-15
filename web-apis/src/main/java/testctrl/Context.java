@@ -6,8 +6,10 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,13 +23,16 @@ import testctrl.testmgmt.WebDiv;
 
 public class Context extends TimerTask {
     private final static int _DELAY_START = 8; // trigger servlet initialization asynchronously, with 8ms delay
-    private final static int _HEARTBEAT_INTERVAL = 10000; // 10sec cycle for heartbeat activities  (i.e. sessions cleanup)
+    private final static int _HEARTBEAT_INTERVAL = 1000; // 1sec heart beat
+    private final static int _HEARTBEATS_PRUNNING = 10; // prunning happens every 10 x 1sec
+    private final static int _HEARTBEATS_WORKING = 1; // async work is checked every 1 x 1sec
 
     // #region: [Public] Enum & Class definitions pertaining to TestCtrl context.
     public enum State {
         INITIALIZING,
         READY,
         CLEANING,
+        WORKING,
         CLOSING,
         STOPPED
     }
@@ -39,6 +44,8 @@ public class Context extends TimerTask {
     // #endregion: [Public] Enum & Class definitions pertaining to TestCtrl context.
 
     // #region: [Private] Instance variables for TestCtrl context.
+    private int _hbCounterPrunning;
+    private int _hbCounterWorking;
     private ServletContext _servletContext;
     private Config _config;
     // Map of sessions keyed by their session ID.
@@ -48,9 +55,13 @@ public class Context extends TimerTask {
     // Test management fields
     private Generator _generator;
     private WebDiv _webDiv;
+    // Work management fields
+    private Queue<Work> _queueWork;
     // #endregion: [Private] Instance variables for TestCtrl context.
 
     public Context(ServletContext servletContext) {
+        _hbCounterPrunning = 0;
+        _hbCounterWorking = 0;
         _servletContext = servletContext;
         _config = null;
         _sessions = new HashMap<HttpSession, Session>();
@@ -58,6 +69,7 @@ public class Context extends TimerTask {
         _timer = new Timer();
         // in 8ms load the servlet, then every minute perform timer-based operations!
         _timer.schedule(this, _DELAY_START, _HEARTBEAT_INTERVAL);
+        _queueWork = new LinkedList<Work>();
     }
 
     // #region: [Public] Life-cycle methods
@@ -160,27 +172,20 @@ public class Context extends TimerTask {
     }
 
     private void runHeartbeat() {
-        synchronized(_state) {
-            _state = State.CLEANING;
-            //System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
-        }
         pruneSessions();
-        synchronized(_state) {
-            _state = State.READY;
-            //System.out.printf("~~~~ TestCtrl Context state: %s ~~~~\n", _state.name());
-        }
+        checkWork();
     }
     // #endregion: [Private] Async runners
 
     // #region: [Public] Session management methods
-    public Session newSession(User user, HttpSession httpSession) throws NoSuchAlgorithmException {
+    public Session newSession(User user, HttpSession httpSession, String rootUrl) throws NoSuchAlgorithmException {
         // check that either no session is active or the existing session belongs to the same user
         Session session = _sessions.get(httpSession);
         Servlet.checkTrue(session == null || session.getUser().equals(user), "Other user logged in this session!");
 
         // all good, if no pre-existing session for this user, create one
         if (session == null) {
-            session = new Session(user, httpSession);
+            session = new Session(user, httpSession, rootUrl);
             _sessions.put(httpSession, session);
         }
         session.touch();
@@ -199,6 +204,15 @@ public class Context extends TimerTask {
     }
     
     public void pruneSessions() {
+        _hbCounterPrunning = (_hbCounterPrunning + 1) % _HEARTBEATS_PRUNNING;
+        if (_hbCounterPrunning != 0) {
+            return;
+        }
+
+        synchronized(_state) {
+            _state = State.CLEANING;
+        }
+
         Map<HttpSession, Session> newSessions = new HashMap<HttpSession, Session>();
         Instant now = Instant.now();
         int activeSessions = 0;
@@ -215,6 +229,10 @@ public class Context extends TimerTask {
         if (_sessions.size() != activeSessions) {
             System.out.printf("TestCtrl sessions cleaned up ... [removed %d][remaining %d]\n", _sessions.size() - activeSessions, activeSessions);
             _sessions = newSessions;
+        }
+
+        synchronized(_state) {
+            _state = State.READY;
         }
     }
     
@@ -236,5 +254,36 @@ public class Context extends TimerTask {
     public WebDiv getWebDiv() {
         return _webDiv;
     }
-    // //#endregion: [Public] Question-set methods
+    // #endregion: [Public] Question-set methods
+
+    // #region: [Public] Async work methods
+    public void QueueWork(Work work) {
+        work.setContext(this);
+        _queueWork.add(work);
+    }
+
+    public void checkWork() {
+        _hbCounterWorking = (_hbCounterWorking + 1) % _HEARTBEATS_WORKING;
+        if (_hbCounterWorking != 0) {
+            return;
+        }
+
+        synchronized(_state) {
+            _state = State.WORKING;
+        }
+
+        Work work = _queueWork.poll();
+        if (work != null) {
+            try {
+                work.run();
+            } catch (Exception e) {
+                Log(new LogEntry("Work exception: '%s'", e.getMessage()));
+            }
+        }
+
+        synchronized(_state) {
+            _state = State.READY;
+        }
+    }
+    // #endregion: [Public] Async work methods
 }

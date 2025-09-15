@@ -75,7 +75,7 @@ function onStatusResponse() {
     for (const log of logs) {
         const row = tblLog.insertRow(-1);
         row.insertCell(0).textContent = log._logTime;
-        row.insertCell(1).textContent = log._logText;
+        row.insertCell(1).innerHTML = log._logText;
         // retain only the mosts recent 100 logs (to limit memory usage)
         if (tblLog.rows.length > 100) {
             tblLog.deleteRow(0);

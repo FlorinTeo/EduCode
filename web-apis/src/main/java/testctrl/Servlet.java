@@ -62,7 +62,7 @@ public class Servlet extends HttpServlet{
             switch(cmd.toLowerCase()) {
                 case "login":
                     // http://localhost:8080/web-apis/testctrl?cmd=login&name=<name>&pwd=<password>]
-                    answer = executeCmdLogin(httpSession, params);
+                    answer = executeCmdLogin(request, params);
                     break;
                 case "logout":
                     // http://localhost:8080/web-apis/testctrl?cmd=logout
@@ -100,7 +100,8 @@ public class Servlet extends HttpServlet{
     }
 
     @SuppressWarnings("null")
-    public Answer executeCmdLogin(HttpSession httpSession, Map<String, String[]> params) throws NoSuchAlgorithmException {
+    public Answer executeCmdLogin(HttpServletRequest request, Map<String, String[]> params) throws NoSuchAlgorithmException {
+        HttpSession httpSession = request.getSession();
         checkTrue(params.containsKey("name"), "Missing 'name' parameter!");
         checkTrue(params.containsKey("pwd"), "Missing 'pwd' parameter!");
         String name = params.get("name")[0];
@@ -108,7 +109,8 @@ public class Servlet extends HttpServlet{
         User user = _context.getUser(name);
         checkTrue(user != null && user.hasRole("admin","teacher") && user.matchesPwd(pwd), "Invalid name, role or password!");
         // try to create a session. This may throw if another user is logged in this session already.
-        Session session = _context.newSession(user, httpSession);
+        String rootUrl = String.format("%s://%s:%s/%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath());
+        Session session = _context.newSession(user, httpSession, rootUrl);
         _context.Log(new LogEntry("User '%s' logged in session [%s]", user.username, session.getId()));
         return new Answer().new Msg(session.getId(), "Session created!");
     }
@@ -175,7 +177,9 @@ public class Servlet extends HttpServlet{
                 checkTrue(params.containsKey("name"), "Missing 'name' parameter!");
                 checkTrue(params.containsKey("args"), "Missing 'args' parameter!");
                 String testName = params.get("name")[0];
-                //String testArgs = params.get("args")[0];
+                String[] testQIDs = params.get("args")[0].split(",");
+                WorkVerTest wVerTest = new WorkVerTest(session, testName, testQIDs);
+                _context.QueueWork(wVerTest);
                 Answer.Msg msgAnswer = new Answer().new Msg(session.getId(),
                     "User '%s' initiated vtest '%s' changes..",
                     session.getUser().username,

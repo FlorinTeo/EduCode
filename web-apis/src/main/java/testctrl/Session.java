@@ -16,13 +16,15 @@ public class Session implements Comparable<Session> {
     private String _sessionId;
     private User _user;
     private HttpSession _httpSession;
+    private String _rootUrl;
     private Instant _heartbeat;
     private Queue<LogEntry> _logEntries;
 
-    public Session(User user, HttpSession httpSession) {
+    public Session(User user, HttpSession httpSession, String rootUrl) {
         _sessionId = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         _user = user;
         _httpSession = httpSession;
+        _rootUrl = rootUrl;
         _heartbeat = Instant.now();
         _logEntries = new LinkedList<LogEntry>();
     }
@@ -37,6 +39,10 @@ public class Session implements Comparable<Session> {
 
     public HttpSession getHttpSession() {
         return _httpSession;
+    }
+
+    public String getRootUrl() {
+        return _rootUrl;
     }
 
     public void touch() {

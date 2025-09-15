@@ -97,13 +97,14 @@ export class CheckedList {
     }
 
     reSelect(dir) {
+        const nVisible = this.#liList.filter(li => li.filtered).length;
         const iCrtSel = this.#liList.findIndex(li => li.selected);
         if (iCrtSel < 0) {
             // selection key pressed but no current selection => no move
             return false;
         }
 
-        const iNewSel = Math.min(Math.max(iCrtSel + dir, 0), this.#liList.length-1);
+        const iNewSel = Math.min(Math.max(iCrtSel + dir, 0), nVisible-1);
         if (iNewSel == iCrtSel) {
             // current selection already at the edge of the list => no move
             return false;
