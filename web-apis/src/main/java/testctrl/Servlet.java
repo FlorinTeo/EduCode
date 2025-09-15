@@ -161,7 +161,7 @@ public class Servlet extends HttpServlet{
                     return msgAnswer;
                 } else {
                     checkTrue(targetUser.equals(session.getUser()), "Invalid non-self user!");
-                    // non-admins/teachers are only allowed to change only their own password                    // targetUser.setName(name);
+                    // non-admins/teachers are only allowed to change only their own password
                     checkTrue(targetUser.setPwd(pwd), "Failed to change password!");
                     checkTrue(_context.saveConfig(), "Failed to save configuration!");
                     Answer.Msg msgAnswer = new Answer().new Msg(session.getId(),
@@ -170,6 +170,18 @@ public class Servlet extends HttpServlet{
                     _context.Log(new LogEntry(msgAnswer._message));
                     return msgAnswer;
                 }
+            case "vtest":
+                // http://localhost:8080/web-apis/testctrl?cmd=set&op=vtest&name=<testName>&args=<test1,test2,...>
+                checkTrue(params.containsKey("name"), "Missing 'name' parameter!");
+                checkTrue(params.containsKey("args"), "Missing 'args' parameter!");
+                String testName = params.get("name")[0];
+                //String testArgs = params.get("args")[0];
+                Answer.Msg msgAnswer = new Answer().new Msg(session.getId(),
+                    "User '%s' initiated vtest '%s' changes..",
+                    session.getUser().username,
+                    testName);
+                _context.Log(new LogEntry(msgAnswer._message));
+                return msgAnswer;
             default:
                 return new Answer().new Err("Unknown set operation '" + op + "'!");
         }

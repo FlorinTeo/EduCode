@@ -1,11 +1,11 @@
 import { CheckedList } from "./ctrlCheckedList.js?ver=1.5";
 
-// #region: page referenced parameters
+// #region: External references
 let refUrlAPI;
 let refAddLog;
-// #endregion page referenced parameters
+// #endregion: External references
 
-// #region: action contants
+// #region: Action constants
 const actTestMgmt_edtTestName = document.getElementById("actTestMgmt_edtTestName");
 const actTestMgmt_edtFilter = document.getElementById("actTestMgmt_edtFilter");
 const actTestMgmt_ckbMCQ = document.getElementById("actTestMgmt_ckb_allMCQ");
@@ -23,9 +23,9 @@ const actTestMgmt_questions = {
    _apxRecs: []
 };
 let actTestMgmt_qSelected = undefined;
-// #endregion: action constants
+// #endregion: Action constants
 
-// #region: register event listeners
+// #region: HTML event registration
 actTestMgmt_tglSolution.addEventListener("change", actTestMgmt_onToggleSolution); 
 actTestMgmt_edtFilter.addEventListener("input", actTestMgmt_onFilterChange);
 actTestMgmt_ckbMCQ.addEventListener("change", actTestMgmt_onCheckAll);
@@ -37,9 +37,9 @@ actTestMgmt_lstFRQ.setEventListener("select", actTestMgmt_onSelectQuestion);
 actTestMgmt_ckbAPX.addEventListener("change", actTestMgmt_onCheckAll);
 actTestMgmt_lstAPX.setEventListener("check", actTestMgmt_onCheckQuestion);
 actTestMgmt_lstAPX.setEventListener("select", actTestMgmt_onSelectQuestion);
-// #endregion: register event listeners
+// #endregion: HTML event registration
 
-// #region: exported methods
+// #region: Exported methods
 /**
  * Called from adminPanel, upon creating the action div element (once).
  */
@@ -73,10 +73,7 @@ export async function onApply() {
       alert("Please provide test name!");
       return false;
    }
-   let qMCQs = actTestMgmt_questions._mcqRecs.filter(qRec => qRec.checked)
-   let qFRQs = actTestMgmt_questions._frqRecs.filter(qRec => qRec.checked)
-   let qAPXs = actTestMgmt_questions._apxRecs.filter(qRec => qRec.checked)
-   refAddLog(`actTestMgmt_onApply: mcq:${qMCQs.length}, frq:${qFRQs.length}, apx:${qAPXs.length}`);
+   requestSetVTest(actTestMgmt_edtTestName.value);
    return true;
 }
 
@@ -86,39 +83,9 @@ export async function onApply() {
 export async function onCancel() {
    refAddLog("actTestMgmt_onCancel called");
 }
-// #endregion: exported methods
+// #endregion: Exported methods
 
-/**
- * Backend API requestfor getting the list of all available questions (`${refUrlAPI}?cmd=query&type=qset`)
- */
-function requestQueryQSet() {
-   var request = new  XMLHttpRequest();
-   request.open("GET", `${refUrlAPI}?cmd=query&type=qset`, true);
-   request.timeout = 2000;
-   request.onload = onResponseQueryQSet;
-   request.withCredentials = true;
-   request.send();
-}
-
-/**
- * Backend response handler for `${refUrlAPI}?cmd=query&type=qset`.
- * Load the list of all available questions (mcq, mcb, frq, apx) into the global container 
- * of the three lists: _mcqRecs, _frqRecs, _apxRecs. Called from onOpen().
- */
-function onResponseQueryQSet() {
-   const jsonResponse = JSON.parse(this.response);
-   if (this.status == 200) {
-      // when successful or user already logged in, redirect to the AdminPanel page
-      actTestMgmt_questions._mcqRecs = loadQSet('mcq|mcb', jsonResponse);
-      actTestMgmt_questions._frqRecs = loadQSet('frq', jsonResponse);
-      actTestMgmt_questions._apxRecs = loadQSet('apx', jsonResponse);
-      initializeLists();
-   } else {
-      // otherwise display the response on the login page.
-      refAddLog(`[${this.status}] ${jsonResponse._error}`);
-   }
-}
-
+// #region: Helper methods
 /**
  * Extracts the list of query records (mapped to the jsonResponse) of a given type
  * from the backend json response.
@@ -146,8 +113,9 @@ function initializeLists() {
    actTestMgmt_lstAPX.clear();
    actTestMgmt_questions._apxRecs.forEach(qRec => { actTestMgmt_lstAPX.addItem(qRec._qName, qRec); })
 }
+// #endregion: Helper methods
 
-// #region: action's event handlers
+// #region: HTML event handlers
 /**
  * Handler called each time the user types a character in the filter input element.
  */
@@ -194,7 +162,7 @@ async function actTestMgmt_onSelectQuestion(event) {
          actTestMgmt_lstFRQ.select(false);
       }
       actTestMgmt_qSelected = event.metadata;
-      actTestMgmt_divQuerySend(actTestMgmt_qSelected._qName, actTestMgmt_tglSolution.checked)
+      requestQueryDiv(actTestMgmt_qSelected._qName, actTestMgmt_tglSolution.checked)
    } else {
       actTestMgmt_qSelected = undefined;
       actTestMgmt_divQContent.innerHTML = "";
@@ -206,30 +174,82 @@ async function actTestMgmt_onSelectQuestion(event) {
  */
 async function actTestMgmt_onToggleSolution(event) {
    if (actTestMgmt_qSelected) {
-      actTestMgmt_divQuerySend(actTestMgmt_qSelected._qName, actTestMgmt_tglSolution.checked);
+      requestQueryDiv(actTestMgmt_qSelected._qName, actTestMgmt_tglSolution.checked);
    }
 }
+// #endregion HTML event handlers
 
-/**
- * Backend API request for fetching the content div for a specific query.
- */
-function actTestMgmt_divQuerySend(qName, isAnswer) {
+// #region: Backend API calls
+// #region: ..?cmd=query&type=qanswer|qtest&qid=qName
+function requestQueryDiv(qName, isAnswer) {
    const urlAPI_query = `${refUrlAPI}?cmd=query&type=${isAnswer ? "qanswer" : "qtest"}&qid=${qName}`;
    var request = new  XMLHttpRequest();
    request.open("GET",  urlAPI_query, true);
    request.timeout = 2000;
-   request.onload = actTestMgmt_onDivQueryResponse;
+   request.onload = onResponseQueryDiv;
    request.withCredentials = true;
    request.send();
 }
 
-/**
- * Backend API response handler for `${refUrlAPI}?cmd=query&type=qanswer|qtest`. This is returning
- * the <div> element containing the query content - either the test or the answer versions.
- */
-function actTestMgmt_onDivQueryResponse() {
+function onResponseQueryDiv() {
+   // deserialize Answer.QDiv response
    var jsonResponse = JSON.parse(this.response);
    const html = (this.status == 200) ? jsonResponse._qDiv : jsonResponse._error;
    actTestMgmt_divQContent.innerHTML = html;
 }
-// #endregion: action's event handlers
+// #endregion: ..?cmd=query&type=qanswer|qtest&qid=qName
+
+// #region: ..?cmd=query&type=qset
+function requestQueryQSet() {
+   var request = new  XMLHttpRequest();
+   request.open("GET", `${refUrlAPI}?cmd=query&type=qset`, true);
+   request.timeout = 2000;
+   request.onload = onResponseQueryQSet;
+   request.withCredentials = true;
+   request.send();
+}
+
+function onResponseQueryQSet() {
+   // deserialize Answer.QList response
+   const jsonResponse = JSON.parse(this.response);
+   if (this.status == 200) {
+      // when successful or user already logged in, redirect to the AdminPanel page
+      actTestMgmt_questions._mcqRecs = loadQSet('mcq|mcb', jsonResponse);
+      actTestMgmt_questions._frqRecs = loadQSet('frq', jsonResponse);
+      actTestMgmt_questions._apxRecs = loadQSet('apx', jsonResponse);
+      initializeLists();
+   } else {
+      // otherwise display the response on the login page.
+      refAddLog(`[${this.status}] ${jsonResponse._error}`);
+   }
+}
+// #endregion: ..?cmd=query&type=qset
+
+// #region: ..?cmd=set&op=vtest&name=vtestName&args=qName1,qName2,...
+function requestSetVTest(vtestName) {
+   let qMCQ_Names = actTestMgmt_questions._mcqRecs.filter(qRec => qRec.checked).map(qRec => qRec._qName);
+   let qFRQ_Names = actTestMgmt_questions._frqRecs.filter(qRec => qRec.checked).map(qRec => qRec._qName);
+   let qAPX_Names = actTestMgmt_questions._apxRecs.filter(qRec => qRec.checked).map(qRec => qRec._qName);
+   let qAll_Names = [...qMCQ_Names, ...qFRQ_Names, ...qAPX_Names].join(",");
+   //refAddLog(`${refUrlAPI}?cmd=set&op=vtest&name=${vtestName}&args=${qAll_Names}`);
+
+   var request = new  XMLHttpRequest();
+   request.open("GET", `${refUrlAPI}?cmd=set&op=vtest&name=${vtestName}&args=${qAll_Names}`, true);
+   request.timeout = 2000;
+   request.onload = onResponseQueryQSet;
+   request.withCredentials = true;
+   request.send();
+}
+
+function onResponseSetTests() {
+   // deserialize Answer.Msg response
+   const jsonResponse = JSON.parse(this.response);
+   if (this.status != 200) {
+      refAddLog(`[${this.status}] ${jsonResponse._error}`);
+   } else {
+      refAddLog(jsonResponse._message);
+   }
+}
+// #endregion: ..?cmd=set&op=vtest&name=vtestName&args=qName1,qName2,...
+
+// #endregion: Backend API calls
