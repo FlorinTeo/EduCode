@@ -74,6 +74,7 @@ public class Servlet extends HttpServlet{
                     break;
                 case "set":
                     // http://localhost:8080/web-apis/testctrl?cmd=set&op=setusr&name=<name>&pwd=<password>
+                    // http://localhost:8080/web-apis/testctrl?cmd=set&op=vertest&name=<test-name>&args=<qid1,id2,...>
                     answer = executeCmdSet(httpSession, params);
                     break;
                 case "query":
