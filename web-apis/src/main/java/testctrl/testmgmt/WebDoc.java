@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.UUID;
 
 public class WebDoc {
     public static final String _PRINT_BREAK = "<div style=\"break-after:page\"></div><br>";
@@ -242,6 +244,12 @@ public class WebDoc {
         bw.write(apxHtml.substring(iAPX + _TAG_APPENDIX_PAGE.length()));
         return nPages;
     }
+
+    private String genUUIDName(String namePrefix) {
+        String uuid = UUID.randomUUID().toString().toUpperCase();
+        return namePrefix.replaceFirst("\\.", "_" + uuid.substring(9, 13) + ".");
+    }
+
     // #endregion: [private methods] Writing HTML web document parts
 
     public WebDoc(List<String> lines) {
@@ -267,8 +275,13 @@ public class WebDoc {
         bw.close();
     }
 
-    public void genTestHtml(GMeta gMeta, Path pTest) throws IOException {
-        Path pTestHtml = Paths.get(pTest.toString(), "test.html");
+    public String[] genTestHtml(GMeta gMeta, Path pTest) throws IOException {
+        String[] htmlFiles = {
+            genUUIDName("test.html"),
+            genUUIDName("answers.html")
+        };
+
+        Path pTestHtml = Paths.get(pTest.toString(), htmlFiles[0]);
         BufferedWriter bw = Files.newBufferedWriter(pTestHtml);
         // fill in the styling portion
         bw.write(_style);
@@ -301,7 +314,7 @@ public class WebDoc {
         bw.close();
 
         nPages = 0;
-        Path pAnswersHtml = Paths.get(pTest.toString(), "answers.html");
+        Path pAnswersHtml = Paths.get(pTest.toString(), htmlFiles[1]);
         bw = Files.newBufferedWriter(pAnswersHtml);
         // fill in the styling portion
         bw.write(_style);
@@ -312,5 +325,7 @@ public class WebDoc {
         // fill in the appendix pages
         genAppendix(bw, gMeta);
         bw.close();
+
+        return htmlFiles;
     }
 }

@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -141,16 +142,38 @@ public class Generator {
     }
 
     /**
+     * Deletes the entire test folder, with all its content.
+     * @param pTest - Path to be deleted
+     * @return true if successful, false otherwise.
+     * @throws IOException 
+     */
+    public void delTest(String testName) throws IOException {
+        Path pTest = Paths.get(_pRoot.toString(), testName);
+        if (!Files.exists(pTest)) {
+            throw new RuntimeException(String.format("Missing test '%s'. Nothing to delete!", testName));
+        }
+        Files.walk(pTest)
+            .sorted(Comparator.reverseOrder())
+            .forEach(path -> {
+                try {
+                    Files.delete(path);
+                } catch (IOException e) {
+                    throw new RuntimeException(String.format("Failed to delete test '%s': %s!", testName, e.getMessage()));
+                }
+            });
+    }
+
+    /**
      * Generates .meta and index.html files for the given test
      * @throws IOException
      */
-    public void genTest(String testName, String[] qIDs, boolean regenMeta) throws IOException {
+    public String[] genTest(String testName, String[] qIDs, boolean regenMeta) throws IOException {
         Path pTest = Paths.get(_pRoot.toString(), testName);
         GMeta mTest;
         if (regenMeta) {
             List<Question> qList;
             if (qIDs.length == 0) {
-                qList = _qList;
+                throw new IllegalArgumentException("Empty questions set are illegal!");
             } else {
                 HashSet<Question> qSet = new HashSet<Question>();
                 qList = new LinkedList<Question>();
@@ -170,7 +193,7 @@ public class Generator {
         } else {
             mTest = new GMeta(pTest);
         }
-        _webDoc.genTestHtml(mTest, pTest);
+        return _webDoc.genTestHtml(mTest, pTest);
     }
 
     /**

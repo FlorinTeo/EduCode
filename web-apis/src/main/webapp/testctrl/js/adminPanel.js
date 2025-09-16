@@ -70,8 +70,9 @@ function onStatusRequest() {
 }
 
 function onStatusResponse() {
+    // deserialize Answer.Msg response
     var jsonResponse = JSON.parse(this.response);
-    var logs = (this.status == 200) ? jsonResponse._logs : [jsonResponse._error];
+    var logs = (this.status == 200) ? jsonResponse._logs : [{_logTime:logTime(), _logText:`[*] ${jsonResponse._error}` }];
     for (const log of logs) {
         const row = tblLog.insertRow(-1);
         row.insertCell(0).textContent = log._logTime;
@@ -106,7 +107,7 @@ function onLogoutResponse() {
 
 // #region: action dialog event handlers
 // #region: helper methods
-export function addLog(logText) {
+function logTime() {
     const now = new Date();
     const pad = (n, z = 2) => ('00' + n).slice(-z);
     const MM = pad(now.getMonth() + 1);
@@ -115,10 +116,12 @@ export function addLog(logText) {
     const mm = pad(now.getMinutes());
     const ss = pad(now.getSeconds());
     const SS = pad(Math.floor(now.getMilliseconds() / 10)); // hundredths
-    const logTime = `${MM}/${dd} ${HH}:${mm}:${ss}.${SS}`;
-    
+    return `${MM}/${dd} ${HH}:${mm}:${ss}.${SS}`;
+}
+
+export function addLog(logText) {
     const row = tblLog.insertRow(-1);
-    row.insertCell(0).textContent = logTime;
+    row.insertCell(0).textContent = logTime();
     row.insertCell(1).textContent = `[*] ${logText}`;
     if (tblLog.rows.length > 100) {
         tblLog.deleteRow(0);

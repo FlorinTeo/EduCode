@@ -17,13 +17,20 @@ public class WorkVerTest extends Work {
     public void run() throws IOException {
         _context.Log(new LogEntry("Dequeing work: %s", toString()));
         Generator g = _context.getGenerator();
-        g.genTest(_testName, _testQIDs, true);
 
-        String testUrl = String.format("%s/%s/%s", _session.getRootUrl(), _context.getConfig().tests_root, _testName);
-        String log = "Reference test generated - ";
-        log += String.format("<b>%s</b>:[<a href='%s/test.html' target='blank'>test</a>, <a href='%s/answers.html' target='blank'>answers</a>]", _testName, testUrl, testUrl);
-        log += ".";
-        _context.Log(new LogEntry(log));
+        if (_testQIDs.length == 0) {
+            g.delTest(_testName);
+            _context.Log(new LogEntry("Test '%s' deleted successfully.", _testName));
+        } else {
+            String[] htmlFiles = g.genTest(_testName, _testQIDs, true);
+            String testUrl = String.format("%s/%s/%s", _session.getRootUrl(), _context.getConfig().tests_root, _testName);
+            String log = "Reference test generated - ";
+            log += String.format("<b>%s</b>:[<a href='%s/%s' target='blank'>test</a>, <a href='%s/%s' target='blank'>answers</a>].",
+                _testName,
+                testUrl, htmlFiles[0],
+                testUrl, htmlFiles[1]);
+            _context.Log(new LogEntry(log));
+        }
     }
 
     @Override

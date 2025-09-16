@@ -231,11 +231,6 @@ function requestSetVerTest(vtestName) {
    let qAPX_Names = actTestMgmt_questions._apxRecs.filter(qRec => qRec.checked).map(qRec => qRec._qName);
    let qAll_Names = [...qMCQ_Names, ...qFRQ_Names, ...qAPX_Names].join(",");
 
-   if (qAll_Names.length == 0) {
-      alert("Please select at least one question!");
-      return false;
-   }
-
    var request = new  XMLHttpRequest();
    request.open("GET", `${refUrlAPI}?cmd=set&op=vtest&name=${vtestName}&args=${qAll_Names}`, true);
    request.timeout = 2000;
