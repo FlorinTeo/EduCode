@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.UUID;
 
 public class WebDoc {
     public static final String _PRINT_BREAK = "<div style=\"break-after:page\"></div><br>";
