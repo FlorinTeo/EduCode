@@ -19,9 +19,10 @@ public class WorkVerTest extends Work {
         Generator g = _context.getGenerator();
 
         if (_testQIDs.length == 0) {
-            g.delTest(_testName);
+            g.delTest(_testName, false);
             _context.Log(new LogEntry("Test '%s' deleted successfully.", _testName));
         } else {
+            g.delTest(_testName, true);
             String[] htmlFiles = g.genTest(_testName, _testQIDs, true);
             String testUrl = String.format("%s/%s/%s", _session.getRootUrl(), _context.getConfig().tests_root, _testName);
             String log = "Reference test generated - ";
@@ -30,6 +31,19 @@ public class WorkVerTest extends Work {
                 testUrl, htmlFiles[0],
                 testUrl, htmlFiles[1]);
             _context.Log(new LogEntry(log));
+
+            String[] variants = { "v1", "v2", "v3", "v4" };
+            int frqIndex = 0;
+            for(String variant : variants) {
+                htmlFiles = g.genTestVariant(_testName, variant, frqIndex++);
+                testUrl = String.format("%s/%s/%s", _session.getRootUrl(), _context.getConfig().tests_root, _testName);
+                log = "Variant test generated - ";
+                log += String.format("<b>%s</b>:[<a href='%s/%s/%s' target='blank'>test</a>, <a href='%s/%s/%s' target='blank'>answers</a>].",
+                    _testName + "." + variant,
+                    testUrl, variant, htmlFiles[0],
+                    testUrl, variant, htmlFiles[1]);
+                _context.Log(new LogEntry(log));
+            }
         }
     }
 

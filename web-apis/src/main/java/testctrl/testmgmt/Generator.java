@@ -147,20 +147,21 @@ public class Generator {
      * @return true if successful, false otherwise.
      * @throws IOException 
      */
-    public void delTest(String testName) throws IOException {
+    public void delTest(String testName, boolean silent) throws IOException {
         Path pTest = Paths.get(_pRoot.toString(), testName);
-        if (!Files.exists(pTest)) {
+        if (Files.exists(pTest)) {
+            Files.walk(pTest)
+                .sorted(Comparator.reverseOrder())
+                .forEach(path -> {
+                    try {
+                        Files.delete(path);
+                    } catch (IOException e) {
+                        throw new RuntimeException(String.format("Failed to delete test '%s': %s!", testName, e.getMessage()));
+                    }
+                });
+        } else if (!silent) {
             throw new RuntimeException(String.format("Missing test '%s'. Nothing to delete!", testName));
         }
-        Files.walk(pTest)
-            .sorted(Comparator.reverseOrder())
-            .forEach(path -> {
-                try {
-                    Files.delete(path);
-                } catch (IOException e) {
-                    throw new RuntimeException(String.format("Failed to delete test '%s': %s!", testName, e.getMessage()));
-                }
-            });
     }
 
     /**
@@ -216,6 +217,21 @@ public class Generator {
             }
             _webDoc.genTestHtml(mVariant, pVariant);
         }
+    }
+
+    /**
+    * Generates .meta and index.html files for one variant of the given test
+    * @throws IOException
+    */
+    public String[] genTestVariant(String testName, String variantName, int frqIndex) throws IOException {
+        Path pTest = Paths.get(_pRoot.toString(), testName);
+        GMeta mTest = new GMeta(pTest);
+        Path pVariant = Paths.get(pTest.toString(), variantName);
+        GMeta mVariant = new GMeta(mTest.getName(), variantName, mTest.getQuestions(frqIndex));
+        mVariant.adjustPath("../../.template/");
+        mVariant.anonymize(true);
+        mVariant.save(pVariant);
+        return _webDoc.genTestHtml(mVariant, pVariant);
     }
 
     public Question getQuestion(String qID) {

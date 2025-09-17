@@ -244,11 +244,6 @@ public class WebDoc {
         return nPages;
     }
 
-    private String genUUIDName(String namePrefix) {
-        String uuid = UUID.randomUUID().toString().toUpperCase();
-        return namePrefix.replaceFirst("\\.", "_" + uuid.substring(9, 13) + ".");
-    }
-
     // #endregion: [private methods] Writing HTML web document parts
 
     public WebDoc(List<String> lines) {
@@ -276,8 +271,8 @@ public class WebDoc {
 
     public String[] genTestHtml(GMeta gMeta, Path pTest) throws IOException {
         String[] htmlFiles = {
-            genUUIDName("test.html"),
-            genUUIDName("answers.html")
+            GMeta.genUUIDName("test.html"),
+            GMeta.genUUIDName("answers.html")
         };
 
         Path pTestHtml = Paths.get(pTest.toString(), htmlFiles[0]);

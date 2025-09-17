@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,6 +38,13 @@ public class GMeta {
     private String _notes;
     private boolean _isAnonymized;
 
+    public static String genUUIDName(String namePrefix) {
+        String uuid = UUID.randomUUID().toString().toUpperCase();
+        return namePrefix.startsWith(".")
+            ? namePrefix + "_" + uuid.substring(9, 13)
+            : namePrefix.replaceFirst("\\.", "_" + uuid.substring(9, 13) + ".");
+    }
+
     private void reset() {
         _name = "";
         _version = "";
@@ -61,7 +69,11 @@ public class GMeta {
     }
 
     public GMeta(Path pMetaDir) throws IOException {
-        Path pMeta = Paths.get(pMetaDir.toString(), ".meta");
+        //Path pMeta = Paths.get(pMetaDir.toString(), ".meta");
+        Path pMeta = Files.list(pMetaDir)
+            .filter(p -> p.getFileName().toString().startsWith(".meta"))
+            .findFirst()
+            .orElseThrow(() -> new IOException("No .meta file found"));
         String jsonMeta = String.join("\n", Files.readAllLines(pMeta));
         GMeta loaded  = _GSON.fromJson(jsonMeta,GMeta.class);
         _name = loaded._name;
@@ -124,8 +136,8 @@ public class GMeta {
     public String getMCQPct() {
         // 100% if no free response questions, 40% otherwise
         return getFRQCount() == 0 
-             ? "100%" 
-             : "40%";
+            ? "100%" 
+            : "40%";
     }
 
     public List<Question> getMCQuestions() {
@@ -145,8 +157,8 @@ public class GMeta {
     public String getFRQPct() {
         // 100% if no multiple choice questions, 60% otherwise
         return getMCQCount() == 0 
-             ? "100%" 
-             : "60%";
+            ? "100%" 
+            : "60%";
     }
     
     public List<Question> getFRQuestions() {
@@ -167,6 +179,20 @@ public class GMeta {
                 continue;
             }
             allQuestions.add(_frQuestions.get(i));
+        }
+        // add all appendix pages
+        allQuestions.addAll(_appendix);
+        return allQuestions;
+    }
+
+    public List<Question> getQuestions(int frqIndex) {
+        List<Question> allQuestions = new LinkedList<Question>();
+        // add all multiple choice questions
+        allQuestions.addAll(_mcQuestions);
+        // add the free response question (if any) at the given index
+        Question[] frQuestions = _frQuestions.toArray(new Question[0]);
+        if (frQuestions.length > 0) {
+            allQuestions.add(frQuestions[frqIndex % frQuestions.length]);
         }
         // add all appendix pages
         allQuestions.addAll(_appendix);
@@ -213,7 +239,7 @@ public class GMeta {
             Files.createDirectories(pMetaDir);
         }
 
-        Path pMeta = Paths.get(pMetaDir.toString(), ".meta");
+        Path pMeta = Paths.get(pMetaDir.toString(), genUUIDName(".meta"));
         BufferedWriter bw = Files.newBufferedWriter(pMeta);
         bw.write(_GSON.toJson(this));
         bw.close();
