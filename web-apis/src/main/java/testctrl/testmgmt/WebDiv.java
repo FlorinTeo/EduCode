@@ -50,7 +50,7 @@ public class WebDiv {
             qDiv = qDiv.replace("#QOPT" + kvp.getKey() + "#", kvp.getValue());
             // replace #ANSSTL# with style to apply to this option (either highlighing or hiding the answer)
             if (isAnswer & meta.correct.equalsIgnoreCase(kvp.getKey())) {
-                qDiv = qDiv.replace("#ANSSTL" + kvp.getKey() + "#", "class=\"actTestMgmt_tbl_mcqAnswer\"");
+                qDiv = qDiv.replace("#ANSSTL" + kvp.getKey() + "#", "class=\"actTestEdt_tbl_mcqAnswer\"");
             } else {
                 qDiv = qDiv.replace("#ANSSTL" + kvp.getKey() + "#", "");
             }

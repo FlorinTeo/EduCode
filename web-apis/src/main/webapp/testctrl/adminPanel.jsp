@@ -24,9 +24,9 @@
             <div id="divActions" class="actions-style">
                 <table id="tblActions">
                     <!-- Sample/Template pattern to be used when adding custom actions -->
-                    <tr><td><input id="btnTestMgmt" value="Test Management" type="submit"></td>
-                        <td>Test management operations such as:<br>
-                            Select questions to be packaged into a test.<br>
+                    <tr><td><input id="btnTestMgmt" value="Test Editor" type="submit"></td>
+                        <td>Test editing operations such as:<br>
+                            Select questions to be packaged into a test.
                             Edit or delete existing tests.</td>
                     </tr>
                     <!-- Action entries to be added bellow -->

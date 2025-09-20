@@ -24,7 +24,7 @@ const dlgActionClose = document.getElementById("dlgActionClose");
 const dlgActionPane = document.getElementById("dlgActionPane");
 
 const actMap = {
-    actTestMgmt: { div: null },
+    actTestEditor: { div: null },
     actSessionMgmt: { div: null },
     actUserMgmt: { div: null },
 };
@@ -189,11 +189,11 @@ async function onActionDlgClose(e) {
 // #region: actSample handlers
 async function onActTestMgmt(e) {
     e.preventDefault();
-    await selectAction("actTestMgmt");
+    await selectAction("actTestEditor");
     dlgAction.style.width = '100%';
     dlgAction.style.height = '100%';
     dlgAction.style.resize = 'both';
-    dlgActionTitle.innerHTML = 'Test Management Action';
+    dlgActionTitle.innerHTML = 'Test Editor Action';
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
 }
