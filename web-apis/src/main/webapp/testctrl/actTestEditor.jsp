@@ -8,6 +8,7 @@
         <script defer type="module" src="js/actTestEditor.js?ver=1.8"></script>
     </head>
     <div id="actTestEditor_div" class="actTestEditor-style">
+        <select id="actTestEdt_cbTestName" style="width: 185px;"></select>
         <!-- Top (level 0) table: 2 rows, 1 column -->
         <table class="actTestEdt-lvl0-table">
             <tr><td>
@@ -15,7 +16,8 @@
                 <tr>
                     <!-- Edit field for test name -->
                     <td>
-                        Test name:<input id="actTestEdt_edtTestName" style="width: 185px;" autocomplete="off">
+                        Test name:
+                        <input id="actTestEdt_edtTestName" style="width: 185px;" autocomplete="off">
                     </td>
                     <td>Solution</td>
                     <td>

@@ -1,4 +1,5 @@
 import { CheckedList } from "./ctrlCheckedList.js?ver=1.5";
+import { CtrlComboBox } from "./ctrlComboBox.js?ver=1.0";
 
 // #region: External references
 let refUrlAPI;
@@ -8,6 +9,7 @@ let refAddLog;
 // #region: Action constants
 const actTestEditor_div = document.getElementById("actTestEditor_div");
 const actTestEdt_edtTestName = document.getElementById("actTestEdt_edtTestName");
+const actTestEdt_cbTestName = new CtrlComboBox("#actTestEdt_cbTestName");
 const actTestEdt_edtFilter = document.getElementById("actTestEdt_edtFilter");
 const actTestEdt_ckbMCQ = document.getElementById("actTestEdt_ckb_allMCQ");
 const actTestEdt_lstMCQ = new CheckedList("actTestsMgmt_lstMCQ");
@@ -64,7 +66,10 @@ export async function onOpen() {
    actTestEdt_divQContent.innerHTML = "";
    // get the questions set
    requestQueryQSet();
-
+   actTestEdt_cbTestName.setOptions([
+      { value: 'ap.u1', text: 'AP CS-A Unit 1' },
+      { value: 'ds.u1', text: 'Data Structures Unit 1' }
+   ]);
 }
 
 /**

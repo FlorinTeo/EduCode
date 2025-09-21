@@ -5,7 +5,7 @@
     box-sizing: border-box;
     padding: 8px;
     background-color: #f2ffe5;
-    overflow: auto;
+    overflow: visible !important;
 }
 
 .actTestEdt-lvl0-table {

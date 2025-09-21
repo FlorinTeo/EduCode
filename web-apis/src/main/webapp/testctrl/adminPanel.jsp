@@ -5,6 +5,9 @@
         <meta charset="ISO-8859-1">
         <!-- Text on the browser tab: "IR Host" -->
         <title>Tests Manager</title>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <link rel="stylesheet" href="css/ctrlCheckedList.css?ver=1.0">
         <link rel="stylesheet" href="css/adminPanel.css?ver=1.0">
         <script defer type="module" src="js/adminPanel.js?ver=1.1"></script>

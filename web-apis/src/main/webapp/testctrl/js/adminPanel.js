@@ -3,7 +3,7 @@ const sid = (new URLSearchParams(window.location.search)).get("sid");
 const username = (new URLSearchParams(window.location.search)).get("name");
 const urlAPI = window.location.origin + "/web-apis/testctrl";
 const urlLoginJSP = window.location.origin + "/web-apis/testctrl/login.jsp";
-const actVer = "1.22";
+const actVer = "1.23";
 // #endregion: page parameters
 
 const txtTitleSid = document.getElementById("titleSid");

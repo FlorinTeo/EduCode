@@ -87,7 +87,7 @@ html, body {
     margin-left: auto;
     margin-right: auto;
     background: lightgray;
-    overflow: auto;
+    overflow: visible !important;
 }
 
 /*--------======== .log-style ========---------*/
