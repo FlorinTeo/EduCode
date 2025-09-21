@@ -37,14 +37,19 @@ export class CheckedList {
     }
 
     async onKeyDownEvent(event) {
-        event.preventDefault();
         let dir = undefined;
         switch(event.key) {
             case "ArrowUp":
+                event.preventDefault();
                 dir = -1;
                 break;
             case "ArrowDown":
+                event.preventDefault();
                 dir = 1;
+                break;
+            case " ":
+                event.preventDefault();
+                this.host.reCheck();
                 break;
         }
         if (dir) {
@@ -123,6 +128,15 @@ export class CheckedList {
         this.#liList[iNewSel].classList.add("selected-li");
         this.#liList[iNewSel].scrollIntoView({ block: "nearest" });
         this.#callHandler("select", {host: this, target: this.#liList[iNewSel].label, metadata: this.#liList[iNewSel].metadata, selected: true});
+    }
+
+    reCheck() {
+        const liCrtSel = this.#liList.filter(li => li.selected)[0];
+        if (liCrtSel) {
+            liCrtSel.checked = !liCrtSel.checked;
+            liCrtSel.checkbox.checked = liCrtSel.checked;
+            this.#callHandler("check", {host: this, target: undefined, metadata: liCrtSel.metadata, checked: liCrtSel.checked});
+        }
     }
 
     addItem(liText, metadata) {
