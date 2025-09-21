@@ -6,6 +6,7 @@ let refAddLog;
 // #endregion: External references
 
 // #region: Action constants
+const actTestEditor_div = document.getElementById("actTestEditor_div");
 const actTestEdt_edtTestName = document.getElementById("actTestEdt_edtTestName");
 const actTestEdt_edtFilter = document.getElementById("actTestEdt_edtFilter");
 const actTestEdt_ckbMCQ = document.getElementById("actTestEdt_ckb_allMCQ");
@@ -26,6 +27,7 @@ let actTestEdt_qSelected = undefined;
 // #endregion: Action constants
 
 // #region: HTML event registration
+actTestEditor_div.addEventListener("keydown", actTestEdt_onKeyDown);
 actTestEdt_tglSolution.addEventListener("change", actTestEdt_onToggleSolution); 
 actTestEdt_edtFilter.addEventListener("input", actTestEdt_onFilterChange);
 actTestEdt_ckbMCQ.addEventListener("change", actTestEdt_onCheckAll);
@@ -174,6 +176,24 @@ async function actTestEdt_onSelectQuestion(event) {
 async function actTestEdt_onToggleSolution(event) {
    if (actTestEdt_qSelected) {
       requestQueryDiv(actTestEdt_qSelected._qName, actTestEdt_tglSolution.checked);
+   }
+}
+
+/**
+ * Handler called when key left/right is pressed
+ */
+async function actTestEdt_onKeyDown(event) {
+   switch(event.key) {
+      case "ArrowLeft":
+            event.preventDefault();
+            actTestEdt_tglSolution.checked = !actTestEdt_tglSolution.checked;
+            actTestEdt_tglSolution.dispatchEvent(new Event('change'));
+            break;
+      case "ArrowRight":
+            event.preventDefault();
+            actTestEdt_tglSolution.checked = !actTestEdt_tglSolution.checked;
+            actTestEdt_tglSolution.dispatchEvent(new Event('change'));
+            break;
    }
 }
 // #endregion HTML event handlers
