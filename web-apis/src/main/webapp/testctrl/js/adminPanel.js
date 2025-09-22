@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", onPageLoad);
 window.addEventListener("resize", onPageResize);
 btnLogout.addEventListener("click", onClickLogout);
 
-btnTestMgmt.addEventListener("click", onActTestMgmt);
+btnTestMgmt.addEventListener("click", onActTestEditor);
 btnSessionMgmt.addEventListener("click", onActSessionMgmt);
 btnUserMgmt.addEventListener("click", onActUserMgmt);
 
@@ -153,16 +153,10 @@ async function selectAction(actName) {
         if (actMap[actName].onCreate) {
             await actMap[actName].onCreate(sid, username, urlAPI, addLog);
         }
-        if (actMap[actName].onOpen) {
-            await actMap[actName].onOpen();
-        }
     } else {
         // the action was previously loaded so its div and handlers are available
-        // just need to display the div and call its onOpen() handler
+        // just need to display the div
         actMap[actName].div.style.display = 'block';
-        if (actMap[actName].onOpen) {
-            await actMap[actName].onOpen();
-        }
     }
 }
 
@@ -187,7 +181,7 @@ async function onActionDlgClose(e) {
 }
 
 // #region: actSample handlers
-async function onActTestMgmt(e) {
+async function onActTestEditor(e) {
     e.preventDefault();
     await selectAction("actTestEditor");
     dlgAction.style.width = '100%';
@@ -196,6 +190,12 @@ async function onActTestMgmt(e) {
     dlgActionTitle.innerHTML = 'Test Editor Action';
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
+    // Once the dialog is rendered, call the action's onOpen() handler, if defined
+    requestAnimationFrame(() => {
+        if (actMap.actTestEditor.onOpen) {
+            actMap.actTestEditor.onOpen();
+        }
+    });
 }
 // #endregion: actSample handlers
 
@@ -209,6 +209,12 @@ async function onActSessionMgmt(e) {
     dlgActionTitle.innerHTML = 'Session Management';
     dlgActionApply.style.display = 'none';
     dlgAction.showModal();
+    // Once the dialog is rendered, call the action's onOpen() handler, if defined
+    requestAnimationFrame(() => {
+        if (actMap.actSessionMgmt.onOpen) {
+            actMap.actSessionMgmt.onOpen();
+        }
+    });
 }
 // #endregion: actSession handlers
 
@@ -222,6 +228,12 @@ async function onActUserMgmt(e) {
     dlgActionTitle.innerHTML = 'User Management';
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
+    // Once the dialog is rendered, call the action's onOpen() handler, if defined
+    requestAnimationFrame(() => {
+        if (actMap.actUserMgmt.onOpen) {
+            actMap.actUserMgmt.onOpen();
+        }
+    });
 }
 // #endregion: actUserMgmt handlers
 // #endregion: action dialog event handlers

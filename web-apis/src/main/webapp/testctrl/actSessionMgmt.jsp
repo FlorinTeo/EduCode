@@ -7,5 +7,6 @@
         <script defer src="js/actSessionMgmt.js?ver=1.0"></script>
     </head>
     <div id="actSessionMgmt_div" class="actSessionMgmt-style">
+        <select id="actSessionMgmt_cb" style="width: 185px;"></select>
     </div>
 </html>
