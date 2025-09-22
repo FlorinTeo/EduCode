@@ -21,6 +21,15 @@ export async function onOpen() {
         { id: 'cb1', text: 'Unit 1: AP CS-A' },
         { id: 'cb2', text: 'Unit 1: Data Structures' }
     ]);
+    actSessionMgmt_cb.setEventListener("changed", onCbChanged);
+}
+
+async function onCbChanged(e) {
+    if (e.target) {
+        refAddLog(`ComboBox selected: ${e.target.text}`);
+    } else {
+        refAddLog(`ComboBox cleared.`);
+    }
 }
 
 export async function onCancel() {
