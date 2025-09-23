@@ -73,10 +73,6 @@ export async function onOpen() {
  */
 export async function onApply() {
    const testName = actTestEdt_cbTestName.getValue();
-   if (testName === "") {
-      alert("Please provide test name!");
-      return false;
-   }
    return requestSetVerTest(testName);
 }
 
@@ -220,7 +216,7 @@ function onResponseQueryDiv() {
 }
 // #endregion: ..?cmd=query&type=qanswer|qtest&qid=qName
 
-// #region: ..?cmd=query&type=qset|tset
+// #region: ..?cmd=query&type=qset
 function requestQueryQSet() {
    var request = new  XMLHttpRequest();
    request.open("GET", `${refUrlAPI}?cmd=query&type=qset`, true);
@@ -244,7 +240,9 @@ function onResponseQueryQSet() {
       refAddLog(`[${this.status}] ${jsonResponse._error}`);
    }
 }
+// #endregion: ..?cmd=query&type=qset
 
+// #region: ..?cmd=query&type=tset
 function requestQueryTSet() {
       actTestEdt_cbTestName.setOptions([
       { id: 'cb1', text: 'Unit 1: AP CS-A' },
@@ -254,7 +252,7 @@ function requestQueryTSet() {
 
 function onResponseQueryTSet() {
 }
-// #endregion: ..?cmd=query&type=qset|tset
+// #endregion: ..?cmd=query&type=tset
 
 // #region: ..?cmd=set&op=vtest&name=vtestName&args=qName1,qName2,...
 function requestSetVerTest(vtestName) {

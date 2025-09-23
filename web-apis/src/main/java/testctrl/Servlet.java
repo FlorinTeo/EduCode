@@ -179,6 +179,7 @@ public class Servlet extends HttpServlet{
                 checkTrue(params.containsKey("args"), "Missing 'args' parameter!");
                 String testName = params.get("name")[0];
                 String testArgs = params.get("args")[0].trim();
+                checkTrue(!testName.isEmpty(), "Invalid (empty) test name!");
                 String[] testQIDs = testArgs.isEmpty() ? new String[0] : testArgs.split(",");
                 WorkVerTest wVerTest = new WorkVerTest(session, testName, testQIDs);
                 _context.QueueWork(wVerTest);
