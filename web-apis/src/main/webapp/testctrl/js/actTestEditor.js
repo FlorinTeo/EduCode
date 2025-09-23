@@ -8,7 +8,7 @@ let refAddLog;
 
 // #region: Action constants
 const actTestEditor_div = document.getElementById("actTestEditor_div");
-let actTestEdt_cbTestName;
+const actTestEdt_cbTestName = new CtrlComboBox("actTestMgmt_cbTestName");
 const actTestEdt_edtFilter = document.getElementById("actTestEdt_edtFilter");
 const actTestEdt_ckbMCQ = document.getElementById("actTestEdt_ckb_allMCQ");
 const actTestEdt_lstMCQ = new CheckedList("actTestsMgmt_lstMCQ");
@@ -55,9 +55,6 @@ export async function onCreate(sid, username, urlAPI, addLog) {
  * Called from adminPanel each time the action div becomes visible.
  */
 export async function onOpen() {
-   if (!actTestEdt_cbTestName) {
-      actTestEdt_cbTestName = new CtrlComboBox("actTestMgmt_cbTestName");
-   }
    actTestEdt_cbTestName.setOptions([
       { id: 'cb1', text: 'Unit 1: AP CS-A' },
       { id: 'cb2', text: 'Unit 1: Data Structures' }

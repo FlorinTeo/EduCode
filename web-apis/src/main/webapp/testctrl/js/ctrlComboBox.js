@@ -1,25 +1,23 @@
 export class CtrlComboBox {
-    #select
+    #cbElemId
+    #cbElem
     #fnHandlers
 
-    constructor(selector) {
+    constructor(cbElemId) {
+        this.#cbElemId = cbElemId;
         this.#fnHandlers = {}; // Initialize the handlers object
-        this.#select = $("#"+selector);
-        this.#select.select2({ 
-            tags: true, 
-            data: [],
-            allowClear: true,
-            placeholder: "Select or type...",
-            dropdownParent: $('#dlgAction')            
-        });
-        this.#select.on('select2:select select2:unselect select2:clear', (e) => this.#onChange(e));
     }
 
     setOptions(options) {
-        this.#select.select2('destroy'); // Destroy previous instance
+        if (!this.#cbElem) {
+            this.#cbElem = $("#"+this.#cbElemId);
+            this.#cbElem.on('select2:select select2:unselect select2:clear', (e) => this.#onChange(e));
+        } else {
+            this.#cbElem.select2('destroy'); // Destroy previous instance
+        }
         // Add an empty option as the first item to ensure proper clearing behavior
         const optionsWithEmpty = [{ id: '', text: '', disabled: true }, ...options];
-        this.#select.select2({
+        this.#cbElem.select2({
             tags: true,
             data: optionsWithEmpty,
             allowClear: true,
@@ -27,7 +25,7 @@ export class CtrlComboBox {
             dropdownParent: $('#dlgAction')
         });
         // Clear the selection to show placeholder instead of first option
-        this.#select.val(null).trigger('change');
+        this.#cbElem.val(null).trigger('change');
     }
 
     setEventListener(eventName, fnHandler) {
@@ -35,15 +33,19 @@ export class CtrlComboBox {
     }
 
     getValue() {
-        return this.#select.select2('data').map(item => item.text);
+        return this.#cbElem ? this.#cbElem.select2('data').map(item => item.text) : undefined;
     }
 
     setValue(value) {
-        this.#select.val(value).trigger('change');
+        if (this.#cbElem) {
+            this.#cbElem.val(value).trigger('change');
+        }
     }
 
     clear() {
-        this.#select.val(null).trigger('change');
+        if (this.#cbElem) {
+            this.#cbElem.val(null).trigger('change');
+        }
     }
 
     #callHandler(eventName, event) {
@@ -63,7 +65,7 @@ export class CtrlComboBox {
                 this.#callHandler("changed", { host: this, target: undefined });
                 break;
             case "select2:clear":
-                setTimeout(() => { this.#select.val(null).trigger('change'); }, 0);
+                setTimeout(() => { this.#cbElem.val(null).trigger('change'); }, 0);
                 break;
         }
     }
