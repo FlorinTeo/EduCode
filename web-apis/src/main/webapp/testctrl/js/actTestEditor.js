@@ -55,10 +55,6 @@ export async function onCreate(sid, username, urlAPI, addLog) {
  * Called from adminPanel each time the action div becomes visible.
  */
 export async function onOpen() {
-   actTestEdt_cbTestName.setOptions([
-      { id: 'cb1', text: 'Unit 1: AP CS-A' },
-      { id: 'cb2', text: 'Unit 1: Data Structures' }
-   ]);
    actTestEdt_edtFilter.value = "";
    actTestEdt_ckbMCQ.checked = false;
    actTestEdt_lstMCQ.clear();
@@ -67,9 +63,9 @@ export async function onOpen() {
    actTestEdt_ckbAPX.checked = false;
    actTestEdt_lstAPX.clear();
    actTestEdt_divQContent.innerHTML = "";
-   // get the questions set
+   // get the questions & test set
    requestQueryQSet();
-
+   requestQueryTSet();
 }
 
 /**
@@ -224,7 +220,7 @@ function onResponseQueryDiv() {
 }
 // #endregion: ..?cmd=query&type=qanswer|qtest&qid=qName
 
-// #region: ..?cmd=query&type=qset
+// #region: ..?cmd=query&type=qset|tset
 function requestQueryQSet() {
    var request = new  XMLHttpRequest();
    request.open("GET", `${refUrlAPI}?cmd=query&type=qset`, true);
@@ -248,7 +244,17 @@ function onResponseQueryQSet() {
       refAddLog(`[${this.status}] ${jsonResponse._error}`);
    }
 }
-// #endregion: ..?cmd=query&type=qset
+
+function requestQueryTSet() {
+      actTestEdt_cbTestName.setOptions([
+      { id: 'cb1', text: 'Unit 1: AP CS-A' },
+      { id: 'cb2', text: 'Unit 1: Data Structures' }
+   ]);
+}
+
+function onResponseQueryTSet() {
+}
+// #endregion: ..?cmd=query&type=qset|tset
 
 // #region: ..?cmd=set&op=vtest&name=vtestName&args=qName1,qName2,...
 function requestSetVerTest(vtestName) {
