@@ -15,7 +15,7 @@
                 <tr>
                     <!-- Edit field for test name -->
                     <td>
-                        Test name:<input id="actTestEdt_edtTestName" style="width: 185px;" autocomplete="off">
+                        Test name:<select id="actTestMgmt_cbTestName" style="width: 185px;"></select>
                     </td>
                     <td>Solution</td>
                     <td>

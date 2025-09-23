@@ -1,3 +1,4 @@
+import { CtrlComboBox } from "./ctrlComboBox.js?ver=1.0";
 import { CheckedList } from "./ctrlCheckedList.js?ver=1.5";
 
 // #region: External references
@@ -7,7 +8,7 @@ let refAddLog;
 
 // #region: Action constants
 const actTestEditor_div = document.getElementById("actTestEditor_div");
-const actTestEdt_edtTestName = document.getElementById("actTestEdt_edtTestName");
+let actTestEdt_cbTestName;
 const actTestEdt_edtFilter = document.getElementById("actTestEdt_edtFilter");
 const actTestEdt_ckbMCQ = document.getElementById("actTestEdt_ckb_allMCQ");
 const actTestEdt_lstMCQ = new CheckedList("actTestsMgmt_lstMCQ");
@@ -54,6 +55,13 @@ export async function onCreate(sid, username, urlAPI, addLog) {
  * Called from adminPanel each time the action div becomes visible.
  */
 export async function onOpen() {
+   if (!actTestEdt_cbTestName) {
+      actTestEdt_cbTestName = new CtrlComboBox("actTestMgmt_cbTestName");
+   }
+   actTestEdt_cbTestName.setOptions([
+      { id: 'cb1', text: 'Unit 1: AP CS-A' },
+      { id: 'cb2', text: 'Unit 1: Data Structures' }
+   ]);
    actTestEdt_edtFilter.value = "";
    actTestEdt_ckbMCQ.checked = false;
    actTestEdt_lstMCQ.clear();
@@ -71,11 +79,12 @@ export async function onOpen() {
  * Called from the adminPanel when the "ack" (green) button is clicked on the dialog's title bar.
  */
 export async function onApply() {
-   if (actTestEdt_edtTestName.value === "") {
+   const testName = actTestEdt_cbTestName.getValue();
+   if (testName === "") {
       alert("Please provide test name!");
       return false;
    }
-   return requestSetVerTest(actTestEdt_edtTestName.value);
+   return requestSetVerTest(testName);
 }
 
 /**
