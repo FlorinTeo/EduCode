@@ -15,7 +15,7 @@ import java.util.UUID;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class GMeta {
+public class TMeta {
     private static final Gson _GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private String _name;
@@ -64,18 +64,18 @@ public class GMeta {
         _isAnonymized = false;
     }
 
-    public GMeta() {
+    public TMeta() {
         reset();
     }
 
-    public GMeta(Path pMetaDir) throws IOException {
+    public TMeta(Path pMetaDir) throws IOException {
         //Path pMeta = Paths.get(pMetaDir.toString(), ".meta");
         Path pMeta = Files.list(pMetaDir)
             .filter(p -> p.getFileName().toString().startsWith(".meta"))
             .findFirst()
             .orElseThrow(() -> new IOException("No .meta file found"));
         String jsonMeta = String.join("\n", Files.readAllLines(pMeta));
-        GMeta loaded  = _GSON.fromJson(jsonMeta,GMeta.class);
+        TMeta loaded  = _GSON.fromJson(jsonMeta,TMeta.class);
         _name = loaded._name;
         _version = loaded._version;
         _display = loaded._display;
@@ -86,7 +86,7 @@ public class GMeta {
         _isAnonymized = loaded._isAnonymized;
     }
 
-    public GMeta(String name, String version, List<Question> qList) {
+    public TMeta(String name, String version, List<Question> qList) {
         reset();
         _name = name;
         _version = version;

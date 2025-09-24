@@ -130,15 +130,15 @@ public class Generator {
      * @throws IOException
      */
     public void genRoot(boolean regenMeta) throws IOException {
-        GMeta mRoot;
+        TMeta rMeta;
         if (regenMeta) {
-            mRoot = new GMeta(".", "", _qList);
-            mRoot.adjustPath(".template/");
-            mRoot.save(_pRoot);
+            rMeta = new TMeta(".", "", _qList);
+            rMeta.adjustPath(".template/");
+            rMeta.save(_pRoot);
         } else {
-            mRoot = new GMeta(_pRoot);
+            rMeta = new TMeta(_pRoot);
         }
-        _webDoc.genIndexHtml(mRoot, _pRoot);
+        _webDoc.genIndexHtml(rMeta, _pRoot);
     }
 
     /**
@@ -170,7 +170,7 @@ public class Generator {
      */
     public String[] genTest(String testName, String[] qIDs, boolean regenMeta) throws IOException {
         Path pTest = Paths.get(_pRoot.toString(), testName);
-        GMeta mTest;
+        TMeta tMeta;
         if (regenMeta) {
             List<Question> qList;
             if (qIDs.length == 0) {
@@ -187,14 +187,14 @@ public class Generator {
                     qList.add(_qMap.get(qID));
                 }
             }
-            mTest = new GMeta(testName, "", qList);
-            mTest.adjustPath("../.template/");
-            mTest.anonymize(false);
-            mTest.save(pTest);
+            tMeta = new TMeta(testName, "", qList);
+            tMeta.adjustPath("../.template/");
+            tMeta.anonymize(false);
+            tMeta.save(pTest);
         } else {
-            mTest = new GMeta(pTest);
+            tMeta = new TMeta(pTest);
         }
-        return _webDoc.genTestHtml(mTest, pTest);
+        return _webDoc.genTestHtml(tMeta, pTest);
     }
 
     /**
@@ -203,19 +203,19 @@ public class Generator {
     */
     public void genTestVariants(String testName, String[] vIDs, List<String> excFRQs, boolean regenMeta) throws IOException {
         Path pTest = Paths.get(_pRoot.toString(), testName);
-        GMeta mTest = new GMeta(pTest);
+        TMeta tMeta = new TMeta(pTest);
         for(int i = 0; i < vIDs.length; i++) {
             Path pVariant = Paths.get(pTest.toString(), vIDs[i]);
-            GMeta mVariant;
+            TMeta vMeta;
             if (regenMeta) {
-                mVariant = new GMeta(mTest.getName(), vIDs[i], mTest.getQuestions(excFRQs));
-                mVariant.adjustPath("../../.template/");
-                mVariant.anonymize(true);
-                mVariant.save(pVariant);
+                vMeta = new TMeta(tMeta.getName(), vIDs[i], tMeta.getQuestions(excFRQs));
+                vMeta.adjustPath("../../.template/");
+                vMeta.anonymize(true);
+                vMeta.save(pVariant);
             } else {
-                mVariant = new GMeta(pVariant);
+                vMeta = new TMeta(pVariant);
             }
-            _webDoc.genTestHtml(mVariant, pVariant);
+            _webDoc.genTestHtml(vMeta, pVariant);
         }
     }
 
@@ -225,13 +225,13 @@ public class Generator {
     */
     public String[] genTestVariant(String testName, String variantName, int frqIndex) throws IOException {
         Path pTest = Paths.get(_pRoot.toString(), testName);
-        GMeta mTest = new GMeta(pTest);
+        TMeta tMeta = new TMeta(pTest);
         Path pVariant = Paths.get(pTest.toString(), variantName);
-        GMeta mVariant = new GMeta(mTest.getName(), variantName, mTest.getQuestions(frqIndex));
-        mVariant.adjustPath("../../.template/");
-        mVariant.anonymize(true);
-        mVariant.save(pVariant);
-        return _webDoc.genTestHtml(mVariant, pVariant);
+        TMeta vMeta = new TMeta(tMeta.getName(), variantName, tMeta.getQuestions(frqIndex));
+        vMeta.adjustPath("../../.template/");
+        vMeta.anonymize(true);
+        vMeta.save(pVariant);
+        return _webDoc.genTestHtml(vMeta, pVariant);
     }
 
     public Question getQuestion(String qID) {
