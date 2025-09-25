@@ -1,36 +1,51 @@
 package testctrl.testmgmt;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TestsDb {
-    private String _dbPath;
+    private Path _pRoot;
     private Map<String, TMeta> _db;
     
-    public TestsDb(String dbPath) {
-        _dbPath = dbPath;
+    public TestsDb(String root) throws IOException {
+        _pRoot = Paths.get(root);
         _db = new HashMap<String, TMeta>();
         loadTests();
     }
 
-    private void loadTests() {
-        List<TMeta> tMetas = new LinkedList<TMeta>();
+    private int loadTests() throws IOException {
+        // scan for the top folders in _pRoot, excluding system and ".template" dirs.
+        Set<String> excludedFolders = Set.of(".", "..", ".template");
 
-        // TODO: Scan file system for tests, deserialize and collect their metadata in tMetas
+        List<TMeta> tMetas = new LinkedList<TMeta>();
+        List<Path> pTests = Files.list(_pRoot)
+            .filter(Files::isDirectory)
+            .filter(path -> !excludedFolders.contains(path.getFileName().toString()))
+            .collect(Collectors.toList());
+        for(Path pTest : pTests) {
+            tMetas.add(new TMeta(pTest));
+        }
 
         synchronized(_db) {
             _db.clear();
             for(TMeta tMeta : tMetas) {
                 _db.put(tMeta.getName(), tMeta);
             }
+            return _db.size();
         }
     }
 
-    public void refreshDb() {
-        loadTests();
+    public int refreshDb() throws IOException {
+        return loadTests();
     }
 
     public Collection<THeader> getTRecs() {
