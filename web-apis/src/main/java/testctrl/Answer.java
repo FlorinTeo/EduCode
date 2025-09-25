@@ -5,6 +5,7 @@ import java.util.Collection;
 import com.google.gson.Gson;
 
 import testctrl.testmgmt.QHeader;
+import testctrl.testmgmt.THeader;
 
 public class Answer {
 
@@ -39,6 +40,14 @@ public class Answer {
 
         public QList(Collection<QHeader> qRecs) {
             _qList = qRecs.toArray(new QHeader[0]);
+        }
+    }
+
+    public class TList extends Answer {
+        public THeader[] _tList;
+
+        public TList(Collection<THeader> tRecs) {
+            _tList = tRecs.toArray(new THeader[0]);
         }
     }
 

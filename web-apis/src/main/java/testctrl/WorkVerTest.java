@@ -45,6 +45,10 @@ public class WorkVerTest extends Work {
                 _context.Log(new LogEntry(log));
             }
         }
+
+        // refresh tests database
+        _context.getTestsDb().refreshDb();
+        _context.Log(new LogEntry("Tests database updated."));
     }
 
     @Override

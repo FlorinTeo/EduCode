@@ -19,6 +19,7 @@ import com.google.gson.GsonBuilder;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import testctrl.testmgmt.Generator;
+import testctrl.testmgmt.TestsDb;
 import testctrl.testmgmt.WebDiv;
 
 public class Context extends TimerTask {
@@ -54,6 +55,7 @@ public class Context extends TimerTask {
     private Timer _timer;
     // Test management fields
     private Generator _generator;
+    private TestsDb _testsDb;
     private WebDiv _webDiv;
     // Work management fields
     private Queue<Work> _queueWork;
@@ -156,9 +158,10 @@ public class Context extends TimerTask {
         // Load server configuration from WEB-INF/classes/testctrl/res/config.json
         _config = loadConfig();
         
-        // load the tests generator engine
+        // load the tests generator engine & initialize the tests database
         String questionsRoot = _servletContext.getRealPath("") + _config.tests_root;
         _generator = new Generator(questionsRoot);
+        _testsDb = new TestsDb(questionsRoot);
 
         // load the web div engine
         String templatesRoot = _servletContext.getRealPath("");
@@ -249,6 +252,10 @@ public class Context extends TimerTask {
     // #region: [Public] Question-set methods
     public Generator getGenerator() {
         return _generator;
+    }
+
+    public TestsDb getTestsDb() {
+        return _testsDb;
     }
 
     public WebDiv getWebDiv() {

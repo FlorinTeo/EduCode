@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpSession;
 import testctrl.testmgmt.Generator;
 import testctrl.testmgmt.QHeader;
 import testctrl.testmgmt.Question;
+import testctrl.testmgmt.THeader;
+import testctrl.testmgmt.TestsDb;
 import testctrl.testmgmt.WebDiv;
 
 @WebServlet("/testctrl")
@@ -79,6 +81,7 @@ public class Servlet extends HttpServlet{
                     break;
                 case "query":
                     // http://localhost:8080/web-apis/testctrl?cmd=query&type=qset
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=tset
                     // http://localhost:8080/web-apis/testctrl?cmd=query&type=qtest&qid=<name>
                     // http://localhost:8080/web-apis/testctrl?cmd=query&type=qanswer&qid=<name>
                     answer = executeCmdQuery(httpSession, params);
@@ -203,6 +206,7 @@ public class Servlet extends HttpServlet{
         session.touch();
         String type = params.get("type")[0];
         Generator gen = _context.getGenerator();
+        TestsDb testsDb = _context.getTestsDb();
         WebDiv webDiv = _context.getWebDiv();
 
         switch(type) {
@@ -211,6 +215,11 @@ public class Servlet extends HttpServlet{
                 Collection<QHeader> qRecs = gen.getQRecs();
                 _context.Log(new LogEntry("[query:qset] Returning %d question records", qRecs.size()));
                 return new Answer().new QList(qRecs);
+            case "tset":
+                // http://localhost:8080/web-apis/testctrl?cmd=query&type=tset
+                Collection<THeader> tRecs = testsDb.getTRecs();
+                _context.Log(new LogEntry("[query:tset] Returning %d test records", tRecs.size()));
+                return new Answer().new TList(tRecs);
             case "qanswer":
                 // http://localhost:8080/web-apis/testctrl?cmd=query&type=qtest&qid=<question>
             case "qtest":
