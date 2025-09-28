@@ -62,7 +62,7 @@ async function onPageResize() {
 // #region: timer callback
 function onStatusRequest() {
     var request = new  XMLHttpRequest();
-    request.open("GET", `${urlAPI}?cmd=status&type=log`, true);
+    request.open("GET", `${urlAPI}?cmd=status&op=log`, true);
     request.timeout = 2000;
     request.onload = onStatusResponse;
     request.withCredentials = true;

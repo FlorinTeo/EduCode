@@ -199,7 +199,7 @@ async function actTestEdt_onKeyDown(event) {
 // #region: Backend API calls
 // #region: ..?cmd=query&type=qanswer|qtest&qid=qName
 function requestQueryDiv(qName, isAnswer) {
-   const urlAPI_query = `${refUrlAPI}?cmd=query&type=${isAnswer ? "qanswer" : "qtest"}&qid=${qName}`;
+   const urlAPI_query = `${refUrlAPI}?cmd=query&op=${isAnswer ? "answer" : "question"}&qid=${qName}`;
    var request = new  XMLHttpRequest();
    request.open("GET",  urlAPI_query, true);
    request.timeout = 2000;
@@ -219,7 +219,7 @@ function onResponseQueryDiv() {
 // #region: ..?cmd=query&type=qset
 function requestQueryQSet() {
    var request = new  XMLHttpRequest();
-   request.open("GET", `${refUrlAPI}?cmd=query&type=qset`, true);
+   request.open("GET", `${refUrlAPI}?cmd=query&op=qset`, true);
    request.timeout = 2000;
    request.onload = onResponseQueryQSet;
    request.withCredentials = true;
@@ -245,7 +245,7 @@ function onResponseQueryQSet() {
 // #region: ..?cmd=query&type=tset
 function requestQueryTSet() {
    var request = new  XMLHttpRequest();
-   request.open("GET", `${refUrlAPI}?cmd=query&type=tset`, true);
+   request.open("GET", `${refUrlAPI}?cmd=query&op=tset`, true);
    request.timeout = 2000;
    request.onload = onResponseQueryTSet;
    request.withCredentials = true;
@@ -277,7 +277,7 @@ function requestSetVerTest(vtestName) {
    let qAll_Names = [...qMCQ_Names, ...qFRQ_Names, ...qAPX_Names].join(",");
 
    var request = new  XMLHttpRequest();
-   request.open("GET", `${refUrlAPI}?cmd=set&op=vtest&name=${vtestName}&args=${qAll_Names}`, true);
+   request.open("GET", `${refUrlAPI}?cmd=set&op=vtest&name=${vtestName}&qlist=${qAll_Names}`, true);
    request.timeout = 2000;
    request.onload = onResponseSetVerTest;
    request.withCredentials = true;

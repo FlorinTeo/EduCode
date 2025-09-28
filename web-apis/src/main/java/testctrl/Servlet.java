@@ -71,7 +71,7 @@ public class Servlet extends HttpServlet{
                     answer = executeCmdLogout(httpSession);
                     break;
                 case "status":
-                    // http://localhost:8080/web-apis/testctrl?cmd=status&type=log
+                    // http://localhost:8080/web-apis/testctrl?cmd=status&op=log
                     answer = executeCmdStatus(httpSession, params);
                     break;
                 case "set":
@@ -80,10 +80,10 @@ public class Servlet extends HttpServlet{
                     answer = executeCmdSet(httpSession, params);
                     break;
                 case "query":
-                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=qset
-                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=tset
-                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=qtest&qid=<name>
-                    // http://localhost:8080/web-apis/testctrl?cmd=query&type=qanswer&qid=<name>
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&op=qset
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&op=tset
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&op=question&qid=<name>
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&op=answer&qid=<name>
                     answer = executeCmdQuery(httpSession, params);
                     break;
                 default:
@@ -130,7 +130,7 @@ public class Servlet extends HttpServlet{
         Session session = _context.getSession(httpSession);
         checkTrue(session != null, "Session not found!");
         session.touch();
-        String type = params.get("type")[0];
+        String type = params.get("op")[0];
         switch(type) {
             case "log":
                 // http://localhost:8080/web-apis/testctrl?cmd=status&type=log
@@ -177,13 +177,13 @@ public class Servlet extends HttpServlet{
                     return msgAnswer;
                 }
             case "vtest":
-                // http://localhost:8080/web-apis/testctrl?cmd=set&op=vtest&name=<testName>&args=<test1,test2,...>
+                // http://localhost:8080/web-apis/testctrl?cmd=set&op=vtest&name=<testName>&qlist=<test1,test2,...>
                 checkTrue(params.containsKey("name"), "Missing 'name' parameter!");
-                checkTrue(params.containsKey("args"), "Missing 'args' parameter!");
+                checkTrue(params.containsKey("qlist"), "Missing 'qlist' parameter!");
                 String testName = params.get("name")[0];
-                String testArgs = params.get("args")[0].trim();
+                String testQList = params.get("qlist")[0].trim();
                 checkTrue(!testName.isEmpty(), "Invalid (empty) test name!");
-                String[] testQIDs = testArgs.isEmpty() ? new String[0] : testArgs.split(",");
+                String[] testQIDs = testQList.isEmpty() ? new String[0] : testQList.split(",");
                 WorkVerTest wVerTest = new WorkVerTest(session, testName, testQIDs);
                 _context.QueueWork(wVerTest);
                 Answer.Msg msgAnswer = new Answer().new Msg(session.getId(),
@@ -201,31 +201,31 @@ public class Servlet extends HttpServlet{
     public Answer executeCmdQuery(HttpSession httpSession, Map<String, String[]> params) throws NoSuchAlgorithmException, IOException {
         Session session = _context.getSession(httpSession);
         checkTrue(session != null, "Session not found!");
-        checkTrue(params.containsKey("type"), "Missing 'type' parameter!");
+        checkTrue(params.containsKey("op"), "Missing 'type' parameter!");
         checkTrue(session.getUser().hasRole("admin","teacher"), "Access denied!");
         session.touch();
-        String type = params.get("type")[0];
+        String type = params.get("op")[0];
         Generator gen = _context.getGenerator();
         TestsDb testsDb = _context.getTestsDb();
         WebDiv webDiv = _context.getWebDiv();
 
         switch(type) {
             case "qset":
-                // http://localhost:8080/web-apis/testctrl?cmd=query&type=qset
+                // http://localhost:8080/web-apis/testctrl?cmd=query&op=qset
                 Collection<QHeader> qRecs = gen.getQRecs();
                 _context.Log(new LogEntry("[query:qset] Returning %d question records", qRecs.size()));
                 return new Answer().new QList(qRecs);
             case "tset":
-                // http://localhost:8080/web-apis/testctrl?cmd=query&type=tset
+                // http://localhost:8080/web-apis/testctrl?cmd=query&op=tset
                 Collection<THeader> tRecs = testsDb.getTRecs();
                 _context.Log(new LogEntry("[query:tset] Returning %d test records", tRecs.size()));
                 return new Answer().new TList(tRecs);
-            case "qanswer":
-                // http://localhost:8080/web-apis/testctrl?cmd=query&type=qtest&qid=<question>
-            case "qtest":
-                // http://localhost:8080/web-apis/testctrl?cmd=query&type=qanswer&qid=<question>
+            case "question":
+                // http://localhost:8080/web-apis/testctrl?cmd=query&op=question&qid=<question>
+            case "answer":
+                // http://localhost:8080/web-apis/testctrl?cmd=query&op=answer&qid=<question>
                 String qID = params.get("qid")[0];
-                boolean isAnswer = type.equalsIgnoreCase("qanswer");
+                boolean isAnswer = type.equalsIgnoreCase("answer");
                 Question q = gen.getQuestion(qID);
                 return new Answer().new QDiv(q.getQHeader(), webDiv.getDiv(q, isAnswer));
             default:
