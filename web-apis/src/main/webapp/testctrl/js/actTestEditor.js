@@ -244,13 +244,28 @@ function onResponseQueryQSet() {
 
 // #region: ..?cmd=query&type=tset
 function requestQueryTSet() {
-      actTestEdt_cbTestName.setOptions([
-      { id: 'cb1', text: 'Unit 1: AP CS-A' },
-      { id: 'cb2', text: 'Unit 1: Data Structures' }
-   ]);
+   var request = new  XMLHttpRequest();
+   request.open("GET", `${refUrlAPI}?cmd=query&type=tset`, true);
+   request.timeout = 2000;
+   request.onload = onResponseQueryTSet;
+   request.withCredentials = true;
+   request.send();
 }
 
 function onResponseQueryTSet() {
+   // deserialize Answer.TList response
+   const jsonResponse = JSON.parse(this.response);
+   if (this.status == 200) {
+      const tList = jsonResponse._tList.map((item, index) => ({
+         id: `cb${index + 1}`,
+         text: item._tName
+      })).sort((a, b) => a.text.localeCompare(b.text));
+
+      actTestEdt_cbTestName.setOptions(tList);
+   } else {
+      refAddLog(`[${this.status}] ${jsonResponse._error}`);
+
+   }
 }
 // #endregion: ..?cmd=query&type=tset
 

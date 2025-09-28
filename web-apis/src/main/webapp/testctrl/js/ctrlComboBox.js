@@ -15,6 +15,10 @@ export class CtrlComboBox {
         } else {
             this.#cbElem.select2('destroy'); // Destroy previous instance
         }
+        
+        // Clear any existing options from the original select element
+        this.#cbElem.empty();
+        
         // Add an empty option as the first item to ensure proper clearing behavior
         const optionsWithEmpty = [{ id: '', text: '', disabled: true }, ...options];
         this.#cbElem.select2({
