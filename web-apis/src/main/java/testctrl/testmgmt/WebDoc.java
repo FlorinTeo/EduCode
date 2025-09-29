@@ -268,13 +268,14 @@ public class WebDoc {
         bw.close();
     }
 
-    public String[] genTestHtml(TMeta tMeta, Path pTest) throws IOException {
+    public TMeta genTestHtml(TMeta tMeta, Path pTest) throws IOException {
         String[] htmlFiles = {
             TMeta.genUUIDName("test.html"),
             TMeta.genUUIDName("answers.html")
         };
 
         Path pTestHtml = Paths.get(pTest.toString(), htmlFiles[0]);
+        Files.createDirectories(pTestHtml.getParent());
         BufferedWriter bw = Files.newBufferedWriter(pTestHtml);
         // fill in the styling portion
         bw.write(_style);
@@ -305,6 +306,7 @@ public class WebDoc {
             nPages += genSection2Html(bw, tMeta, false);
         }
         bw.close();
+        tMeta.setFile("test", htmlFiles[0]);
 
         nPages = 0;
         Path pAnswersHtml = Paths.get(pTest.toString(), htmlFiles[1]);
@@ -318,7 +320,8 @@ public class WebDoc {
         // fill in the appendix pages
         genAppendix(bw, tMeta);
         bw.close();
+        tMeta.setFile("answers", htmlFiles[1]);
 
-        return htmlFiles;
+        return tMeta;
     }
 }

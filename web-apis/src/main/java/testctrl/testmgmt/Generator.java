@@ -15,17 +15,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Generator {
+    public static final String[] VARIANTS = { "v1", "v2", "v3", "v4" };
+
     private Path _pRoot;
     private Map<String, Question> _qMap;
     private List<Question> _qList;
     private WebDoc _webDoc;
-    private static Pattern regex = Pattern.compile("(?:(ap|ds)(\\d+)[^.]*)?\\.[QPA](\\d+)");
+    private static Pattern _regex = Pattern.compile("(?:(ap|ds)(\\d+)[^.]*)?\\.[QPA](\\d+)");
 
     private List<Question> sort(List<Question> lq) {
         Map<String, Question> map = new TreeMap<>();
         for (int i = lq.size(); i > 0; i--) {
             Question q = lq.remove(0);
-            Matcher m = regex.matcher(q.getName());
+            Matcher m = _regex.matcher(q.getName());
             if (m.find()) {
                 // Extract the first and second numbers
                 String group = m.group(1) != null ? m.group(1) : ""; // optional "ap" or "ds"
@@ -110,35 +112,12 @@ public class Generator {
         _webDoc = new WebDoc(Files.readAllLines(phIndex));
     }
 
-    /**
-     * Gets the absolute path to root.
-     * @return absolute path to root.
-     */
-    public String getRoot() {
-        return _pRoot.toAbsolutePath().toString();
-    }
-
     public Collection<QHeader> getQRecs() {
         List<QHeader> qRecs = new LinkedList<QHeader>();
         for (Question q : _qList) {
             qRecs.add(q.getQHeader());
         }
         return qRecs;
-    }
-    /**
-     * Generates .meta and index.html for the full set of questions loaded in this generator.
-     * @throws IOException
-     */
-    public void genRoot(boolean regenMeta) throws IOException {
-        TMeta rMeta;
-        if (regenMeta) {
-            rMeta = new TMeta(".", "", _qList);
-            rMeta.adjustPath(".template/");
-            rMeta.save(_pRoot);
-        } else {
-            rMeta = new TMeta(_pRoot);
-        }
-        _webDoc.genIndexHtml(rMeta, _pRoot);
     }
 
     /**
@@ -150,6 +129,7 @@ public class Generator {
     public void delTest(String testName, boolean silent) throws IOException {
         Path pTest = Paths.get(_pRoot.toString(), testName);
         if (Files.exists(pTest)) {
+            if (!silent) {
             Files.walk(pTest)
                 .sorted(Comparator.reverseOrder())
                 .forEach(path -> {
@@ -159,6 +139,19 @@ public class Generator {
                         throw new RuntimeException(String.format("Failed to delete test '%s': %s!", testName, e.getMessage()));
                     }
                 });
+
+            } else {
+                Files.walk(pTest)
+                    .filter(Files::isRegularFile)
+                    .filter(path -> !path.getFileName().toString().startsWith(".meta_"))
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException e) {
+                            throw new RuntimeException(String.format("Failed to delete test '%s': %s!", testName, e.getMessage()));
+                        }
+                    });
+            }
         } else if (!silent) {
             throw new RuntimeException(String.format("Missing test '%s'. Nothing to delete!", testName));
         }
@@ -168,10 +161,10 @@ public class Generator {
      * Generates .meta and index.html files for the given test
      * @throws IOException
      */
-    public String[] genTest(String testName, String[] qIDs, boolean regenMeta) throws IOException {
+    public TMeta genTest(String testName, String[] qIDs, boolean genVariants) throws IOException {
         Path pTest = Paths.get(_pRoot.toString(), testName);
         TMeta tMeta;
-        if (regenMeta) {
+        if (!Files.exists(pTest)) {
             List<Question> qList;
             if (qIDs.length == 0) {
                 throw new IllegalArgumentException("Empty questions set are illegal!");
@@ -190,50 +183,48 @@ public class Generator {
             tMeta = new TMeta(testName, "", qList);
             tMeta.adjustPath("../.template/");
             tMeta.anonymize(false);
-            tMeta.save(pTest);
         } else {
             tMeta = new TMeta(pTest);
         }
-        return _webDoc.genTestHtml(tMeta, pTest);
-    }
+        tMeta = _webDoc.genTestHtml(tMeta, pTest);
 
-    /**
-    * Generates .meta and index.html files for each variant of the given test
-    * @throws IOException
-    */
-    public void genTestVariants(String testName, String[] vIDs, List<String> excFRQs, boolean regenMeta) throws IOException {
-        Path pTest = Paths.get(_pRoot.toString(), testName);
-        TMeta tMeta = new TMeta(pTest);
-        for(int i = 0; i < vIDs.length; i++) {
-            Path pVariant = Paths.get(pTest.toString(), vIDs[i]);
-            TMeta vMeta;
-            if (regenMeta) {
-                vMeta = new TMeta(tMeta.getName(), vIDs[i], tMeta.getQuestions(excFRQs));
-                vMeta.adjustPath("../../.template/");
-                vMeta.anonymize(true);
-                vMeta.save(pVariant);
-            } else {
-                vMeta = new TMeta(pVariant);
+        // generate variants, if requested
+        if (genVariants) {
+            int frqIndex = 0;
+            for(String variant : VARIANTS) {
+                TMeta vMeta = genTestVariant(tMeta, variant, frqIndex++);
+                tMeta.setVariant(variant, vMeta);
             }
-            _webDoc.genTestHtml(vMeta, pVariant);
         }
+
+        tMeta.save(pTest);
+        return tMeta;
     }
 
     /**
     * Generates .meta and index.html files for one variant of the given test
     * @throws IOException
     */
-    public String[] genTestVariant(String testName, String variantName, int frqIndex) throws IOException {
-        Path pTest = Paths.get(_pRoot.toString(), testName);
-        TMeta tMeta = new TMeta(pTest);
-        Path pVariant = Paths.get(pTest.toString(), variantName);
-        TMeta vMeta = new TMeta(tMeta.getName(), variantName, tMeta.getQuestions(frqIndex));
-        vMeta.adjustPath("../../.template/");
-        vMeta.anonymize(true);
+    private TMeta genTestVariant(TMeta tMeta, String variantName, int frqIndex) throws IOException {
+        Path pVariant = Paths.get(_pRoot.toString(), tMeta.getName(), variantName);
+        TMeta vMeta;
+        if (!Files.exists(pVariant)) {
+            vMeta = new TMeta(tMeta.getName(), variantName, tMeta.getQuestions(frqIndex));
+            vMeta.adjustPath("../../.template/");
+            vMeta.anonymize(true);
+        } else {
+            vMeta = new TMeta(pVariant);
+        }
+        vMeta = _webDoc.genTestHtml(vMeta, pVariant);
         vMeta.save(pVariant);
-        return _webDoc.genTestHtml(vMeta, pVariant);
+        return vMeta;
     }
 
+    /**
+     * Gets a specific question from the database.
+     * @param qID - question ID (i.e. "ap4.Q6")
+     * @return the Question instance for the targeted question ID.
+     */
     public Question getQuestion(String qID) {
         return _qMap.get(qID);
     }

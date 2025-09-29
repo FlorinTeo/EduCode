@@ -3,6 +3,7 @@ package testctrl;
 import java.io.IOException;
 
 import testctrl.testmgmt.Generator;
+import testctrl.testmgmt.TMeta;
 
 public class WorkVerTest extends Work {
     private String _testName;
@@ -22,26 +23,28 @@ public class WorkVerTest extends Work {
             g.delTest(_testName, false);
             _context.Log(new LogEntry("Test '%s' deleted successfully.", _testName));
         } else {
+            // clean any previous instance of this test, then regenerate it.
             g.delTest(_testName, true);
-            String[] htmlFiles = g.genTest(_testName, _testQIDs, true);
+            TMeta tMeta = g.genTest(_testName, _testQIDs, true);
+
+            // generate and log the links for the reference test
             String testUrl = String.format("%s/%s/%s", _session.getRootUrl(), _context.getConfig().tests_root, _testName);
             String log = "Reference test generated - ";
             log += String.format("<b>%s</b>:[<a href='%s/%s' target='blank'>test</a>, <a href='%s/%s' target='blank'>answers</a>].",
-                _testName,
-                testUrl, htmlFiles[0],
-                testUrl, htmlFiles[1]);
+                tMeta.getName(),
+                testUrl, tMeta.getFile("test"),
+                testUrl, tMeta.getFile("answers"));
             _context.Log(new LogEntry(log));
 
-            String[] variants = { "v1", "v2", "v3", "v4" };
-            int frqIndex = 0;
-            for(String variant : variants) {
-                htmlFiles = g.genTestVariant(_testName, variant, frqIndex++);
+            // generate and log the links for each of the variants
+            for(String variant : Generator.VARIANTS) {
+                TMeta vMeta = tMeta.getVariant(variant);
                 testUrl = String.format("%s/%s/%s", _session.getRootUrl(), _context.getConfig().tests_root, _testName);
                 log = "Variant test generated - ";
                 log += String.format("<b>%s</b>:[<a href='%s/%s/%s' target='blank'>test</a>, <a href='%s/%s/%s' target='blank'>answers</a>].",
-                    _testName + "." + variant,
-                    testUrl, variant, htmlFiles[0],
-                    testUrl, variant, htmlFiles[1]);
+                    vMeta.getName() + "." + vMeta.getVersion(),
+                    testUrl, variant, vMeta.getFile("test"),
+                    testUrl, variant, vMeta.getFile("answers"));
                 _context.Log(new LogEntry(log));
             }
         }

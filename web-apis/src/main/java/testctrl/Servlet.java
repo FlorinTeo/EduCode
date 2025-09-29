@@ -84,6 +84,7 @@ public class Servlet extends HttpServlet{
                     // http://localhost:8080/web-apis/testctrl?cmd=query&op=tset
                     // http://localhost:8080/web-apis/testctrl?cmd=query&op=question&qid=<name>
                     // http://localhost:8080/web-apis/testctrl?cmd=query&op=answer&qid=<name>
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&op=test&tid=<name>
                     answer = executeCmdQuery(httpSession, params);
                     break;
                 default:
@@ -228,6 +229,9 @@ public class Servlet extends HttpServlet{
                 boolean isAnswer = type.equalsIgnoreCase("answer");
                 Question q = gen.getQuestion(qID);
                 return new Answer().new QDiv(q.getQHeader(), webDiv.getDiv(q, isAnswer));
+            case "test":
+                // http://localhost:8080/web-apis/testctrl?cmd=query&op=test&tid=<name>
+                String tID = params.get("tid")[0];
             default:
                 return new Answer().new Err("Unknown query type!");
         }

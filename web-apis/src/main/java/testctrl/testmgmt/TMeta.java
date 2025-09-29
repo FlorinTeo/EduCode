@@ -32,6 +32,33 @@ public class TMeta {
      *     },
      */
     private Map<String, String> _display;
+    /**
+     * Maps the name/path of the files generated for this test.
+     * I.e:
+     *     "_files": {
+     *         "test": "test_EC5E.html",
+     *         "answer": "answers_C918.html",
+     *     },
+     */
+    private Map<String, String> _files;
+    /**
+     * Maps the variant name to the TMeta object of that variant.
+     * I.e:
+     *     "_variants": {
+     *         "v1": {
+     *             "_name": "2025_09_19_APCSA_Unit1",
+     *             "_version": "v1",
+     *         "_display": {
+     *             "1": "ap1.Q4 eabcd",
+     *             "2": "ap1.Q5 decba",
+     *             "3": "ap1.Q1 acbed",
+     *             "4": "ap1.Q6 cdbae",
+     *             "5": "ap1.Q3 ceabd",
+     *             "6": "ap1.Q2 abecd"
+     *         },
+     *         ...
+     */
+    private Map<String, TMeta> _variants;
     private List<Question> _mcQuestions;
     private List<Question> _frQuestions;
     private List<Question> _appendix;
@@ -57,6 +84,8 @@ public class TMeta {
                     : o1.compareTo(o2);
             }
         });
+        _files = new TreeMap<String, String>();
+        _variants = new TreeMap<String, TMeta>();
         _mcQuestions = new LinkedList<Question>();
         _frQuestions = new LinkedList<Question>();
         _appendix = new LinkedList<Question>();
@@ -79,6 +108,8 @@ public class TMeta {
         _name = loaded._name;
         _version = loaded._version;
         _display = loaded._display;
+        _files = loaded._files;
+        _variants = loaded._variants;
         _mcQuestions = loaded._mcQuestions;
         _frQuestions = loaded._frQuestions;
         _appendix = loaded._appendix;
@@ -238,8 +269,10 @@ public class TMeta {
         if (!_name.equals(".") && !Files.exists(pMetaDir)) {
             Files.createDirectories(pMetaDir);
         }
-
-        Path pMeta = Paths.get(pMetaDir.toString(), genUUIDName(".meta"));
+        Path pMeta = Files.list(pMetaDir)
+            .filter(p -> p.getFileName().toString().startsWith(".meta"))
+            .findFirst()
+            .orElse(Paths.get(pMetaDir.toString(), genUUIDName(".meta")));
         BufferedWriter bw = Files.newBufferedWriter(pMeta);
         bw.write(_GSON.toJson(this));
         bw.close();
@@ -302,5 +335,21 @@ public class TMeta {
             nPages++;
         }
         return nPages;
+    }
+
+    public String getFile(String fileID) {
+        return _files.get(fileID);
+    }
+
+    public void setFile(String fileID, String filePath) {
+        _files.put(fileID, filePath);
+    }
+
+    public TMeta getVariant(String variantID) {
+        return _variants.get(variantID);
+    }
+
+    public void setVariant(String variantID, TMeta variantMeta) {
+        _variants.put(variantID, variantMeta);
     }
 }
