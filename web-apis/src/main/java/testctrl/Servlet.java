@@ -202,7 +202,7 @@ public class Servlet extends HttpServlet{
     public Answer executeCmdQuery(HttpSession httpSession, Map<String, String[]> params) throws NoSuchAlgorithmException, IOException {
         Session session = _context.getSession(httpSession);
         checkTrue(session != null, "Session not found!");
-        checkTrue(params.containsKey("op"), "Missing 'type' parameter!");
+        checkTrue(params.containsKey("op"), "Missing 'op' parameter!");
         checkTrue(session.getUser().hasRole("admin","teacher"), "Access denied!");
         session.touch();
         String type = params.get("op")[0];
@@ -231,9 +231,9 @@ public class Servlet extends HttpServlet{
                 return new Answer().new QDiv(q.getQHeader(), webDiv.getDiv(q, isAnswer));
             case "test":
                 // http://localhost:8080/web-apis/testctrl?cmd=query&op=test&tid=<name>
-                String tID = params.get("tid")[0];
+                //String tID = params.get("tid")[0];
             default:
-                return new Answer().new Err("Unknown query type!");
+                return new Answer().new Err("Unknown query operation!");
         }
     }
 }
