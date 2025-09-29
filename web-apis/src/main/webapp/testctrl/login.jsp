@@ -5,8 +5,8 @@
         <meta charset="ISO-8859-1">
         <!-- Text on the browser tab: "IR Host" -->  
         <title>Tests Manager</title>
-        <link rel="stylesheet" href="css/login.css?ver=1.0">
-        <script defer src="js/login.js?ver=1.0"></script>
+        <link rel="stylesheet" href="css/login.css?ver=2.0">
+        <script defer src="js/login.js?ver=2.0"></script>
     </head>
     <body>
         <!-- Title of the page: "Tests Management Login -->    

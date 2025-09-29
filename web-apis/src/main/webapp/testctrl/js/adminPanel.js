@@ -143,7 +143,7 @@ async function selectAction(actName) {
         dlgActionPane.insertAdjacentHTML('beforeend', html);
 
         // module is trying to load elements from the dlgActionPane, which needs to be in the document!
-        const module = await import(`./${actName}.js?ver=1.6`);
+        const module = await import(`./${actName}.js?ver=${actVer}`);
 
         actMap[actName].div = document.getElementById(`${actName}_div`);
         actMap[actName].onCreate = module.onCreate;
