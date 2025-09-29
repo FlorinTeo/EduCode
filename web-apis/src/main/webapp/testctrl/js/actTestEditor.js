@@ -1,5 +1,5 @@
-import { CtrlComboBox } from "./ctrlComboBox.js?ver=1.0";
-import { CheckedList } from "./ctrlCheckedList.js?ver=1.5";
+import { CtrlComboBox } from "./ctrlComboBox.js?ver=2.0";
+import { CheckedList } from "./ctrlCheckedList.js?ver=2.0";
 
 // #region: External references
 let refUrlAPI;

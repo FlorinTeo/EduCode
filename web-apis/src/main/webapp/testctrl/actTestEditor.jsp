@@ -5,7 +5,7 @@
     <head>
         <meta charset="ISO-8859-1">
         <link rel="stylesheet" href="css/actTestEditor.css?ver=2.0">
-        <script defer type="module" src="js/actTestEditor.js?ver=1.8"></script>
+        <script defer type="module" src="js/actTestEditor.js?ver=2.0"></script>
     </head>
     <div id="actTestEditor_div" class="actTestEditor-style">
         <!-- Top (level 0) table: 2 rows, 1 column -->
