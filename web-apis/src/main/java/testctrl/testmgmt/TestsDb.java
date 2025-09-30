@@ -48,13 +48,19 @@ public class TestsDb {
         return loadTests();
     }
 
-    public Collection<THeader> getTRecs() {
+    public Collection<THeader> getTHeaders() {
         synchronized(_db) {
             List<THeader> tRecs = new LinkedList<THeader>();
             for(TMeta tMeta : _db.values()) {
-                tRecs.add(new THeader(tMeta.getName()));
+                tRecs.add(tMeta.getTHeader());
             }
             return tRecs;
+        }
+    }
+
+    public TMeta getTMeta(String tID) {
+        synchronized(_db) {
+            return _db.get(tID);
         }
     }
 

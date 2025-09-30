@@ -15,6 +15,7 @@ import testctrl.testmgmt.Generator;
 import testctrl.testmgmt.QHeader;
 import testctrl.testmgmt.Question;
 import testctrl.testmgmt.THeader;
+import testctrl.testmgmt.TMeta;
 import testctrl.testmgmt.TestsDb;
 import testctrl.testmgmt.WebDiv;
 
@@ -218,7 +219,7 @@ public class Servlet extends HttpServlet{
                 return new Answer().new QList(qRecs);
             case "tset":
                 // http://localhost:8080/web-apis/testctrl?cmd=query&op=tset
-                Collection<THeader> tRecs = testsDb.getTRecs();
+                Collection<THeader> tRecs = testsDb.getTHeaders();
                 _context.Log(new LogEntry("[query:tset] Returning %d test records", tRecs.size()));
                 return new Answer().new TList(tRecs);
             case "question":
@@ -228,10 +229,16 @@ public class Servlet extends HttpServlet{
                 String qID = params.get("qid")[0];
                 boolean isAnswer = type.equalsIgnoreCase("answer");
                 Question q = gen.getQuestion(qID);
-                return new Answer().new QData(q.getQHeader(), webDiv.getDiv(q, isAnswer));
+                return (q != null)
+                    ? new Answer().new QData(q.getQHeader(), webDiv.getDiv(q, isAnswer))
+                    : new Answer().new Err("Unknown question '%s'", qID);
             case "test":
                 // http://localhost:8080/web-apis/testctrl?cmd=query&op=test&tid=<name>
-                //String tID = params.get("tid")[0];
+                String tID = params.get("tid")[0];
+                TMeta t = testsDb.getTMeta(tID);
+                return (t != null)
+                    ? new Answer().new TData(t.getTHeader(), t.getQHeaders())
+                    : new Answer().new Err("Unknown test '%s'", tID);
             default:
                 return new Answer().new Err("Unknown query operation!");
         }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -206,22 +207,6 @@ public class TMeta {
         return _appendix;
     }
 
-    public List<Question> getQuestions(List<String> excFRQs) {
-        List<Question> allQuestions = new LinkedList<Question>();
-        // add all multiple choice questions
-        allQuestions.addAll(_mcQuestions);
-        // add all the non-filtered free response question
-        for(int i = 0; i < _frQuestions.size(); i++) {
-            if (excFRQs.contains(""+ (i + 1))) {
-                continue;
-            }
-            allQuestions.add(_frQuestions.get(i));
-        }
-        // add all appendix pages
-        allQuestions.addAll(_appendix);
-        return allQuestions;
-    }
-
     public List<Question> getQuestions(int frqIndex) {
         List<Question> allQuestions = new LinkedList<Question>();
         // add all multiple choice questions
@@ -354,5 +339,23 @@ public class TMeta {
 
     public void setVariant(String variantID, TMeta variantMeta) {
         _variants.put(variantID, variantMeta);
+    }
+
+    public THeader getTHeader() {
+        return new THeader(_name);
+    }
+
+    public Collection<QHeader> getQHeaders() {
+        List<QHeader> qHeaders = new LinkedList<QHeader>();
+        for(Question q : _mcQuestions) {
+            qHeaders.add(q.getQHeader());
+        }
+        for(Question q : _frQuestions) {
+            qHeaders.add(q.getQHeader());
+        }
+        for (Question q: _appendix) {
+            qHeaders.add(q.getQHeader());
+        }
+        return qHeaders;
     }
 }
