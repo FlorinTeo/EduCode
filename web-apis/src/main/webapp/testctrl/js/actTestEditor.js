@@ -183,10 +183,7 @@ async function actTestEdt_onToggleSolution(event) {
  */
 async function actTestEdt_onChangeTest(event) {
    if (event.target) {
-      refAddLog(`actTestEdt_onChangeTest: Test SELECTED: ${event.target.text}`);
       requestQueryTest(event.target.text);
-   } else {
-      refAddLog(`actTestEdt_onChangeTest: Test CLEARED!`);
    }
 }
 
