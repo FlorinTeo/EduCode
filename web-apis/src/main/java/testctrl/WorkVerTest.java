@@ -24,7 +24,7 @@ public class WorkVerTest extends Work {
             _context.Log(new LogEntry("Test '%s' deleted successfully.", _testName));
         } else {
             // clean any previous instance of this test, then regenerate it.
-            //g.delTest(_testName, true);
+            g.delTest(_testName, true);
             TMeta tMeta = g.genTest(_testName, _testQIDs, true);
 
             // generate and log the links for the reference test
