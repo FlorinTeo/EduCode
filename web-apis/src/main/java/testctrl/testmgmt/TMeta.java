@@ -65,11 +65,17 @@ public class TMeta {
     private String _notes;
     private boolean _isAnonymized;
 
-    public static String genUUIDName(String namePrefix) {
+    public static Path genFilePath(Path pathDir, String filePrefix, String fileSuffix) throws IOException {
+        if (!Files.exists(pathDir)) {
+            Files.createDirectories(pathDir);
+        }
         String uuid = UUID.randomUUID().toString().toUpperCase();
-        return namePrefix.startsWith(".")
-            ? namePrefix + "_" + uuid.substring(9, 13)
-            : namePrefix.replaceFirst("\\.", "_" + uuid.substring(9, 13) + ".");
+        String fileName = filePrefix + "_" + uuid.substring(9, 13) + "." + fileSuffix;
+        Path pMeta = Files.list(pathDir)
+            .filter(p -> p.getFileName().toString().startsWith(filePrefix))
+            .findFirst()
+            .orElse(Paths.get(pathDir.toString(), fileName));
+        return pMeta;
     }
 
     private void reset() {
@@ -269,10 +275,7 @@ public class TMeta {
         if (!_name.equals(".") && !Files.exists(pMetaDir)) {
             Files.createDirectories(pMetaDir);
         }
-        Path pMeta = Files.list(pMetaDir)
-            .filter(p -> p.getFileName().toString().startsWith(".meta"))
-            .findFirst()
-            .orElse(Paths.get(pMetaDir.toString(), genUUIDName(".meta")));
+        Path pMeta = genFilePath(pMetaDir, ".meta", "");
         BufferedWriter bw = Files.newBufferedWriter(pMeta);
         bw.write(_GSON.toJson(this));
         bw.close();

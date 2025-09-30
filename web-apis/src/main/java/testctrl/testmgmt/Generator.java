@@ -129,7 +129,6 @@ public class Generator {
     public void delTest(String testName, boolean silent) throws IOException {
         Path pTest = Paths.get(_pRoot.toString(), testName);
         if (Files.exists(pTest)) {
-            if (!silent) {
             Files.walk(pTest)
                 .sorted(Comparator.reverseOrder())
                 .forEach(path -> {
@@ -139,19 +138,6 @@ public class Generator {
                         throw new RuntimeException(String.format("Failed to delete test '%s': %s!", testName, e.getMessage()));
                     }
                 });
-
-            } else {
-                Files.walk(pTest)
-                    .filter(Files::isRegularFile)
-                    .filter(path -> !path.getFileName().toString().startsWith(".meta_"))
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            throw new RuntimeException(String.format("Failed to delete test '%s': %s!", testName, e.getMessage()));
-                        }
-                    });
-            }
         } else if (!silent) {
             throw new RuntimeException(String.format("Missing test '%s'. Nothing to delete!", testName));
         }
