@@ -51,13 +51,23 @@ public class Answer {
         }
     }
 
-    public class QDiv extends Answer {
+    public class QData extends Answer {
         public QHeader _qHeader;
         public String _qDiv;
 
-        public QDiv(QHeader qHeader, String qDiv) {
+        public QData(QHeader qHeader, String qDiv) {
             _qHeader = qHeader;
             _qDiv = qDiv;
+        }
+    }
+
+    public class TData extends Answer {
+        public THeader _tHeader;
+        public QHeader[] _qHeaders;
+
+        public TData(THeader tHeader, Collection<QHeader> qHeaders) {
+            _tHeader = tHeader;
+            _qHeaders = qHeaders.toArray(new QHeader[0]);
         }
     }
 

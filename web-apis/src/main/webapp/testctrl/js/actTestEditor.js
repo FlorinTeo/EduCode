@@ -209,7 +209,7 @@ function requestQueryDiv(qName, isAnswer) {
 }
 
 function onResponseQueryDiv() {
-   // deserialize Answer.QDiv response
+   // deserialize Answer.QData response
    var jsonResponse = JSON.parse(this.response);
    const html = (this.status == 200) ? jsonResponse._qDiv : jsonResponse._error;
    actTestEdt_divQContent.innerHTML = html;

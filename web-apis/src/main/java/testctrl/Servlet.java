@@ -228,7 +228,7 @@ public class Servlet extends HttpServlet{
                 String qID = params.get("qid")[0];
                 boolean isAnswer = type.equalsIgnoreCase("answer");
                 Question q = gen.getQuestion(qID);
-                return new Answer().new QDiv(q.getQHeader(), webDiv.getDiv(q, isAnswer));
+                return new Answer().new QData(q.getQHeader(), webDiv.getDiv(q, isAnswer));
             case "test":
                 // http://localhost:8080/web-apis/testctrl?cmd=query&op=test&tid=<name>
                 //String tID = params.get("tid")[0];
