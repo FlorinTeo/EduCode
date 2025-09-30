@@ -1,5 +1,5 @@
 import { CtrlComboBox } from "./ctrlComboBox.js?ver=2.0";
-import { CheckedList } from "./ctrlCheckedList.js?ver=2.0";
+import { CheckedList } from "./ctrlCheckedList.js?ver=2.1";
 
 // #region: External references
 let refUrlAPI;
@@ -28,6 +28,7 @@ let actTestEdt_qSelected = undefined;
 // #endregion: Action constants
 
 // #region: HTML event registration
+actTestEdt_cbTestName.setEventListener("change", actTestEdt_onChangeTest);
 actTestEditor_div.addEventListener("keydown", actTestEdt_onKeyDown);
 actTestEdt_tglSolution.addEventListener("change", actTestEdt_onToggleSolution); 
 actTestEdt_edtFilter.addEventListener("input", actTestEdt_onFilterChange);
@@ -178,6 +179,18 @@ async function actTestEdt_onToggleSolution(event) {
 }
 
 /**
+ * Handler called when the selection in the combo box changes
+ */
+async function actTestEdt_onChangeTest(event) {
+   if (event.target) {
+      refAddLog(`actTestEdt_onChangeTest: Test SELECTED: ${event.target.text}`);
+      requestQueryTest(event.target.text);
+   } else {
+      refAddLog(`actTestEdt_onChangeTest: Test CLEARED!`);
+   }
+}
+
+/**
  * Handler called when key left/right is pressed
  */
 async function actTestEdt_onKeyDown(event) {
@@ -197,7 +210,7 @@ async function actTestEdt_onKeyDown(event) {
 // #endregion HTML event handlers
 
 // #region: Backend API calls
-// #region: ..?cmd=query&type=qanswer|qtest&qid=qName
+// #region: ..?cmd=query&op=answer|question&qid=qName
 function requestQueryDiv(qName, isAnswer) {
    const urlAPI_query = `${refUrlAPI}?cmd=query&op=${isAnswer ? "answer" : "question"}&qid=${qName}`;
    var request = new  XMLHttpRequest();
@@ -214,9 +227,9 @@ function onResponseQueryDiv() {
    const html = (this.status == 200) ? jsonResponse._qDiv : jsonResponse._error;
    actTestEdt_divQContent.innerHTML = html;
 }
-// #endregion: ..?cmd=query&type=qanswer|qtest&qid=qName
+// #endregion: ..?cmd=query&op=answer|question&qid=qName
 
-// #region: ..?cmd=query&type=qset
+// #region: ..?cmd=query&op=qset
 function requestQueryQSet() {
    var request = new  XMLHttpRequest();
    request.open("GET", `${refUrlAPI}?cmd=query&op=qset`, true);
@@ -240,9 +253,9 @@ function onResponseQueryQSet() {
       refAddLog(`[${this.status}] ${jsonResponse._error}`);
    }
 }
-// #endregion: ..?cmd=query&type=qset
+// #endregion: ..?cmd=query&op=qset
 
-// #region: ..?cmd=query&type=tset
+// #region: ..?cmd=query&op=tset
 function requestQueryTSet() {
    var request = new  XMLHttpRequest();
    request.open("GET", `${refUrlAPI}?cmd=query&op=tset`, true);
@@ -267,9 +280,9 @@ function onResponseQueryTSet() {
 
    }
 }
-// #endregion: ..?cmd=query&type=tset
+// #endregion: ..?cmd=query&op=tset
 
-// #region: ..?cmd=set&op=vtest&name=vtestName&args=qName1,qName2,...
+// #region: ..?cmd=set&op=vtest&name=vtestName&qlist=qName1,qName2,...
 function requestSetVerTest(vtestName) {
    let qMCQ_Names = actTestEdt_questions._mcqRecs.filter(qRec => qRec.checked).map(qRec => qRec._qName);
    let qFRQ_Names = actTestEdt_questions._frqRecs.filter(qRec => qRec.checked).map(qRec => qRec._qName);
@@ -294,6 +307,35 @@ function onResponseSetVerTest() {
       refAddLog(jsonResponse._message);
    }
 }
-// #endregion: ..?cmd=set&op=vtest&name=vtestName&args=qName1,qName2,...
+// #endregion: ..?cmd=set&op=vtest&name=vtestName&qlist=qName1,qName2,...
+
+// #region: ..?cmd=query&op=test&tid=tName
+function requestQueryTest(tName) {
+   const urlAPI_query = `${refUrlAPI}?cmd=query&op=test&tid=${tName}`;
+   var request = new  XMLHttpRequest();
+   request.open("GET",  urlAPI_query, true);
+   request.timeout = 2000;
+   request.onload = onResponseQueryTest;
+   request.withCredentials = true;
+   request.send();
+}
+
+function onResponseQueryTest() {
+   // deserialize Answer.TData response
+   var jsonResponse = JSON.parse(this.response);
+   if (this.status == 200) {
+      const mcqRecs = jsonResponse._qHeaders.filter(qHeader => qHeader._qType === "mcq").map(qHeader => qHeader._qName);
+      const frqRecs = jsonResponse._qHeaders.filter(qHeader => qHeader._qType === "frq").map(qHeader => qHeader._qName);
+      const apxRecs = jsonResponse._qHeaders.filter(qHeader => qHeader._qType === "apx").map(qHeader => qHeader._qName);
+      actTestEdt_lstFRQ.checkSet(frqRecs);
+      actTestEdt_lstMCQ.checkSet(mcqRecs);
+      actTestEdt_lstAPX.checkSet(apxRecs);
+      actTestEdt_edtFilter.value="#";
+      actTestEdt_lstFRQ.filter(actTestEdt_edtFilter.value);
+      actTestEdt_lstMCQ.filter(actTestEdt_edtFilter.value);
+      actTestEdt_lstAPX.filter(actTestEdt_edtFilter.value);
+   }
+}
+// #endregion: ..?cmd=query&op=test&tid=tName
 
 // #endregion: Backend API calls

@@ -63,10 +63,10 @@ export class CtrlComboBox {
         const triggeredItem = event.params.data;
         switch(event.type) {
             case "select2:select":
-                this.#callHandler("changed", { host: this, target: triggeredItem });
+                this.#callHandler("change", { host: this, target: triggeredItem });
                 break;
             case "select2:unselect":
-                this.#callHandler("changed", { host: this, target: undefined });
+                this.#callHandler("change", { host: this, target: undefined });
                 break;
             case "select2:clear":
                 setTimeout(() => { this.#cbElem.val(null).trigger('change'); }, 0);

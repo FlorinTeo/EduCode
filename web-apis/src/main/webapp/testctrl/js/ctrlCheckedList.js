@@ -89,6 +89,15 @@ export class CheckedList {
         });
     }
 
+    checkSet(qRecs) {
+        this.#liList.forEach(li => {
+            let state = qRecs.includes(li.label.textContent);
+            li.checkbox.checked = state;
+            this.#callHandler("check", {host: this, target: undefined, metadata: li.metadata, checked: state});
+        });
+        this.#reset();
+    }
+
     select(state) {
         this.#liList.filter(li => li.selected != state).forEach(li => {
             li.selected = state;
