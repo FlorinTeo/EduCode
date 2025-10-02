@@ -191,6 +191,8 @@ async function onActTestEditor(e) {
     dlgAction.style.resize = 'both';
     dlgActionTitle.innerHTML = 'Test Editor Action';
     dlgActionApply.style.display = 'block';
+    dlgAction.style.minWidth = "640px";
+    dlgAction.style.minHeight = "480px";
     dlgAction.showModal();
     // Once the dialog is rendered, call the action's onOpen() handler, if defined
     requestAnimationFrame(() => {
