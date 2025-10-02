@@ -36,6 +36,7 @@
 .actTestEdt-lvl2-table {
     height: 100%;
     width: 100%;
+    min-width: 200px;
     border-collapse: collapse;
 }
 .actTestEdt-lvl2-table td { border: none; }

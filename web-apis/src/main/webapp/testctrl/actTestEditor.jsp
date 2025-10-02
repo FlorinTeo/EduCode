@@ -15,7 +15,7 @@
                 <tr>
                     <!-- Edit field for test name -->
                     <td>
-                        Test name:<select id="actTestMgmt_cbTestName" style="width: 185px;"></select>
+                        Test name:<select id="actTestMgmt_cbTestName" style="width: 240px;"></select>
                     </td>
                     <td>Solution</td>
                     <td>

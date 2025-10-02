@@ -186,6 +186,8 @@ async function onActTestEditor(e) {
     await selectAction("actTestEditor");
     dlgAction.style.width = '100%';
     dlgAction.style.height = '100%';
+    dlgAction.style.minWidth = "640px";
+    dlgAction.style.minHeight = "480px";
     dlgAction.style.resize = 'both';
     dlgActionTitle.innerHTML = 'Test Editor Action';
     dlgActionApply.style.display = 'block';
@@ -224,6 +226,8 @@ async function onActUserMgmt(e) {
     await selectAction("actUserMgmt");
     dlgAction.style.width = '';
     dlgAction.style.height = '';
+    dlgAction.style.minWidth = '';
+    dlgAction.style.minHeight = '';
     dlgAction.style.resize = 'none';
     dlgActionTitle.innerHTML = 'User Management';
     dlgActionApply.style.display = 'block';
