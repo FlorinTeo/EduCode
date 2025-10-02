@@ -13,7 +13,7 @@ const divLog = document.getElementById("divLog");
 const divLogContent = document.getElementById("divLogContent");
 const tblLog = document.getElementById("tblLog");
 
-const btnTestMgmt = document.getElementById("btnTestMgmt");
+const btnTestEdt = document.getElementById("btnTestEdt");
 const btnSessionMgmt = document.getElementById("btnSessionMgmt");
 const btnUserMgmt = document.getElementById("btnUserMgmt");
 
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", onPageLoad);
 window.addEventListener("resize", onPageResize);
 btnLogout.addEventListener("click", onClickLogout);
 
-btnTestMgmt.addEventListener("click", onActTestEditor);
+btnTestEdt.addEventListener("click", onActTestEditor);
 btnSessionMgmt.addEventListener("click", onActSessionMgmt);
 btnUserMgmt.addEventListener("click", onActUserMgmt);
 
