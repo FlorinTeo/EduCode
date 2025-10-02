@@ -28,20 +28,28 @@
                 <table id="tblActions">
                     <!-- Sample/Template pattern to be used when adding custom actions -->
                     <tr><td><input id="btnTestEdt" value="Test Editor" type="submit"></td>
-                        <td>Test editing operations such as:<br>
-                            Select questions to be packaged into a test.
-                            Edit or delete existing tests.</td>
+                        <td>Test editing operations such as:
+                            <ul style="margin-top: 0; padding-left: 16px;">
+                            <li>Create tests by selecting the questions it should contain,</li>
+                            <li>Edit or delete existing tests.</li> 
+                            </ul>
+                        </td>
                     </tr>
                     <!-- Action entries to be added bellow -->
                     <tr><td><input id="btnSessionMgmt" value="Test Publisher" type="submit"></td>
-                        <td>Test publishing operations such as:<br>
-                            Display the test meta data such as types and counts of questions, links to print-ready tests, etc.<br>
-                            Select specific users to be associated to the test.
-                            Publish / unpublish toggle to expose the test to the selected users.
+                        <td>Test publishing operations such as:
+                            <ul style="margin-top: 0; padding-left: 16px;">
+                            <li>Display extended test information, such as question counts by type, links to print-ready tests, etc,</li>
+                            <li>Assign test audience by selecting users to receive this test, once it is published,</li> 
+                            <li>Publishing or unpublishing specific tests to their selected audience.</li>
+                            </ul>
                         </td>
                     </tr>
                     <tr><td><input id="btnUserMgmt" value="User Management" type="submit"></td>
-                        <td>User management operations, such as:<br>Update the user password.</td>
+                        <td>User management operations, such as:
+                            <ul style="margin-top: 0; padding-left: 16px;">
+                            <li>Update user password.</li>
+                            </ul>
                     </tr>
                 </table>
             </div>

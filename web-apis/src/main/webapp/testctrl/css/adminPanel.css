@@ -39,7 +39,11 @@ html, body {
     margin-top: 10px;
     margin-bottom: 10px; /* matches log-style height + margin */
 }
-.actions-style td:nth-child(1) { padding: 8px 12px;  position: relative;}
+.actions-style td:nth-child(1) {
+    padding: 8px 12px;
+    position: relative;
+    vertical-align: top;
+}
 .actions-style td:nth-child(1)::after {
     content: "";
     position: absolute;
@@ -52,9 +56,11 @@ html, body {
 }
 .actions-style td:nth-child(2) {
     height: 40px;
-    vertical-align: middle;
+    font-size: 12px;
 }
-.actions-style input[type="submit"] { width: 160px; }
+.actions-style input[type="submit"] {
+    width: 160px;
+}
 
 /*--------======== .action-dialog-style ========---------*/
 .action-dialog-style {
