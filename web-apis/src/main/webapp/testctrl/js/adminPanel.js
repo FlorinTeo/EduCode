@@ -53,7 +53,6 @@ async function onPageLoad() {
 async function onPageResize() {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    console.log(`Window resized: ${width}x${height}`);
     txtTitleSid.style.display = (width < 800) ? 'none' : 'inline';
     divLog.style.display = (height < 300) ? 'none' : 'block';
 }

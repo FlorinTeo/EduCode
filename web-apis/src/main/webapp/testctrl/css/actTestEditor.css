@@ -23,7 +23,7 @@
     border-collapse: collapse;
 }
 .actTestEdt-lvl1-table td { border: none; }
-.actTestEdt-lvl1-table td:nth-child(1) { width: 200px; min-width: 160px;}
+.actTestEdt-lvl1-table td:nth-child(1) { width: 200px; }
 .actTestEdt-lvl1-table td:nth-child(2) { padding: 10px; }
 .actTestEdt-lvl1-table div {
     overflow: auto;
