@@ -17,7 +17,7 @@ export async function onCreate(sid, username, urlAPI, addLog) {
 
 export async function onOpen() {
     actTestPbl_requestQueryTSet();
-    actTestPbl_cbTestName.setEventListener("changed", actTestPbl_onCbChanged);
+    actTestPbl_cbTestName.setEventListener("change", actTestPbl_onCbChanged);
 }
 
 export async function onCancel() {
