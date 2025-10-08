@@ -23,5 +23,5 @@
 .actUserMgmt-table input[type="text"], .actUserMgmt-table input[type="password"] { width: 200px; height: 20px; }
 
 .actUserMgmt-err-div {
-    color: red;
+    color: rgb(10, 148, 21);
 }

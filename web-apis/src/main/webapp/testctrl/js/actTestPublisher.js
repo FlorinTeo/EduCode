@@ -7,7 +7,7 @@ let refAddLog;
 
 // #region: action globals
 const actTestPbl_cbTestName = new CtrlComboBox("actTestPublisher_cb");
-// #endregion: action globals
+const actTestPbl_txtOutput = document.getElementById("actTestPublisher_txtOutput");
 
 // #region: Exported methods
 export async function onCreate(sid, username, urlAPI, addLog) {
@@ -18,11 +18,11 @@ export async function onCreate(sid, username, urlAPI, addLog) {
 export async function onOpen() {
     actTestPbl_requestQueryTSet();
     actTestPbl_cbTestName.setEventListener("change", actTestPbl_onCbChanged);
+    actTestPbl_txtOutput.innerHTML = "";
 }
 
 export async function onCancel() {
     refAddLog("actTestPbl_onCancel called");
-    refAddLog(actTestPbl_cbTestName.getValue());
 }
 // #endregion: Exported methods
 
@@ -32,9 +32,9 @@ export async function onCancel() {
  */
 async function actTestPbl_onCbChanged(e) {
     if (e.target) {
-        refAddLog(`ComboBox selected: ${e.target.text}`);
+        actTestPbl_txtOutput.innerHTML = e.target.text;
     } else {
-        refAddLog(`ComboBox cleared.`);
+        actTestPbl_txtOutput.innerHTML = "";
     }
 }
 // #endregion: HTML event handlers

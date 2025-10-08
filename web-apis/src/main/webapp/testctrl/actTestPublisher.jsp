@@ -7,6 +7,15 @@
         <script defer src="js/actTestPublisher.js?ver=1.0"></script>
     </head>
     <div id="actTestPublisher_div" class="actTestPublisher-style">
-        <select id="actTestPublisher_cb" style="width: 240px;"></select>
+        <table>
+            <tr><td>
+                <select id="actTestPublisher_cb" style="width: 240px;"></select>
+            </td></tr>
+            <tr><td>
+                <div id="actTestPublisher_txtOutput" class="actTestPublisher-div">
+                </div>
+            </td></tr>
+        </table>
+        
     </div>
 </html>

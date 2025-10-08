@@ -215,9 +215,9 @@ async function onActTestPublisher(e) {
     await selectAction("actTestPublisher");
     dlgAction.style.width = '400px';
     dlgAction.style.height = '200px';
-    dlgAction.style.minWidth = '';
-    dlgAction.style.minHeight = '';
-    dlgAction.style.resize = 'none';
+    dlgAction.style.minWidth = '300px';
+    dlgAction.style.minHeight = '100px';
+    dlgAction.style.resize = 'both';
     dlgActionTitle.innerHTML = 'Test Publisher';
     dlgActionApply.style.display = 'none';
     dlgAction.showModal();

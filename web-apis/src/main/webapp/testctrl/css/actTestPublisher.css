@@ -7,3 +7,39 @@
     background-color: #fffee0;
     overflow: auto;
 }
+
+.actTestPublisher-div {
+    color: rgb(9, 95, 6);
+}
+
+/* layout: make the table take full height of the container
+   first row is auto-sized to the select, second row fills remaining space */
+.actTestPublisher-style table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+.actTestPublisher-style table td { padding: 0; }
+
+/* first row should size to its content (the select) */
+.actTestPublisher-style table tr:first-child td {
+    vertical-align: top;
+    height: auto;
+    padding: 0px 0px 4px;
+}
+
+/* second row should take remaining height */
+.actTestPublisher-style table tr:nth-child(2) td {
+    height: 100%;
+    vertical-align: top;
+    border: 1px solid rgba(0,0,0,0.2);
+}
+
+/* inner div should fill its td */
+.actTestPublisher-style .actTestPublisher-div {
+    height: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+    padding: 4px; /* breathing room inside the output area */
+    background-color: white;
+}
