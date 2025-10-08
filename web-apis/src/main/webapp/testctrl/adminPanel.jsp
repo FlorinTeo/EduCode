@@ -36,7 +36,7 @@
                         </td>
                     </tr>
                     <!-- Action entries to be added bellow -->
-                    <tr><td><input id="btnSessionMgmt" value="Test Publisher" type="submit"></td>
+                    <tr><td><input id="btnTestPbl" value="Test Publisher" type="submit"></td>
                         <td>Test publishing operations such as:
                             <ul style="margin-top: 0; padding-left: 16px;">
                             <li>Display extended test information, such as question counts by type, links to print-ready tests, etc,</li>

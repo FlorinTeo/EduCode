@@ -14,7 +14,7 @@ const divLogContent = document.getElementById("divLogContent");
 const tblLog = document.getElementById("tblLog");
 
 const btnTestEdt = document.getElementById("btnTestEdt");
-const btnSessionMgmt = document.getElementById("btnSessionMgmt");
+const btnTestPbl = document.getElementById("btnTestPbl");
 const btnUserMgmt = document.getElementById("btnUserMgmt");
 
 const dlgAction = document.getElementById("dlgAction");
@@ -25,7 +25,7 @@ const dlgActionPane = document.getElementById("dlgActionPane");
 
 const actMap = {
     actTestEditor: { div: null },
-    actSessionMgmt: { div: null },
+    actTestPublisher: { div: null },
     actUserMgmt: { div: null },
 };
 
@@ -35,7 +35,7 @@ window.addEventListener("resize", onPageResize);
 btnLogout.addEventListener("click", onClickLogout);
 
 btnTestEdt.addEventListener("click", onActTestEditor);
-btnSessionMgmt.addEventListener("click", onActSessionMgmt);
+btnTestPbl.addEventListener("click", onActTestPublisher);
 btnUserMgmt.addEventListener("click", onActUserMgmt);
 
 dlgActionApply.addEventListener("click", onActionDlgApply);
@@ -179,7 +179,7 @@ async function onActionDlgClose(e) {
     dlgAction.close();
 }
 
-// #region: actSample handlers
+// #region: actTestEditor handlers
 async function onActTestEditor(e) {
     e.preventDefault();
     await selectAction("actTestEditor");
@@ -200,12 +200,12 @@ async function onActTestEditor(e) {
         }
     });
 }
-// #endregion: actSample handlers
+// #endregion: actTestEditor handlers
 
-// #region: actSessions handlers
-async function onActSessionMgmt(e) {
+// #region: actTestPublisher handlers
+async function onActTestPublisher(e) {
     e.preventDefault();
-    await selectAction("actSessionMgmt");
+    await selectAction("actTestPublisher");
     dlgAction.style.width = '60%';
     dlgAction.style.height = '40%';
     dlgAction.style.resize = 'none';
@@ -214,12 +214,12 @@ async function onActSessionMgmt(e) {
     dlgAction.showModal();
     // Once the dialog is rendered, call the action's onOpen() handler, if defined
     requestAnimationFrame(() => {
-        if (actMap.actSessionMgmt.onOpen) {
-            actMap.actSessionMgmt.onOpen();
+        if (actMap.actTestPublisher.onOpen) {
+            actMap.actTestPublisher.onOpen();
         }
     });
 }
-// #endregion: actSession handlers
+// #endregion: actTestPublisher handlers
 
 // #region: actUserMgmt handlers
 async function onActUserMgmt(e) {
