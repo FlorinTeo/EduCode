@@ -8,6 +8,7 @@ let refAddLog;
 // #region: action globals
 const actTestPbl_cbTestName = new CtrlComboBox("actTestPublisher_cb");
 const actTestPbl_txtOutput = document.getElementById("actTestPublisher_txtOutput");
+// #endregion: action globals
 
 // #region: Exported methods
 export async function onCreate(sid, username, urlAPI, addLog) {
@@ -32,13 +33,14 @@ export async function onCancel() {
  */
 async function actTestPbl_onCbChanged(e) {
     if (e.target) {
-        actTestPbl_txtOutput.innerHTML = e.target.text;
+        actTestPbl_requestQueryTest(e.target.text);
     } else {
         actTestPbl_txtOutput.innerHTML = "";
     }
 }
 // #endregion: HTML event handlers
 
+// #region: Backend API calls
 // #region: ..?cmd=query&op=tset
 function actTestPbl_requestQueryTSet() {
     var request = new  XMLHttpRequest();
@@ -64,3 +66,25 @@ function actTestPbl_onResponseQueryTSet() {
     }
 }
 // #endregion: ..?cmd=query&op=tset
+
+// #region: ..?cmd=query&op=test&tid=<testId>
+function actTestPbl_requestQueryTest(testId) {
+    var request = new  XMLHttpRequest();
+    request.open("GET", `${refUrlAPI}?cmd=query&op=test&tid=${testId}`, true);
+    request.timeout = 2000;
+    request.onload = actTestPbl_onResponseQueryTest;
+    request.withCredentials = true;
+    request.send();
+}
+
+function actTestPbl_onResponseQueryTest() {
+    // deserialize Answer.TData response
+    const jsonResponse = JSON.parse(this.response);
+    if (this.status != 200) {
+        actTestPbl_txtOutput.innerHTML = `[${this.status}] ${jsonResponse._error}`;
+        return;
+    }
+    actTestPbl_txtOutput.innerHTML = jsonResponse._tHeader._tName
+}
+// #endregion: ..?cmd=query&op=test&tid=<testId>
+// #endregion: Backend API calls
