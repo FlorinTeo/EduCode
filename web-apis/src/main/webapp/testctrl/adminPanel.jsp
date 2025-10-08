@@ -39,7 +39,7 @@
                     <tr><td><input id="btnTestPbl" value="Test Publisher" type="submit"></td>
                         <td>Test publishing operations such as:
                             <ul style="margin-top: 0; padding-left: 16px;">
-                            <li>Display extended test information, such as question counts by type, links to print-ready tests, etc,</li>
+                            <li>Display extended test information: question counts by type, links to print-ready tests, etc,</li>
                             <li>Assign test audience by selecting users to receive this test, once it is published,</li> 
                             <li>Publishing or unpublishing specific tests to their selected audience.</li>
                             </ul>

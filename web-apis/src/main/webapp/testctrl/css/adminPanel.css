@@ -60,12 +60,15 @@ html, body {
 }
 .actions-style input[type="submit"] {
     width: 160px;
+    height: 40px;
 }
 
 /*--------======== .action-dialog-style ========---------*/
 .action-dialog-style {
     position: fixed;
-    display: flex;
+    /* keep hidden when dialog is not open - the native dialog element relies on the [open] attribute;
+    forcing display:flex unconditionally prevents dlg.close() from hiding the element. */
+    display: none;
     flex-direction: column;
     align-items: center;
     border: 1px solid rgb(0, 0, 0);
@@ -73,6 +76,7 @@ html, body {
     font-size: 14px;
     font-weight: 400;
 }
+.action-dialog-style[open] { display: flex; } /* show dialog when it is open */
 
 .action-dialog-style .action-dialog-titleBar-style {
     width: 100%;

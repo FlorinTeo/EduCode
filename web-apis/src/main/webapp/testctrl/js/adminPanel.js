@@ -31,6 +31,7 @@ const actMap = {
 
 // #region: event listeners
 document.addEventListener("DOMContentLoaded", onPageLoad);
+document.addEventListener("keydown", onActionDlgKeyDown);
 window.addEventListener("resize", onPageResize);
 btnLogout.addEventListener("click", onClickLogout);
 
@@ -38,7 +39,6 @@ btnTestEdt.addEventListener("click", onActTestEditor);
 btnTestPbl.addEventListener("click", onActTestPublisher);
 btnUserMgmt.addEventListener("click", onActUserMgmt);
 
-dlgAction.addEventListener("keydown", onActionDlgKeyDown);
 dlgActionApply.addEventListener("click", onActionDlgApply);
 dlgActionClose.addEventListener("click", onActionDlgClose);
 // #endregion: event listeners
@@ -161,6 +161,7 @@ async function selectAction(actName) {
 }
 
 async function onActionDlgKeyDown(e) {
+    if (!dlgAction.open) return;
     if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
         e.preventDefault();
         await onActionDlgClose(e);
@@ -196,7 +197,7 @@ async function onActTestEditor(e) {
     dlgAction.style.minWidth = "640px";
     dlgAction.style.minHeight = "480px";
     dlgAction.style.resize = 'both';
-    dlgActionTitle.innerHTML = 'Test Editor Action';
+    dlgActionTitle.innerHTML = 'Test Editor';
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
     // Once the dialog is rendered, call the action's onOpen() handler, if defined
@@ -217,7 +218,7 @@ async function onActTestPublisher(e) {
     dlgAction.style.minWidth = '';
     dlgAction.style.minHeight = '';
     dlgAction.style.resize = 'none';
-    dlgActionTitle.innerHTML = 'Session Management';
+    dlgActionTitle.innerHTML = 'Test Publisher';
     dlgActionApply.style.display = 'none';
     dlgAction.showModal();
     // Once the dialog is rendered, call the action's onOpen() handler, if defined
