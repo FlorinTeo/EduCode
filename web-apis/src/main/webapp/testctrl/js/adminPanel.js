@@ -38,6 +38,7 @@ btnTestEdt.addEventListener("click", onActTestEditor);
 btnTestPbl.addEventListener("click", onActTestPublisher);
 btnUserMgmt.addEventListener("click", onActUserMgmt);
 
+dlgAction.addEventListener("keydown", onActionDlgKeyDown);
 dlgActionApply.addEventListener("click", onActionDlgApply);
 dlgActionClose.addEventListener("click", onActionDlgClose);
 // #endregion: event listeners
@@ -159,6 +160,13 @@ async function selectAction(actName) {
     }
 }
 
+async function onActionDlgKeyDown(e) {
+    if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
+        e.preventDefault();
+        await onActionDlgClose(e);
+    }
+}
+
 async function onActionDlgApply(e) {
     e.preventDefault();
     const actName = Object.keys(actMap).find(key => actMap[key].div && actMap[key].div.style.display !== "none");
@@ -190,8 +198,6 @@ async function onActTestEditor(e) {
     dlgAction.style.resize = 'both';
     dlgActionTitle.innerHTML = 'Test Editor Action';
     dlgActionApply.style.display = 'block';
-    dlgAction.style.minWidth = "640px";
-    dlgAction.style.minHeight = "480px";
     dlgAction.showModal();
     // Once the dialog is rendered, call the action's onOpen() handler, if defined
     requestAnimationFrame(() => {
@@ -206,8 +212,10 @@ async function onActTestEditor(e) {
 async function onActTestPublisher(e) {
     e.preventDefault();
     await selectAction("actTestPublisher");
-    dlgAction.style.width = '60%';
-    dlgAction.style.height = '40%';
+    dlgAction.style.width = '400px';
+    dlgAction.style.height = '200px';
+    dlgAction.style.minWidth = '';
+    dlgAction.style.minHeight = '';
     dlgAction.style.resize = 'none';
     dlgActionTitle.innerHTML = 'Session Management';
     dlgActionApply.style.display = 'none';
