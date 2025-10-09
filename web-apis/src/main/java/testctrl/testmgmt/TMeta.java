@@ -19,6 +19,11 @@ import com.google.gson.GsonBuilder;
 public class TMeta {
     private static final Gson _GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    /**
+     * Maps the name and the version of this test.
+     * "_name": "2025_09_19_APCSA_Unit1",
+     * "_version": "",
+     */
     private String _name;
     private String _version;
 
@@ -49,13 +54,14 @@ public class TMeta {
      *         "v1": {
      *             "_name": "2025_09_19_APCSA_Unit1",
      *             "_version": "v1",
-     *         "_display": {
-     *             "1": "ap1.Q4 eabcd",
-     *             "2": "ap1.Q5 decba",
-     *             "3": "ap1.Q1 acbed",
-     *             "4": "ap1.Q6 cdbae",
-     *             "5": "ap1.Q3 ceabd",
-     *             "6": "ap1.Q2 abecd"
+     *             "_display": {
+     *                 "1": "ap1.Q4 eabcd",
+     *                 "2": "ap1.Q5 decba",
+     *                 "3": "ap1.Q1 acbed",
+     *                 "4": "ap1.Q6 cdbae",
+     *                 "5": "ap1.Q3 ceabd",
+     *                 "6": "ap1.Q2 abecd"
+     *             }
      *         },
      *         ...
      */
@@ -333,8 +339,8 @@ public class TMeta {
         _files.put(fileID, filePath);
     }
 
-    public TMeta getVariant(String variantID) {
-        return _variants.get(variantID);
+    public Map<String, TMeta> getVariants() {
+        return _variants;
     }
 
     public void setVariant(String variantID, TMeta variantMeta) {
@@ -342,7 +348,7 @@ public class TMeta {
     }
 
     public THeader getTHeader() {
-        return new THeader(_name);
+        return new THeader(_name, _version, _files);
     }
 
     public Collection<QHeader> getQHeaders() {

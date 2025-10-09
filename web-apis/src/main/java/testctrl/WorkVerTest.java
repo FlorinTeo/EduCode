@@ -38,7 +38,7 @@ public class WorkVerTest extends Work {
 
             // generate and log the links for each of the variants
             for(String variant : Generator.VARIANTS) {
-                TMeta vMeta = tMeta.getVariant(variant);
+                TMeta vMeta = tMeta.getVariants().get(variant);
                 testUrl = String.format("%s/%s/%s", _session.getRootUrl(), _context.getConfig().tests_root, _testName);
                 log = "Variant test generated - ";
                 log += String.format("<b>%s</b>:[<a href='%s/%s/%s' target='blank'>test</a>, <a href='%s/%s/%s' target='blank'>answers</a>].",

@@ -115,7 +115,7 @@ public class Servlet extends HttpServlet{
         User user = _context.getUser(name);
         checkTrue(user != null && user.hasRole("admin","teacher") && user.matchesPwd(pwd), "Invalid name, role or password!");
         // try to create a session. This may throw if another user is logged in this session already.
-        String rootUrl = String.format("%s://%s:%s/%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath());
+        String rootUrl = String.format("%s://%s:%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath());
         Session session = _context.newSession(user, httpSession, rootUrl);
         _context.Log(new LogEntry("User '%s' logged in session [%s]", user.username, session.getId()));
         return new Answer().new Msg(session.getId(), "Session created!");
@@ -236,8 +236,9 @@ public class Servlet extends HttpServlet{
                 // http://localhost:8080/web-apis/testctrl?cmd=query&op=test&tid=<name>
                 String tID = params.get("tid")[0];
                 TMeta t = testsDb.getTMeta(tID);
+                String testPath = String.format("%s/%s/%s", session.getRootUrl(), _context.getConfig().tests_root, tID);
                 return (t != null)
-                    ? new Answer().new TData(t.getTHeader(), t.getQHeaders())
+                    ? new Answer().new TData(t, testPath)
                     : new Answer().new Err("Unknown test '%s'", tID);
             default:
                 return new Answer().new Err("Unknown query operation!");

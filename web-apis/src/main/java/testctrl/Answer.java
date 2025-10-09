@@ -1,11 +1,15 @@
 package testctrl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gson.Gson;
 
 import testctrl.testmgmt.QHeader;
 import testctrl.testmgmt.THeader;
+import testctrl.testmgmt.TMeta;
 
 public class Answer {
 
@@ -64,10 +68,19 @@ public class Answer {
     public class TData extends Answer {
         public THeader _tHeader;
         public QHeader[] _qHeaders;
+        public THeader[] _variants;
 
-        public TData(THeader tHeader, Collection<QHeader> qHeaders) {
-            _tHeader = tHeader;
-            _qHeaders = qHeaders.toArray(new QHeader[0]);
+        public TData(TMeta tMeta, String testPath) {
+            _tHeader = tMeta.getTHeader();
+            _tHeader.adjustPath(testPath);
+            _qHeaders = tMeta.getQHeaders().toArray(new QHeader[0]);
+            ArrayList<THeader> variants = new ArrayList<THeader>();
+            for(TMeta tVarMeta: tMeta.getVariants().values()) {
+                THeader vtHeader = tVarMeta.getTHeader();
+                vtHeader.adjustPath(String.format("%s/%s", testPath, tVarMeta.getVersion()));
+                variants.add(vtHeader);
+            }
+            _variants = variants.toArray(new THeader[0]);
         }
     }
 
