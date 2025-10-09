@@ -84,7 +84,29 @@ function actTestPbl_onResponseQueryTest() {
         actTestPbl_txtOutput.innerHTML = `[${this.status}] ${jsonResponse._error}`;
         return;
     }
-    actTestPbl_txtOutput.innerHTML = jsonResponse._tHeader._tName
+    let ref = jsonResponse._tHeader._tName;
+    let refTest = jsonResponse._tHeader._links.test;
+    let refAnswers = jsonResponse._tHeader._links.answers;
+    let nMCQ = 0;
+    let nFRQ = 0;
+    let nAPX = 0;
+    jsonResponse._qHeaders.forEach(qHeader => {
+        nMCQ += (qHeader._qType == "mcq" || qHeader._qType == "mcb") ? qHeader._qCount : 0;
+        nFRQ += (qHeader._qType == "frq") ? qHeader._qCount : 0;
+        nAPX += (qHeader._qType == "apx") ? qHeader._qCount : 0;
+    });
+    let htmlText = `<b>${ref}</b><br><div style="padding-left: 10px; padding-top: 4px;">`;
+    htmlText += `Questions: MCQ=<b>${nMCQ}</b>; FRQ=<b>${nFRQ}</b>; APX=<b>${nAPX}</b>;<br>`;
+    htmlText += `Reference: <a href="${refTest}" target="_blank">test</a> | <a href="${refAnswers}" target="_blank">answers</a><br>`;
+    htmlText += `</div><div style="padding-left: 60px;">`;
+    jsonResponse._variants.forEach(variant => {
+        let ver = variant._tVersion;
+        let verTest = variant._links.test;
+        let verAnswers = variant._links.answers;
+        htmlText += `${ver}: <a href="${verTest}" target="_blank">test</a> | <a href="${verAnswers}" target="_blank">answers</a><br>`;
+    });
+    htmlText += `</div>`;
+    actTestPbl_txtOutput.innerHTML = htmlText;
 }
 // #endregion: ..?cmd=query&op=test&tid=<testId>
 // #endregion: Backend API calls

@@ -213,10 +213,10 @@ async function onActTestEditor(e) {
 async function onActTestPublisher(e) {
     e.preventDefault();
     await selectAction("actTestPublisher");
-    dlgAction.style.width = '400px';
-    dlgAction.style.height = '200px';
-    dlgAction.style.minWidth = '300px';
-    dlgAction.style.minHeight = '100px';
+    dlgAction.style.width = '600px';
+    dlgAction.style.height = '240px';
+    dlgAction.style.minWidth = '400px';
+    dlgAction.style.minHeight = '160px';
     dlgAction.style.resize = 'both';
     dlgActionTitle.innerHTML = 'Test Publisher';
     dlgActionApply.style.display = 'none';

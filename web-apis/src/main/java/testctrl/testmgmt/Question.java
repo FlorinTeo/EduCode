@@ -266,7 +266,9 @@ public class Question {
     }
 
     public QHeader getQHeader() {
-        return new QHeader(getName(), getType());
+        QHeader qHeader = new QHeader(getName(), getType());
+        qHeader._qCount = _bQuestions != null ? _bQuestions.size() : 1;
+        return qHeader;
     }
 
     @Override
