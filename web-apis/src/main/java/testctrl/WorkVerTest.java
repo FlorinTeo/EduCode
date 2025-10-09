@@ -27,26 +27,13 @@ public class WorkVerTest extends Work {
             g.delTest(_testName, true);
             TMeta tMeta = g.genTest(_testName, _testQIDs, true);
 
-            // generate and log the links for the reference test
-            String testUrl = String.format("%s/%s/%s", _session.getRootUrl(), _context.getConfig().tests_root, _testName);
-            String log = "Reference test generated - ";
-            log += String.format("<b>%s</b>:[<a href='%s/%s' target='blank'>test</a>, <a href='%s/%s' target='blank'>answers</a>].",
-                tMeta.getName(),
-                testUrl, tMeta.getFile("test"),
-                testUrl, tMeta.getFile("answers"));
-            _context.Log(new LogEntry(log));
-
-            // generate and log the links for each of the variants
+            // generate and log each of the variants
+            String log = String.format("Test generated - <b>%s</b>: ref", tMeta.getName());
             for(String variant : Generator.VARIANTS) {
                 TMeta vMeta = tMeta.getVariants().get(variant);
-                testUrl = String.format("%s/%s/%s", _session.getRootUrl(), _context.getConfig().tests_root, _testName);
-                log = "Variant test generated - ";
-                log += String.format("<b>%s</b>:[<a href='%s/%s/%s' target='blank'>test</a>, <a href='%s/%s/%s' target='blank'>answers</a>].",
-                    vMeta.getName() + "." + vMeta.getVersion(),
-                    testUrl, variant, vMeta.getFile("test"),
-                    testUrl, variant, vMeta.getFile("answers"));
-                _context.Log(new LogEntry(log));
+                log += String.format(",%s", vMeta.getVersion());
             }
+            _context.Log(new LogEntry(log));
         }
 
         // refresh tests database
