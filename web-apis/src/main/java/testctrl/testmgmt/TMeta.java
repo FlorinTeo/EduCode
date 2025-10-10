@@ -266,8 +266,15 @@ public class TMeta {
         if (!_name.equals(".") && !Files.exists(pMetaDir)) {
             Files.createDirectories(pMetaDir);
         }
+
+        Path pMappings = genFilePath(pMetaDir, "mappings", "txt");
+        BufferedWriter bw = Files.newBufferedWriter(pMappings);
+        bw.write(this.genMappingsTxt());
+        bw.close();
+        setFile("mappings", pMappings.getFileName().toString());
+
         Path pMeta = genFilePath(pMetaDir, ".meta", "");
-        BufferedWriter bw = Files.newBufferedWriter(pMeta);
+        bw = Files.newBufferedWriter(pMeta);
         bw.write(_GSON.toJson(this));
         bw.close();
     }
@@ -329,6 +336,10 @@ public class TMeta {
             nPages++;
         }
         return nPages;
+    }
+
+    public String genMappingsTxt() {
+        return "Mappings go here!";
     }
 
     public String getFile(String fileID) {
