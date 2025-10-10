@@ -321,7 +321,7 @@ function onResponseQueryTest() {
    // deserialize Answer.TData response
    var jsonResponse = JSON.parse(this.response);
    if (this.status == 200) {
-      const mcqRecs = jsonResponse._qHeaders.filter(qHeader => qHeader._qType === "mcq").map(qHeader => qHeader._qName);
+      const mcqRecs = jsonResponse._qHeaders.filter(qHeader => (qHeader._qType === "mcq" || qHeader._qType === "mcb")).map(qHeader => qHeader._qName);
       const frqRecs = jsonResponse._qHeaders.filter(qHeader => qHeader._qType === "frq").map(qHeader => qHeader._qName);
       const apxRecs = jsonResponse._qHeaders.filter(qHeader => qHeader._qType === "apx").map(qHeader => qHeader._qName);
       actTestEdt_lstFRQ.checkSet(frqRecs);
