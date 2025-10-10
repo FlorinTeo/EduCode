@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -269,7 +271,7 @@ public class TMeta {
 
         Path pMappings = genFilePath(pMetaDir, "mappings", "txt");
         BufferedWriter bw = Files.newBufferedWriter(pMappings);
-        bw.write(this.genMappingsTxt());
+        bw.write(genMappingsTxt());
         bw.close();
         setFile("mappings", pMappings.getFileName().toString());
 
@@ -339,7 +341,35 @@ public class TMeta {
     }
 
     public String genMappingsTxt() {
-        return "Mappings go here!";
+        // extract the list of individual mc questions in this test (bundles are expanded)
+        Map<String, Question> mcqMap = new TreeMap<String, Question>();
+        for(Question q : _mcQuestions) {
+            if (q.getType().equals(Question._MCQ)) {
+                mcqMap.put(q.getName(), q);
+            } else if (q.getType().equals(Question._MCB)) {
+                for(Question bq : q.getBQuestions()) {
+                    mcqMap.put(bq.getName(), bq);
+                }
+            }
+        }
+
+        // and build the test-specific question labels: "Q1 Q2 Q3 ..."
+        StringBuilder sbQ = new StringBuilder();
+        StringBuilder sbK = new StringBuilder();
+        for (Map.Entry<String, String> kvp : _display.entrySet()) {
+            String qNum = kvp.getKey();
+            String qID = kvp.getValue().split(" ")[0];
+            Question q = mcqMap.get(qID);
+            sbQ.append(String.format("\tQ%s", qNum));
+            sbK.append(String.format("\t%s", q.getMeta().correct.toUpperCase()));
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("Reference Key:\n");
+        sb.append(sbQ.append("\n"));
+        sb.append(sbK.append("\n"));
+        return sb.toString();
+        // return "Reference Key:\tA\tB\tC\tD\tE";
     }
 
     public String getFile(String fileID) {
