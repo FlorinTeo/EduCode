@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -350,18 +351,23 @@ public class TMeta {
 
     public String genMappingsTxt() {
         // extract the list of individual mc questions in this test (bundles are expanded)
+        // {<"ap2.Q1", Question_instance>, ...}
         Map<String, Question> mcqMap = getMCQuestions(true);
+        // extract the mapping qID to QNum
+        // {<"ap2.Q1", "1">, <"ap2.Q2", "2">, ...}
+        Map<String, String> mapQNums = new HashMap<String, String>();
 
         // and build the test-specific question labels: "Q1 Q2 Q3 ..."
         StringBuilder sbQ = new StringBuilder();
         StringBuilder sbK = new StringBuilder();
         boolean first = true;
         for (Map.Entry<String, String> kvp : _display.entrySet()) {
-            String qNum = kvp.getKey();
-            String qID = kvp.getValue().split(" ")[0];
+            String qNum = kvp.getKey(); // "1", "2", "3", ...
+            String qID = kvp.getValue().split(" ")[0]; // "ap2.Q1", "ap2.Q2", "ap2.Q3", ...
+            mapQNums.put(qID, qNum);
             Question q = mcqMap.get(qID);
-            sbQ.append(String.format("%sQ%s", first ? "": "\t", qNum));
-            sbK.append(String.format("%s%s", first ? "": "\t", q.getMeta().correct.toUpperCase()));
+            sbQ.append(String.format("%sQ%s", first ? "": "\t", qNum)); // "Q1   Q2   Q3   ..."
+            sbK.append(String.format("%s%s", first ? "": "\t", q.getMeta().correct.toUpperCase())); //"C   A   D   ...""
             first = false;
         }
         
@@ -370,7 +376,20 @@ public class TMeta {
         sb.append(sbQ.append("\n"));
         sb.append(sbK.append("\n"));
         sb.append("\n");
-        sb.append("Version mappings:\n");
+
+        if (_variants.size() != 0) {
+            sb.append("Version mappings:\n");
+            for(Map.Entry<String, TMeta> kvp : _variants.entrySet()) {
+                String ver = kvp.getKey(); // "v1", "v2", ...
+                TMeta tMetaVar = kvp.getValue(); // TMeta object of the specific version
+                for(String variant : tMetaVar._display.values()) {
+                    String[] vParts = variant.split(" "); // ["ap2.Q1", "adebc"]
+                    String vqID = ver + ".Q" + mapQNums.get(vParts[0]); // "v1.Q2"
+                    String vqAns = String.join("\t", vParts[1].toUpperCase().split("")); // "C   A   D   ..."
+                    sb.append(String.format("%s\t%s\n", vqID, vqAns));
+                }
+            }
+        }
         return sb.toString();
     }
 
