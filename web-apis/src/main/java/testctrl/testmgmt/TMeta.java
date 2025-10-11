@@ -5,13 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -186,8 +184,18 @@ public class TMeta {
             : "40%";
     }
 
-    public List<Question> getMCQuestions() {
-        return _mcQuestions;
+    public Map<String, Question> getMCQuestions(boolean unbundled) {
+        Map<String, Question> mcqMap = new TreeMap<String,Question>();
+        for (Question q : _mcQuestions) {
+            if (!unbundled || q.getType().equals(Question._MCQ)) {
+                mcqMap.put(q.getName(), q);
+            } else {
+                for (Question qb : q.getBQuestions()) {
+                    mcqMap.put(qb.getName(), qb);
+                }
+            }
+        }
+        return mcqMap;
     }
 
     public int getFRQCount() {
@@ -342,34 +350,28 @@ public class TMeta {
 
     public String genMappingsTxt() {
         // extract the list of individual mc questions in this test (bundles are expanded)
-        Map<String, Question> mcqMap = new TreeMap<String, Question>();
-        for(Question q : _mcQuestions) {
-            if (q.getType().equals(Question._MCQ)) {
-                mcqMap.put(q.getName(), q);
-            } else if (q.getType().equals(Question._MCB)) {
-                for(Question bq : q.getBQuestions()) {
-                    mcqMap.put(bq.getName(), bq);
-                }
-            }
-        }
+        Map<String, Question> mcqMap = getMCQuestions(true);
 
         // and build the test-specific question labels: "Q1 Q2 Q3 ..."
         StringBuilder sbQ = new StringBuilder();
         StringBuilder sbK = new StringBuilder();
+        boolean first = true;
         for (Map.Entry<String, String> kvp : _display.entrySet()) {
             String qNum = kvp.getKey();
             String qID = kvp.getValue().split(" ")[0];
             Question q = mcqMap.get(qID);
-            sbQ.append(String.format("\tQ%s", qNum));
-            sbK.append(String.format("\t%s", q.getMeta().correct.toUpperCase()));
+            sbQ.append(String.format("%sQ%s", first ? "": "\t", qNum));
+            sbK.append(String.format("%s%s", first ? "": "\t", q.getMeta().correct.toUpperCase()));
+            first = false;
         }
         
         StringBuilder sb = new StringBuilder();
         sb.append("Reference Key:\n");
         sb.append(sbQ.append("\n"));
         sb.append(sbK.append("\n"));
+        sb.append("\n");
+        sb.append("Version mappings:\n");
         return sb.toString();
-        // return "Reference Key:\tA\tB\tC\tD\tE";
     }
 
     public String getFile(String fileID) {

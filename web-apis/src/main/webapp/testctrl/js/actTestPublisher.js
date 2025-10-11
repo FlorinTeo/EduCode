@@ -87,6 +87,7 @@ function actTestPbl_onResponseQueryTest() {
     let ref = jsonResponse._tHeader._tName;
     let refTest = jsonResponse._tHeader._links.test;
     let refAnswers = jsonResponse._tHeader._links.answers;
+    let refMappings = jsonResponse._tHeader._links.mappings;
     let nMCQ = 0;
     let nFRQ = 0;
     let nAPX = 0;
@@ -97,7 +98,9 @@ function actTestPbl_onResponseQueryTest() {
     });
     let htmlText = `<b>${ref}</b><br><div style="padding-left: 10px; padding-top: 4px;">`;
     htmlText += `Questions: MCQ=<b>${nMCQ}</b>; FRQ=<b>${nFRQ}</b>; APX=<b>${nAPX}</b>;<br>`;
-    htmlText += `Reference: <a href="${refTest}" target="_blank">test</a> | <a href="${refAnswers}" target="_blank">answers</a><br>`;
+    htmlText += `Reference: <a href="${refTest}" target="_blank">test</a>`;
+    htmlText += ` | <a href="${refAnswers}" target="_blank">answers</a>`;
+    htmlText += ` | <a href="${refMappings}" target="_blank">mappings</a><br>`;
     htmlText += `</div><div style="padding-left: 60px;">`;
     jsonResponse._variants.forEach(variant => {
         let ver = variant._tVersion;
