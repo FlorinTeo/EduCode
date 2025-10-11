@@ -381,12 +381,12 @@ public class TMeta {
             sb.append("Version mappings:\n");
             int tCount = 0; // total count of questions in the test
             for(Map.Entry<String, TMeta> kvp : _variants.entrySet()) {
-                tCount++;
                 String ver = kvp.getKey(); // "v1", "v2", ...
                 TMeta tMetaVar = kvp.getValue(); // TMeta object of the specific version
                 int vCount = 0; // count of questions within the version
                 for(String variant : tMetaVar._display.values()) {
                     vCount++;
+                    tCount++;
                     String[] vParts = variant.split(" "); // ["ap2.Q1", "adebc"]
                     String vqID = ver + ".Q" + mapQNums.get(vParts[0]); // "v1.Q2"
                     String vqAns = String.join("\t", vParts[1].toUpperCase().split("")); // "C   A   D   ..."
