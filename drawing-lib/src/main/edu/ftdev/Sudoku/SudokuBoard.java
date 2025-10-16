@@ -123,8 +123,7 @@ import java.awt.Color;
     }
 
     private List<String> loadFromRes(String sudokuResPath) throws IOException {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/Sudoku/" + sudokuResPath);
+        InputStream input = DrawingFrame.getEncodedResourceURL("edu/ftdev/res/Sudoku/" + sudokuResPath).openStream();
         if (input == null) {
             throw new IOException("Resource not found: " + sudokuResPath);
         }

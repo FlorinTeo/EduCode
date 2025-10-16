@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
@@ -39,9 +38,7 @@ public class EquestriaMap extends DrawingFactory {
     public EquestriaMap() {
         super();
         try {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            InputStream input = classLoader.getResourceAsStream("edu/ftdev/res/Equestria/equestria_map.jpg");
-            BufferedImage img = ImageIO.read(input);
+            BufferedImage img = ImageIO.read(DrawingFrame.getEncodedResourceURL("edu/ftdev/res/Equestria/equestria_map.jpg"));
             _drawing = new Drawing(img);
             int origWidth = _drawing.getWidth();
             int origHeight = _drawing.getHeight();

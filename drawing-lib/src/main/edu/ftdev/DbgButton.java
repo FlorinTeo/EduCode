@@ -22,11 +22,10 @@ class DbgButton extends Canvas {
     private BtnFace _idxFace;
     
     public DbgButton(int btnKey, int xAnchor, int yAnchor, String... btnFaceFiles) throws IOException {
-        ClassLoader cldr = this.getClass().getClassLoader();
         _btnKey = btnKey;
         _btnFaces = new BufferedImage[btnFaceFiles.length];
         for(int i = 0; i < _btnFaces.length; i++) {
-            URL url = cldr.getResource(btnFaceFiles[i]);
+            URL url = DrawingFrame.getEncodedResourceURL(btnFaceFiles[i]);
             _btnFaces[i] = ImageIO.read(url);
         }
         _idxFace = BtnFace.NORMAL;

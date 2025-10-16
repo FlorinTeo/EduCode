@@ -12,6 +12,7 @@ import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 
 import edu.ftdev.DbgButton.BtnFace;
 import edu.ftdev.KeyInterceptor.DbgLevel;
@@ -189,6 +190,26 @@ public class DrawingFrame implements
     }
     // #endregion: [Private] StatusBar management
     
+    /**
+     * Gets the encoded URL of a resource (image, text file, etc) within the library jar.
+     * @param resourcePath - the relative path of the resource, within the jar.
+     * @return the full URL of the resource.
+     * @throws IOException if the resource cannot be located.
+     */
+    public static URL getEncodedResourceURL(String resourcePath) throws IOException {
+        try {
+            URL jarLocation = DrawingFrame.class.getProtectionDomain().getCodeSource().getLocation();
+            String classPath = jarLocation.toString().replace("!", "%21");
+            String fullPath = classPath.endsWith(".jar")
+                ? "jar:" + classPath + "!/" + resourcePath
+                : classPath + resourcePath;
+            URL url = new URL(fullPath);
+            return url;
+        } catch(Exception e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
     /**
      * Creates an instance of a DrawingFrame object encapsulating the representation of a window displaying the pixels of the given drawing object.
      * @param drawing - the drawing to be displayed by this frame.
