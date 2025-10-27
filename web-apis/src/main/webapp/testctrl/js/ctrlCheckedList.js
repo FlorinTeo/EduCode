@@ -148,8 +148,9 @@ export class CheckedList {
         }
     }
 
-    addItem(liText, metadata) {
+    addItem(liText, metadata, stlClass) {
         const li = document.createElement("li");
+        li.classList.add(stlClass);
         li.innerHTML = `<input type="checkbox"><label>${liText}</label>`;
         li.checkbox = li.querySelector("input[type='checkbox']");
         li.label = li.querySelector("label");

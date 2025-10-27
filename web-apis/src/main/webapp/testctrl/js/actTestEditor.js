@@ -1,5 +1,5 @@
 import { CtrlComboBox } from "./ctrlComboBox.js?ver=2.0";
-import { CheckedList } from "./ctrlCheckedList.js?ver=2.1";
+import { CheckedList } from "./ctrlCheckedList.js?ver=2.3";
 
 // #region: External references
 let refUrlAPI;
@@ -107,11 +107,11 @@ function loadQSet(qTypes, jsonResponse) {
  */
 function initializeLists() {
    actTestEdt_lstMCQ.clear();
-   actTestEdt_questions._mcqRecs.forEach(qRec => { actTestEdt_lstMCQ.addItem(qRec._qName, qRec); })
+   actTestEdt_questions._mcqRecs.forEach(qRec => { actTestEdt_lstMCQ.addItem(qRec._qName, qRec, "custom-li-1"); })
    actTestEdt_lstFRQ.clear();
-   actTestEdt_questions._frqRecs.forEach(qRec => { actTestEdt_lstFRQ.addItem(qRec._qName, qRec); })
+   actTestEdt_questions._frqRecs.forEach(qRec => { actTestEdt_lstFRQ.addItem(qRec._qName, qRec, "custom-li-2"); })
    actTestEdt_lstAPX.clear();
-   actTestEdt_questions._apxRecs.forEach(qRec => { actTestEdt_lstAPX.addItem(qRec._qName, qRec); })
+   actTestEdt_questions._apxRecs.forEach(qRec => { actTestEdt_lstAPX.addItem(qRec._qName, qRec, "custom-li-3"); })
 }
 // #endregion: Helper methods
 

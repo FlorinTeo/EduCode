@@ -1,5 +1,18 @@
 .selected-li {
-    background-color: #106cce;
-    color: white;
-    border: 1px solid #0056b3; /* Optional: Add a border */
+    background-color: #106cce !important;
+    color: white !important;
+    /* border: 1px solid #0056b3; Optional: Add a border */
+}
+
+.custom-li-1 {
+    background-color: #ffffff;
+}
+
+.custom-li-2 {
+    background-color: #e1f2ff;
+}
+
+.custom-li-3 {
+    background-color: #ececec;
+    color: #6e6e6e;
 }
