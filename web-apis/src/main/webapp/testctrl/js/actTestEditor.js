@@ -79,6 +79,16 @@ function loadQSet(qTypes, jsonResponse) {
       if (!lstTypes.includes(question._qType)) {
          continue;
       }
+      
+      // attach a "filterMatch" lambda function to the question, to be used by the ctrlCheckedList filter() method
+      question.filterMatch = function(pattern) {
+         if (pattern.startsWith("#")) {
+            return question._qType.startsWith(pattern.slice(1));
+         } else {
+            return (question._qName.startsWith(pattern));
+         }
+      };
+
       lstQRec.push(question);
    }
    return lstQRec;
@@ -90,7 +100,7 @@ function loadQSet(qTypes, jsonResponse) {
 function initializeLists() {
    actTestEdt_lstMCQ.clear();
    actTestEdt_questions.forEach(qRec => {
-      const liStyle = (qRec._qType == "apx") ? "custom-li-3" : (qRec._qType == "frq") ? "custom-li-2" : "custom-li-1";
+      const liStyle = (qRec._qType === "apx") ? "custom-li-3" : (qRec._qType === "frq") ? "custom-li-2" : "custom-li-1";
       actTestEdt_lstMCQ.addItem(qRec._qName, qRec, liStyle);
    });
 }

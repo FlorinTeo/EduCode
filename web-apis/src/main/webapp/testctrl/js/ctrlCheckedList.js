@@ -74,9 +74,12 @@ export class CheckedList {
     filter(pattern) {
         this.#liList.forEach(li => {
             if (pattern === "#") {
+                // the pattern "#" is intercepted by the CheckedList, since it is aware about items checked or unchecked
                 li.filtered = li.checkbox.checked;
             } else {
-                li.filtered = li.label.textContent.startsWith(pattern);
+                // any other pattern is passed to the item's metadata filter matching function.
+                // if there's no filter matching function, item is assumed to be filtered.
+                li.filtered = !li.metadata.filterMatch || li.metadata.filterMatch(pattern);
             }
         });
         this.#reset();
