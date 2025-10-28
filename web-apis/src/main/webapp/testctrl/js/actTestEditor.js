@@ -10,12 +10,12 @@ let refAddLog;
 const actTestEditor_div = document.getElementById("actTestEditor_div");
 const actTestEdt_cbTestName = new CtrlComboBox("actTestMgmt_cbTestName");
 const actTestEdt_edtFilter = document.getElementById("actTestEdt_edtFilter");
-const actTestEdt_ckbMCQ = document.getElementById("actTestEdt_ckb_allMCQ");
-const actTestEdt_lstMCQ = new CheckedList("actTestsMgmt_lstMCQ");
+const actTestEdt_ckbQRecs = document.getElementById("actTestEdt_ckb_allMCQ");
+const actTestEdt_lstQRecs = new CheckedList("actTestsMgmt_lstMCQ");
 const actTestEdt_divQContent = document.getElementById("actTestEdt_divQContent");
 const actTestEdt_tglSolution = document.getElementById("actTestEdt_tglSolution");
 
-const actTestEdt_questions = [];
+const actTestEdt_QRecs = [];
 let actTestEdt_qSelected = undefined;
 // #endregion: Action constants
 
@@ -24,9 +24,9 @@ actTestEdt_cbTestName.setEventListener("change", actTestEdt_onChangeTest);
 actTestEditor_div.addEventListener("keydown", actTestEdt_onKeyDown);
 actTestEdt_tglSolution.addEventListener("change", actTestEdt_onToggleSolution); 
 actTestEdt_edtFilter.addEventListener("input", actTestEdt_onFilterChange);
-actTestEdt_ckbMCQ.addEventListener("change", actTestEdt_onCheckAll);
-actTestEdt_lstMCQ.setEventListener("check", actTestEdt_onCheckQuestion);
-actTestEdt_lstMCQ.setEventListener("select", actTestEdt_onSelectQuestion);
+actTestEdt_ckbQRecs.addEventListener("change", actTestEdt_onCheckAll);
+actTestEdt_lstQRecs.setEventListener("check", actTestEdt_onCheckQuestion);
+actTestEdt_lstQRecs.setEventListener("select", actTestEdt_onSelectQuestion);
 // #endregion: HTML event registration
 
 // #region: Exported methods
@@ -43,8 +43,8 @@ export async function onCreate(sid, username, urlAPI, addLog) {
  */
 export async function onOpen() {
    actTestEdt_edtFilter.value = "";
-   actTestEdt_ckbMCQ.checked = false;
-   actTestEdt_lstMCQ.clear();
+   actTestEdt_ckbQRecs.checked = false;
+   actTestEdt_lstQRecs.clear();
    actTestEdt_divQContent.innerHTML = "";
    // get the questions & test set
    requestQueryQSet();
@@ -98,10 +98,10 @@ function loadQSet(qTypes, jsonResponse) {
  * Fills the lists in the action's div with the data from the question records.
  */
 function initializeLists() {
-   actTestEdt_lstMCQ.clear();
-   actTestEdt_questions.forEach(qRec => {
+   actTestEdt_lstQRecs.clear();
+   actTestEdt_QRecs.forEach(qRec => {
       const liStyle = (qRec._qType === "apx") ? "custom-li-3" : (qRec._qType === "frq") ? "custom-li-2" : "custom-li-1";
-      actTestEdt_lstMCQ.addItem(qRec._qName, qRec, liStyle);
+      actTestEdt_lstQRecs.addItem(qRec._qName, qRec, liStyle);
    });
 }
 // #endregion: Helper methods
@@ -111,15 +111,15 @@ function initializeLists() {
  * Handler called each time the user types a character in the filter input element.
  */
 function actTestEdt_onFilterChange(event) {
-   actTestEdt_lstMCQ.filter(actTestEdt_edtFilter.value);
+   actTestEdt_lstQRecs.filter(actTestEdt_edtFilter.value);
 }
 
 /**
  * Handler called when the user checks/unchecks any of the checkbox for the _mcq, _frq and _apx lists.
  */
 function actTestEdt_onCheckAll(event) {
-   if (event.target === actTestEdt_ckbMCQ) {
-      actTestEdt_lstMCQ.check(event.target.checked);
+   if (event.target === actTestEdt_ckbQRecs) {
+      actTestEdt_lstQRecs.check(event.target.checked);
    }
 }
 
@@ -220,8 +220,8 @@ function onResponseQueryQSet() {
       const frq = loadQSet('frq', jsonResponse);
       const apx = loadQSet('apx', jsonResponse);
 
-      actTestEdt_questions.length = 0; // clear in-place (safe for const arrays)
-      actTestEdt_questions.push(...mcq, ...frq, ...apx);
+      actTestEdt_QRecs.length = 0; // clear in-place (safe for const arrays)
+      actTestEdt_QRecs.push(...mcq, ...frq, ...apx);
       initializeLists();
    } else {
       // otherwise display the response on the login page.
@@ -259,7 +259,7 @@ function onResponseQueryTSet() {
 
 // #region: ..?cmd=set&op=vtest&name=vtestName&qlist=qName1,qName2,...
 function requestSetVerTest(vtestName) {
-   let q_Names = actTestEdt_questions.filter(qRec => qRec.checked).map(qRec => qRec._qName);
+   let q_Names = actTestEdt_QRecs.filter(qRec => qRec.checked).map(qRec => qRec._qName);
    let qAll_Names = [...q_Names].join(",");
 
    var request = new  XMLHttpRequest();
@@ -298,9 +298,9 @@ function onResponseQueryTest() {
    var jsonResponse = JSON.parse(this.response);
    if (this.status == 200) {
       const qRecs = jsonResponse._qHeaders.map(qHeader => qHeader._qName);
-      actTestEdt_lstMCQ.checkSet(qRecs);
+      actTestEdt_lstQRecs.checkSet(qRecs);
       actTestEdt_edtFilter.value="#";
-      actTestEdt_lstMCQ.filter(actTestEdt_edtFilter.value);
+      actTestEdt_lstQRecs.filter(actTestEdt_edtFilter.value);
    }
 }
 // #endregion: ..?cmd=query&op=test&tid=tName
