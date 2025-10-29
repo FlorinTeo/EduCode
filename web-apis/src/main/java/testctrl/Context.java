@@ -1,7 +1,9 @@
 package testctrl;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -13,6 +15,7 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -40,6 +43,7 @@ public class Context extends TimerTask {
 
     public class Config {
         public String tests_root;
+        public String users_path;
         public List<User> users;
     };
     // #endregion: [Public] Enum & Class definitions pertaining to TestCtrl context.
@@ -86,11 +90,27 @@ public class Context extends TimerTask {
     }
 
     // #region: [Public] Configuration management methods
-    public Config loadConfig() throws IOException {
-        String configPath = _servletContext.getRealPath("WEB-INF\\classes\\testctrl\\res\\config.json");
-        String configString = Files.readString(Paths.get(configPath));
+    public boolean loadConfig() throws IOException {
         Gson deserializer = new Gson();
-        return deserializer.fromJson(configString, Config.class);
+
+        // get the root path of the servlet (i.e "C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps\web-apis")
+        String contextRoot = _servletContext.getRealPath(".");
+
+        // deserialize the main config object into _config
+        Path configPath = Paths.get(contextRoot).resolve("WEB-INF/classes/testctrl/res/testctrl-config.json").normalize();
+        String configString = Files.readString(configPath);
+        _config = deserializer.fromJson(configString, Config.class);
+        
+        // deserialize the userDb, from the _config.users_path into _config.users
+        Path userDbPath = Paths.get(contextRoot).resolve(_config.users_path).normalize();
+        if (!Files.exists(userDbPath)) {
+            userDbPath = Paths.get(contextRoot).resolve("WEB-INF/classes/testctrl/res/testctrl-users.json").normalize();
+        }
+        String userDbString = Files.readString(userDbPath);
+        Type userListType = new TypeToken<List<User>>(){}.getType();
+        _config.users = deserializer.fromJson(userDbString, userListType);
+
+        return true;
     }
 
     public Config getConfig() {
@@ -98,10 +118,20 @@ public class Context extends TimerTask {
     }
 
     public boolean saveConfig() throws IOException {
-        String configPath = _servletContext.getRealPath("WEB-INF\\classes\\testctrl\\res\\config.json");
         Gson serializer = new GsonBuilder().setPrettyPrinting().create();
+
+        // get the root path of the servlet (i.e "C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps\web-apis")
+        String contextRoot = _servletContext.getRealPath(".");
+
+        // serialize the userDb from _config.users into the _confg.users_path location
+        Path userDbPath = Paths.get(contextRoot).resolve(_config.users_path).normalize();
+        String userDbString = serializer.toJson(_config.users);
+        Files.writeString(userDbPath, userDbString);
+
+        // serialize the main config object from _config
+        Path configPath = Paths.get(contextRoot).resolve("WEB-INF/classes/testctrl/res/testctrl-config.json").normalize();
         String configString = serializer.toJson(_config);
-        Files.writeString(Paths.get(configPath), configString);
+        Files.writeString(configPath, configString);
         return true;
     }
     // #endregion: [Public] Configuration management methods
@@ -156,7 +186,7 @@ public class Context extends TimerTask {
         }
 
         // Load server configuration from WEB-INF/classes/testctrl/res/config.json
-        _config = loadConfig();
+        loadConfig();
         
         // load the tests generator engine & initialize the tests database
         String questionsRoot = _servletContext.getRealPath("") + _config.tests_root;
