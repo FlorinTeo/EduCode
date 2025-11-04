@@ -1,4 +1,4 @@
-import { CtrlComboBox } from "./ctrlComboBox.js?ver=2.0";
+import { CtrlComboBox } from "./ctrlComboBox.js?ver=2.1";
 import { CheckedList } from "./ctrlCheckedList.js?ver=2.4";
 
 // #region: External references
@@ -18,7 +18,6 @@ const actTestEdt_txtWarnings = document.getElementById("actTestEdt_txtWarnings")
 
 const actTestEdt_QRecs = [];
 let actTestEdt_qSelected = undefined;
-let actTestEdt_touched = false;
 // #endregion: Action constants
 
 // #region: HTML event registration
@@ -48,7 +47,7 @@ export async function onOpen() {
    actTestEdt_ckbQRecs.checked = false;
    actTestEdt_lstQRecs.clear();
    actTestEdt_divQContent.innerHTML = "";
-   actTestEdt_txtWarnings.innerHTML = `${actTestEdt_touched}`;
+   actTestEdt_txtWarnings.innerHTML = "";
    // get the questions & test set
    requestQueryQSet();
    requestQueryTSet();
@@ -59,7 +58,15 @@ export async function onOpen() {
  */
 export async function onApply() {
    const testName = actTestEdt_cbTestName.getValue();
-   return requestSetVerTest(testName);
+   if (!testName || testName === "") {
+      refAddLog(`No-op Test Editor action due to missing test name!`);
+      return true;
+   } else if (actTestEdt_cbTestName.hasOption(testName) && actTestEdt_txtWarnings.innerHTML === "") {
+      refAddLog(`No-op Test Editor action due to unchanged test ${testName}`);
+      return true;
+   } else {
+      return requestSetVerTest(testName);
+   }
 }
 
 /**
@@ -107,6 +114,25 @@ function initializeLists() {
       actTestEdt_lstQRecs.addItem(qRec._qName, qRec, liStyle);
    });
 }
+
+/**
+ * Checks if a warning should be displayed:
+ * - No questions + existent test => test will be deleted
+ * - Changes in questions + existent test => test will be regenerated (rerandomized)
+ */
+function checkWarning(changed) {
+   let testName = actTestEdt_cbTestName.getValue();
+   if (!changed || !actTestEdt_cbTestName.hasOption(testName)) {
+      // no changes (i.e. an existent test was just selected )
+      actTestEdt_txtWarnings.innerHTML = "";   
+   } else {
+      if (actTestEdt_QRecs.filter(qRec => qRec.checked).length > 0) {
+         actTestEdt_txtWarnings.innerHTML = `.. will be regenerated (re-randomized)!`;
+      } else {
+         actTestEdt_txtWarnings.innerHTML = `.. will be deleted!`;
+      }
+   }
+}
 // #endregion: Helper methods
 
 // #region: HTML event handlers
@@ -123,6 +149,7 @@ function actTestEdt_onFilterChange(event) {
 function actTestEdt_onCheckAll(event) {
    if (event.target === actTestEdt_ckbQRecs) {
       actTestEdt_lstQRecs.check(event.target.checked);
+      checkWarning(true);
    }
 }
 
@@ -132,6 +159,9 @@ function actTestEdt_onCheckAll(event) {
 async function actTestEdt_onCheckQuestion(event) {
    let question = event.metadata;
    question.checked = event.checked;
+   if (event.target) {
+      checkWarning(true);
+   }
 }
 
 /**
@@ -163,6 +193,7 @@ async function actTestEdt_onChangeTest(event) {
    if (event.target) {
       requestQueryTest(event.target.text);
    }
+   checkWarning(false);
 }
 
 /**
@@ -255,7 +286,6 @@ function onResponseQueryTSet() {
       actTestEdt_cbTestName.setOptions(tList);
    } else {
       refAddLog(`[${this.status}] ${jsonResponse._error}`);
-
    }
 }
 // #endregion: ..?cmd=query&op=tset

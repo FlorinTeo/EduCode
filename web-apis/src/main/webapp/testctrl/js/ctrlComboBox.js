@@ -2,10 +2,18 @@ export class CtrlComboBox {
     #cbElemId
     #cbElem
     #fnHandlers
+    #allOptions
 
     constructor(cbElemId) {
         this.#cbElemId = cbElemId;
         this.#fnHandlers = {}; // Initialize the handlers object
+        this.#allOptions = [];
+    }
+
+    
+    getOptions() {
+        // Return the last options passed to setOptions (excluding the injected empty placeholder)
+        return this.#allOptions.slice();
     }
 
     setOptions(options) {
@@ -21,6 +29,8 @@ export class CtrlComboBox {
         
         // Add an empty option as the first item to ensure proper clearing behavior
         const optionsWithEmpty = [{ id: '', text: '', disabled: true }, ...options];
+        // Keep a copy (without the injected empty placeholder) for external queries
+        this.#allOptions = options.map(o => ({ id: o.id, text: o.text, disabled: !!o.disabled }));
         this.#cbElem.select2({
             tags: true,
             data: optionsWithEmpty,
@@ -30,6 +40,17 @@ export class CtrlComboBox {
         });
         // Clear the selection to show placeholder instead of first option
         this.#cbElem.val(null).trigger('change');
+    }
+
+    hasOption(value, caseInsensitive = false) {
+        if (value === undefined || value === null) return false;
+        const v = String(value).trim();
+        if (!v) return false;
+        if (caseInsensitive) {
+            const lv = v.toLowerCase();
+            return this.#allOptions.some(o => String(o.text).toLowerCase() === lv);
+        }
+        return this.#allOptions.some(o => o.text === v);
     }
 
     setEventListener(eventName, fnHandler) {

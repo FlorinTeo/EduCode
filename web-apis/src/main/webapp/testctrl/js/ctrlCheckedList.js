@@ -147,7 +147,7 @@ export class CheckedList {
         if (liCrtSel) {
             liCrtSel.checked = !liCrtSel.checked;
             liCrtSel.checkbox.checked = liCrtSel.checked;
-            this.#callHandler("check", {host: this, target: undefined, metadata: liCrtSel.metadata, checked: liCrtSel.checked});
+            this.#callHandler("check", {host: this, target: liCrtSel.checkbox, metadata: liCrtSel.metadata, checked: liCrtSel.checked});
         }
     }
 
