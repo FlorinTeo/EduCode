@@ -8,15 +8,17 @@ let refAddLog;
 
 // #region: Action constants
 const actTestEditor_div = document.getElementById("actTestEditor_div");
-const actTestEdt_cbTestName = new CtrlComboBox("actTestMgmt_cbTestName");
+const actTestEdt_cbTestName = new CtrlComboBox("actTestEdt_cbTestName");
 const actTestEdt_edtFilter = document.getElementById("actTestEdt_edtFilter");
 const actTestEdt_ckbQRecs = document.getElementById("actTestEdt_ckb_allMCQ");
-const actTestEdt_lstQRecs = new CheckedList("actTestsMgmt_lstMCQ");
+const actTestEdt_lstQRecs = new CheckedList("actTestsEdt_lstMCQ");
 const actTestEdt_divQContent = document.getElementById("actTestEdt_divQContent");
 const actTestEdt_tglSolution = document.getElementById("actTestEdt_tglSolution");
+const actTestEdt_txtWarnings = document.getElementById("actTestEdt_txtWarnings");
 
 const actTestEdt_QRecs = [];
 let actTestEdt_qSelected = undefined;
+let actTestEdt_touched = false;
 // #endregion: Action constants
 
 // #region: HTML event registration
@@ -46,6 +48,7 @@ export async function onOpen() {
    actTestEdt_ckbQRecs.checked = false;
    actTestEdt_lstQRecs.clear();
    actTestEdt_divQContent.innerHTML = "";
+   actTestEdt_txtWarnings.innerHTML = `${actTestEdt_touched}`;
    // get the questions & test set
    requestQueryQSet();
    requestQueryTSet();

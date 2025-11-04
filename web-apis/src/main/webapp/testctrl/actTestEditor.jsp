@@ -4,7 +4,7 @@
 
     <head>
         <meta charset="ISO-8859-1">
-        <link rel="stylesheet" href="css/actTestEditor.css?ver=2.4">
+        <link rel="stylesheet" href="css/actTestEditor.css?ver=2.13">
         <script defer type="module" src="js/actTestEditor.js?ver=2.1"></script>
     </head>
     <div id="actTestEditor_div" class="actTestEditor-style">
@@ -12,20 +12,24 @@
         <table class="actTestEdt-lvl0-table">
             <tr><td>
                 <table class="actTestEdt-flex-row">
-                <tr>
-                    <!-- Edit field for test name -->
-                    <td>
-                        Test name:<select id="actTestMgmt_cbTestName" style="width: 240px;"></select>
-                    </td>
-                    <td>Solution</td>
-                    <td>
-                        <!-- Toggle field for displaying the answer -->
-                        <label class="actTestEdt_lblSolution">
-                            <input type="checkbox" id="actTestEdt_tglSolution">
-                            <span class="actTestEdt_spnSolution"></span>
-                        </label>
-                    </td>
-                </tr>
+                    <tr>
+                        <!-- Edit field for test name -->
+                        <td>
+                            Test name:
+                            <select id="actTestEdt_cbTestName" style="width: 240px;"></select>
+                        </td>
+                        <td>
+                            <span id="actTestEdt_txtWarnings"><!--This is where the warnings are going to show!--></span>
+                        </td>
+                        <td>Solution</td>
+                        <td>
+                            <!-- Toggle field for displaying the answer -->
+                            <label class="actTestEdt_lblSolution">
+                                <input type="checkbox" id="actTestEdt_tglSolution">
+                                <span class="actTestEdt_spnSolution"></span>
+                            </label>
+                        </td>
+                    </tr>
                 </table>
             </td></tr>
             <tr><td>
@@ -40,7 +44,7 @@
                                 <input id="actTestEdt_edtFilter" autocomplete="off">
                             </td></tr>
                             <tr><td>
-                                <ul id="actTestsMgmt_lstMCQ">
+                                <ul id="actTestsEdt_lstMCQ">
                                     <!-- MCQ entries filled in dynamically -->
                                 </ul>
                             </td></tr>
