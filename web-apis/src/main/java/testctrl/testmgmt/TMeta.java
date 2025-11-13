@@ -164,6 +164,20 @@ public class TMeta {
         return _name;
     }
 
+    public String getTClass() {
+        boolean allAP = true;
+        boolean allDS = true;
+        for (Question q: _mcQuestions) {
+            allAP = allAP && q.getName().toLowerCase().startsWith("ap");
+            allDS = allDS && q.getName().toLowerCase().startsWith("ds");
+        }
+        return allAP
+                ? "AP COMPUTER SCIENCE"
+                : allDS
+                    ? "DATA STRUCTURES"
+                    : "COMPUTER SCIENCE";
+    }
+
     public String getVersion() {
         return _version;
     }

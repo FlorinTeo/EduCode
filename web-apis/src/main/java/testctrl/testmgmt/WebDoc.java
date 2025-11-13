@@ -160,6 +160,7 @@ public class WebDoc {
     // #region: [private methods] Writing HTML web document parts
     private int genBookletHtml(BufferedWriter bw, TMeta tMeta) throws IOException {
         String bkHtml = _answers
+            .replaceAll("#TCLASS#", tMeta.getTClass())
             .replaceAll("#TNAME#", tMeta.getName())
             .replaceAll("#TVER#", tMeta.getVersion());
 
@@ -195,6 +196,7 @@ public class WebDoc {
         }
 
         String s1Html = _section1
+            .replaceAll("#TCLASS#", tMeta.getTClass())
             .replace("#TNAME#", tMeta.getName())
             .replace("#TVER#", tMeta.getVersion())
             .replace("#QTIME#", tMeta.getMCQTime())
@@ -215,6 +217,7 @@ public class WebDoc {
         }
 
         String s2Html = _section2
+            .replaceAll("#TCLASS#", tMeta.getTClass())
             .replace("#TNAME#", tMeta.getName())
             .replace("#TVER#", tMeta.getVersion())
             .replace("#PTIME#", tMeta.getFRQTime())
@@ -234,6 +237,7 @@ public class WebDoc {
         }
         
         String apxHtml = _appendix
+            .replaceAll("#TCLASS#", tMeta.getTClass())
             .replaceAll("#TNAME#", tMeta.getName())
             .replaceAll("#TVER#", tMeta.getVersion());
         int iAPX = apxHtml.indexOf(_TAG_APPENDIX_PAGE);
