@@ -12,6 +12,7 @@ import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 
 import edu.ftdev.DbgButton.BtnFace;
@@ -203,7 +204,7 @@ public class DrawingFrame implements
             String fullPath = classPath.endsWith(".jar")
                 ? "jar:" + classPath + "!/" + resourcePath
                 : classPath + resourcePath;
-            URL url = new URL(fullPath);
+            URL url = URI.create(fullPath).toURL();
             return url;
         } catch(Exception e) {
             throw new IOException(e.getMessage());
