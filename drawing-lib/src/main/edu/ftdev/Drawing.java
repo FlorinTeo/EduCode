@@ -206,7 +206,7 @@ public class Drawing implements AutoCloseable {
      * @return true if both x and y are within their respective ranges, false otherwise.
      */
     public boolean isValidPixel(int x, int y) {
-        return (x >= 0 && x <= _image.getWidth()-3 && y >=0 && y <= _image.getHeight()-3);
+        return (x >= 0 && x <= _image.getWidth()-1 && y >=0 && y <= _image.getHeight()-1);
     }
     
     /**
