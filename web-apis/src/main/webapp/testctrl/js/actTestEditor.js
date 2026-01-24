@@ -1,4 +1,4 @@
-import { CtrlComboBox } from "./ctrlComboBox.js?ver=2.1";
+import { CtrlComboBox } from "./ctrlComboBox.js?ver=2.2";
 import { CheckedList } from "./ctrlCheckedList.js?ver=2.4";
 
 // #region: External references

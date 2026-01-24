@@ -1,4 +1,4 @@
-import { CtrlComboBox } from "./ctrlComboBox.js?ver=1.0";
+import { CtrlComboBox } from "./ctrlComboBox.js?ver=2.2";
 
 // #region: page referenced parameters
 let refUrlAPI;
