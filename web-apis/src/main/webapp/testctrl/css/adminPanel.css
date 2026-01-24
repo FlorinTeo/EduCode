@@ -119,16 +119,3 @@ html, body {
 .select2-dropdown { z-index: 99999 !important; }
 .select2-dropdown--below { z-index: 99999 !important; }
 .select2-container--open { z-index: 99998 !important; }
-
-/* Limit Select2 dropdown height - multiple selectors to ensure it works */
-.select2-dropdown-limited .select2-results__options {
-    max-height: 80px !important;
-    overflow-y: auto !important;
-}
-.select2-dropdown.select2-dropdown-limited .select2-results > .select2-results__options {
-    max-height: 80px !important;
-    overflow-y: auto !important;
-}
-.select2-container--default .select2-results > .select2-results__options {
-    max-height: 80px !important;
-}
