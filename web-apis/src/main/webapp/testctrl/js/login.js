@@ -9,7 +9,7 @@ const txtOutput = document.getElementById("txtOutput");
 
 const urlAPI = window.location.origin + "/web-apis/testctrl";
 const urlAdminPanelJSP = window.location.origin + "/web-apis/testctrl/adminPanel.jsp";
-const urlAdminPanelVer = "2.0";
+const urlAdminPanelVer = "2.1";
 
 // #region: event listeners
 document.addEventListener("DOMContentLoaded", onPageLoad);
