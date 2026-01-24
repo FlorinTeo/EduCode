@@ -36,7 +36,15 @@ export class CtrlComboBox {
             data: optionsWithEmpty,
             allowClear: true,
             placeholder: "Select or type...",
-            dropdownParent: $('#dlgAction')
+            dropdownParent: $('#dlgAction'),
+            dropdownCssClass: 'select2-dropdown-limited',
+            containerCssClass: 'select2-container-limited'
+        });
+        // Force dropdown height via direct DOM manipulation after render
+        this.#cbElem.on('select2:open', function() {
+            const dropdown = $('.select2-results__options');
+            dropdown.css('max-height', '80px');
+            dropdown.css('overflow-y', 'auto');
         });
         // Clear the selection to show placeholder instead of first option
         this.#cbElem.val(null).trigger('change');

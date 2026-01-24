@@ -43,3 +43,9 @@
     padding: 4px; /* breathing room inside the output area */
     background-color: white;
 }
+
+/* Limit Select2 dropdown height */
+.select2-dropdown-limited .select2-results__options {
+    max-height: 80px;
+    overflow-y: auto;
+}
