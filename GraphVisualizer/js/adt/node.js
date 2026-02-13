@@ -158,6 +158,15 @@ export class Node {
         this.resortEdges();
     }
 
+    clone() {
+        let newNode = new Node(this.#graphics, this.label, this.x, this.y, this.version);
+        newNode.state = this.state;
+        newNode.colorIndex = this.colorIndex;
+        newNode.marker = this.marker;
+        newNode.selected = this.selected;
+        return newNode;
+    }
+
     resortEdges() {
         this.neighbors.sort((n1, n2) => n1.x < n2.x ? -1 : n1.x > n2.x ? 1 : 0);
         switch(this.neighbors.length) {
@@ -285,6 +294,15 @@ export class VarNode extends Node {
                 nullS,              // width of the null marker
                 nullS);             // height of the null marker
         }
+    }
+
+    clone() {
+        let newNode = new VarNode(this.#graphics, this.label, this.x, this.y, this.version);
+        newNode.state = this.state;
+        newNode.colorIndex = this.colorIndex;
+        newNode.marker = this.marker;
+        newNode.selected = this.selected;
+        return newNode;
     }
 
     setRef(refNode) {

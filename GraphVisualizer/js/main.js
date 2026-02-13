@@ -12,6 +12,7 @@ import { XferDialog } from "./core/xferDialog.js";
 import { ConsoleDialog } from "./core/consoleDialog.js";
 import { UserCode } from "./userCode.js";
 import { distance } from "./adt/graph.js";
+import { adjustScale } from "./adt/graph.js";
 
 // html elements
 export let hTdCanvas = document.getElementById("hTdCanvas");
@@ -34,6 +35,31 @@ export let console = new ConsoleDialog(userCode);
 export let graph = new Graph(graphics);
 export let queue = new Queue(graphics);
 export let stack = new Stack(graphics);
+
+// undo stack
+const UNDO_LIMIT = 50;
+let undoStack = [];
+
+function saveState() {
+   if (undoStack.length >= UNDO_LIMIT) {
+       undoStack.shift();
+   }
+   let { newGraph, nodeMap } = graph.clone();
+   let newQueue = queue.clone(nodeMap);
+   let newStack = stack.clone(nodeMap);
+   undoStack.push({ graph: newGraph, queue: newQueue, stack: newStack });
+}
+
+function undo() {
+   if (undoStack.length > 0) {
+       let state = undoStack.pop();
+       graph = state.graph;
+       queue = state.queue;
+       stack = state.stack;
+       adjustScale(graph.size());
+       repaint();
+   }
+}
 
 // exported functions
 export function repaint() {
@@ -116,6 +142,12 @@ document.addEventListener('keydown', (event) => {
     ctrlClicked = event.ctrlKey || event.metaKey;
     shiftClicked = event.shiftKey;
 
+    if (ctrlClicked && event.key.toLowerCase() === 'z') {
+        undo();
+        event.preventDefault();
+        return;
+    }
+
     // ignore any keydown event if any context menu is displayed
     if (ctxMenuCanvas.isShown || ctxMenuNode.isShown) {
         return;
@@ -181,10 +213,15 @@ hCanvas.addEventListener('mousemove', (event) => {
 
     let crtCursorXY = { x: event.clientX - hCanvas.offsetLeft, y: event.clientY - hCanvas.offsetTop };
     hoverNode = graph.getNode(crtCursorXY.x, crtCursorXY.y);
+    let wasDragging = dragging;
     if (event.buttons == 1) {
         dragging = dragging 
                   || distance(lastCursorXY.x, lastCursorXY.y, crtCursorXY.x, crtCursorXY.y) >= DRAG_DISTANCE_SENSITIVITY
                   || (performance.now() - clickTimestamp) >= DRAG_DELAY_SENSITIVITY;
+    }
+
+    if (clickedNode != null && !wasDragging && dragging && (!ctrlClicked || (clickedNode instanceof VarNode))) {
+        saveState();
     }
 
     if (!dragging) {
@@ -262,6 +299,7 @@ hCanvas.addEventListener('mouseup', (event) => {
         if (ctrlClicked && clickedNode != null && droppedNode != null && clickedNode != droppedNode) {
             // add/remove edges only if both nodes involved are graph nodes, not variable nodes
             if (!(clickedNode instanceof VarNode) && !(droppedNode instanceof VarNode)) {
+                saveState();
                 // => reset edge from clickedNode to droppedNode
                 let directed = !shiftClicked;
                 if (!graph.hasEdge(clickedNode, droppedNode, directed)) {
@@ -285,6 +323,7 @@ hCanvas.addEventListener('mouseup', (event) => {
         dragging = false;
     } else {
         if (ctrlClicked && (droppedNode == null || !(droppedNode instanceof VarNode))) {
+            saveState();
             // {control-click} => either add a new node, or remove an existent one
             if (droppedNode != null) {
                 // {control-click} over existent node => remove node
@@ -297,6 +336,7 @@ hCanvas.addEventListener('mouseup', (event) => {
                 graph.addNode(nextLabel(), x, y);
             }
         } else if (shiftClicked && (droppedNode == null || (droppedNode instanceof VarNode))) {
+            saveState();
             // {shift-click} => either add a new VarNode, or remove an existent one
             if (droppedNode != null) {
                 graph.removeVarNode(droppedNode);
@@ -360,6 +400,7 @@ hCanvas.addEventListener('contextmenu', (event) => {
         // customize and show hCtxMenuCanvas
         ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
         ctxMenuCanvas.setVisible(new Map([
+            ['hCtxMenuCanvas_Undo', undoStack.length > 0],
             ['hCtxMenuCanvas_ResetS', graph.size() > 0],
             ['hCtxMenuCanvas_ResetNh', graph.hasNodeHighlights()],
             ['hCtxMenuCanvas_ResetEh', graph.hasEdgeHighlights()],
@@ -372,6 +413,10 @@ hCanvas.addEventListener('contextmenu', (event) => {
 });
 
 // #region - Canvas context menu handlers
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_Undo', () => {
+    undo();
+});
+
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (_, value) => {
     graph.traverse((node) => { node.state = value; });
 });
