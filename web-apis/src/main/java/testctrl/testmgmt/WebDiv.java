@@ -10,12 +10,14 @@ import java.util.Map;
 public class WebDiv {
 
     private String _divMCQTemplate;
+    private String _divMCQ4Template;
     private String _divMCBTemplate;
     private String _divFRQTemplate;
     private String _divAPXTemplate;
     
     public WebDiv(String templatesRoot) throws IOException {
         _divMCQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/divs/div-mcqTemplate.jsp"), StandardCharsets.UTF_8);
+        _divMCQ4Template = Files.readString(Paths.get(templatesRoot +  "testctrl/divs/div-mcq4Template.jsp"), StandardCharsets.UTF_8);
         _divMCBTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/divs/div-mcbTemplate.jsp"), StandardCharsets.UTF_8);
         _divFRQTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/divs/div-frqTemplate.jsp"), StandardCharsets.UTF_8);
         _divAPXTemplate = Files.readString(Paths.get(templatesRoot +  "testctrl/divs/div-apxTemplate.jsp"), StandardCharsets.UTF_8);
@@ -39,7 +41,9 @@ public class WebDiv {
 
     private String getDivMCQ(Question q, boolean isAnswer, Question parentQ) {
         // replace #QUID# identifying the question
-        String qDiv = _divMCQTemplate.replaceAll("#QUID#", q.getName());
+        String qDiv = (q.getMeta().choices != null && q.getMeta().choices.size() > 4)
+            ? _divMCQTemplate.replaceAll("#QUID#", q.getName())
+            : _divMCQ4Template.replaceAll("#QUID#", q.getName());
         // replace #QDIR# locating the question directory
         qDiv = qDiv.replaceAll("#QDIR#", parentQ != null ? parentQ.getName() + "/" + q.getName() : q.getName());
         // replace #QTXT# providing the question's text (content)
