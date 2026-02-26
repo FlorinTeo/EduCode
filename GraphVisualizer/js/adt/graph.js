@@ -27,7 +27,7 @@ export function distance(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 
-function adjustScale(nNodes) {
+export function adjustScale(nNodes) {
     if (nNodes <= 20) {
         SCALE = 0;
     } else if (nNodes <= 40) {
@@ -156,7 +156,7 @@ export class Graph {
         if (node) {
             this.nodes.push(node);
             this.#checkAndAdjustVersions(node.label);
-            adjustScale(this.nodes.length);
+            adjustScale(this.size());
         }
         return node;
     }
@@ -198,7 +198,7 @@ export class Graph {
         this.nodes = this.nodes.filter(n => !(n === node));
         this.edges = this.edges.filter(e => !e.contains(node));
         this.varNodes = this.varNodes.filter(v => !v.hasEdge(node));
-        adjustScale(this.nodes.length);
+        adjustScale(this.size());
         this.#checkAndAdjustVersions(node.label);
         this.#directed = this.isDirected();
         return node;
@@ -387,8 +387,75 @@ export class Graph {
                 }
             }
         }
-        adjustScale(this.nodes.length);
+        adjustScale(this.size());
         this.#directed = this.isDirected();
         return true;   
+    }
+
+    clone() {
+        let newGraph = new Graph(this.#graphics);
+        // restoration of the scale of the current graph is needed because 
+        // the constructor of the new graph resets the global scale to 0
+        adjustScale(this.size());
+
+        let nodeMap = new Map();
+
+        // 1. Clone all Nodes
+        for (const oldNode of this.nodes) {
+            let newNode = oldNode.clone();
+            nodeMap.set(oldNode, newNode);
+            newGraph.nodes.push(newNode);
+        }
+
+        // 2. Clone all VarNodes
+        for (const oldVarNode of this.varNodes) {
+            let newVarNode = oldVarNode.clone();
+            nodeMap.set(oldVarNode, newVarNode);
+            newGraph.varNodes.push(newVarNode);
+        }
+
+        // 3. Re-link edges (neighbors)
+        const linkNeighbors = (sourceArray) => {
+            for (const oldNode of sourceArray) {
+                let newNode = nodeMap.get(oldNode);
+                for (const oldNeighbor of oldNode.neighbors) {
+                    let newNeighbor = nodeMap.get(oldNeighbor);
+                    if (newNeighbor) {
+                        newNode.neighbors.push(newNeighbor);
+                    }
+                }
+                newNode.resortEdges();
+            }
+        };
+
+        linkNeighbors(this.nodes);
+        linkNeighbors(this.varNodes);
+
+        // 4. Re-create Edge objects
+        for (const oldEdge of this.edges) {
+            let newFrom = nodeMap.get(oldEdge.node1);
+            let newTo = nodeMap.get(oldEdge.node2);
+            if (newFrom && newTo) {
+                // We don't have an addEdge overload that takes existing nodes and direction easily without logic
+                // But we can just create the Edge object and push it
+                // Edge constructor: constructor(graphics, node1, node2)
+                let newEdge = new Edge(this.#graphics, newFrom, newTo);
+                
+                // Copy internal state of edge like weight, color, direction
+                newEdge.weight = oldEdge.weight;
+                newEdge.colorIndex = oldEdge.colorIndex;
+                newEdge.direction = oldEdge.direction; 
+                
+                newGraph.edges.push(newEdge);
+            }
+        }
+        
+        // Copy other graph properties
+        newGraph.#directed = this.#directed; // private but we are inside Graph class
+        
+        // Wait, #directed is private. I can access it via this.#directed but newGraph.#directed?
+        // Yes, private members are accessible between instances of the same class.
+
+        return { newGraph, nodeMap };
     }
 }

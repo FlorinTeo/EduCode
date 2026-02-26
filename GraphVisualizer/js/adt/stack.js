@@ -120,6 +120,76 @@ export class Stack {
         return this.#size;
     }
 
+    clone(nodeMap) {
+        let newStack = new Stack(this.#graphics);
+        if (this.#size > 0) {
+            // Traverse from bottom (head.next) to top (head)
+            // wait, push inserts at head.
+            // If iterate head.next -> head.next.next ... eventually head.
+            // head.next is the element "below" head? No.
+            
+            // push(A): head=A. A.next=A. A.prev=A.
+            // push(B): B.next=A. B.prev=A. A.prev=B. A.next=B. head=B.
+            // So B -> A.
+            // head=B (top).
+            // head.next = A (bottom).
+            // head.prev = A (bottom).
+            
+            // If I push C:
+            // C.next=B. C.prev=A. B.prev=C. A.next=C. head=C.
+            // C -> B -> A -> C
+            // Top -> Middle -> Bottom -> Top
+            
+            // So traversing .next goes Top -> Bottom.
+            // Traversing .prev goes Top -> Bottom -> Middle -> Top. (Wait)
+            
+            // Let's re-verify C.next=B (Top-1). C.prev=A (Bottom).
+            // So traversing .next goes down the stack.
+            // Traversing .prev goes up the stack (from bottom)?
+            
+            // C.prev = A (Bottom).
+            // A.prev = B (Middle).
+            // B.prev = C (Top).
+            
+            // So iterating .prev starting from head goes UP from Top?? No.
+            // C.prev -> A. A.prev -> B. B.prev -> C.
+            // Top -> Bottom -> Middle -> Top.
+            // This is confusing.
+            
+            // Let's re-read Push logic carefully.
+            // item.next = this.#head;  (C.next = B)
+            // item.prev = this.#head.prev; (C.prev = A)
+            // item.next.prev = item; (B.prev = C)
+            // item.prev.next = item; (A.next = C)
+            // this.#head = item; (head = C)
+            
+            // Result:
+            // C(head).next = B.
+            // B.next = A.
+            // A.next = C.
+            // So .next traverses Top -> Down -> Bottom -> Top.
+            
+            // So to reconstruct, we want to push A, then B, then C.
+            // So we want to find A (bottom) and traverse UP to C.
+            // A is at head.prev (C.prev is A).
+            // A.prev is B.
+            // B.prev is C.
+            
+            // So iterating .prev from head.prev gives A, B, C.
+            // This matches repaint.
+            
+            let crtItem = this.#head.prev;
+            for(let i=0; i<this.#size; i++) {
+                let newNode = nodeMap.get(crtItem.node);
+                if (newNode) {
+                    newStack.push(newNode);
+                }
+                crtItem = crtItem.prev;
+            }
+        }
+        return newStack;
+    }
+
     clear() {
         this.#head = null;
         this.#size = 0;

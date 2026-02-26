@@ -103,6 +103,19 @@ export class Queue {
         return this.#size;
     }
 
+    clone(nodeMap) {
+        let newQueue = new Queue(this.#graphics);
+        let crtItem = this.#head;
+        for (let i = 0; i < this.#size; i++) {
+            let newNode = nodeMap.get(crtItem.node);
+            if (newNode) {
+                newQueue.enqueue(newNode);
+            }
+            crtItem = crtItem.next;
+        }
+        return newQueue;
+    }
+
     clear() {
         this.#head = null;
         this.#size = 0;
