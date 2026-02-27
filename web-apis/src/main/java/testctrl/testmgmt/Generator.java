@@ -51,9 +51,9 @@ public class Generator {
             }
         }
         // Final list of questions is what's been sorted in the map, followed by all non-matching questions.
-        Collection<Question> c = map.values();
-        c.addAll(lq);
-        return new LinkedList<>(c);
+        LinkedList<Question> slq = new LinkedList<Question>(map.values());
+        slq.addAll(lq);
+        return slq;
     }
 
     /**
