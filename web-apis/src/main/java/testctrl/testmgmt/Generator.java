@@ -21,26 +21,36 @@ public class Generator {
     private Map<String, Question> _qMap;
     private List<Question> _qList;
     private WebDoc _webDoc;
-    private static Pattern _regex = Pattern.compile("(?:(ap|ds)(\\d+)[^.]*)?\\.[QPA](\\d+)");
+    private static Pattern _regex = Pattern.compile("^(ap|ds)(\\d+)([^.]*)(\\.)([QPA])(\\d+)(.*)$");
 
     private List<Question> sort(List<Question> lq) {
         Map<String, Question> map = new TreeMap<>();
         for (int i = lq.size(); i > 0; i--) {
             Question q = lq.remove(0);
             Matcher m = _regex.matcher(q.getName());
+            String key = null;
+            // if this question name matches the expected pattern...
             if (m.find()) {
-                // Extract the first and second numbers
-                String group = m.group(1) != null ? m.group(1) : ""; // optional "ap" or "ds"
-                String firstNumber = m.group(2) != null ? m.group(2) : "0"; // Optional first number
-                String secondNumber = m.group(3); // Always present
-                int unitNumber = Integer.parseInt(firstNumber);
-                int questionNumber = Integer.parseInt(secondNumber);
-                String key = String.format("%s_%03d_%03d", group, unitNumber, questionNumber);
+                // ... extract components from the name and build a key
+                String group = m.group(1); // "ap" or "ds"
+                String unitNumStr = m.group(2); // unit number, i.e. "4"
+                String unitSuffixStr = m.group(3); // an optional suffix, i.e "b" or "-7"
+                String questionNumStr = m.group(6); // the question number, i.e. "11"
+                String questionSuffixStr = m.group(7); // the suffix following question number.
+                int unitNumber = Integer.parseInt(unitNumStr);
+                int questionNumber = Integer.parseInt(questionNumStr);
+                key = String.format("%s_%03d_%s_%03d_%s", group, unitNumber, unitSuffixStr, questionNumber, questionSuffixStr);
+            }
+            // if we managed to build a key for the question, and there's no collision in the map..
+            if (key != null && !map.containsKey(key)) {
+                // .. add the question to the map
                 map.put(key, q);
             } else {
+                // .. otherwise put question back in the queue such that it doesn't get lost
                 lq.add(q);
             }
         }
+        // Final list of questions is what's been sorted in the map, followed by all non-matching questions.
         Collection<Question> c = map.values();
         c.addAll(lq);
         return new LinkedList<>(c);
