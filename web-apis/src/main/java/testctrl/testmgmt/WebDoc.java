@@ -26,8 +26,10 @@ public class WebDoc {
 
     private static final String _TAG_SECTION1 = "<!--======== SECTION 1 (MCQ) ========-->";
     private String _section1;
-    private static final String _TAG_SECTION1_MCQ = "<!--~~~~~~~~ MULTIPLE CHOICE QUESTION (MCQ) ~~~~~~~~-->";
-    private String _section1MCQ;
+    private static final String _TAG_SECTION1_MCQ5 = "<!--~~~~~~~~ MULTIPLE CHOICE QUESTION (MCQ5) ~~~~~~~~-->";
+    private String _section1MCQ5;
+    private static final String _TAG_SECTION1_MCQ4 = "<!--~~~~~~~~ MULTIPLE CHOICE QUESTION (MCQ4) ~~~~~~~~-->";
+    private String _section1MCQ4;
     private static final String _TAG_SECTION1_MCB = "<!--~~~~~~~~ MULTIPLE CHOICE BUNDLE (MCB) ~~~~~~~~-->";
     private String _section1MCB;
 
@@ -99,9 +101,12 @@ public class WebDoc {
             _section1 += qLines.remove() + "\n";
             while(!qLines.isEmpty()) {
                 String line = qLines.peek();
-                if (line.contains(_TAG_SECTION1_MCQ)) {
-                    _section1MCQ = loadBlock(_TAG_SECTION1_MCQ, qLines);
-                    _section1 += _TAG_SECTION1_MCQ + "\n";
+                if (line.contains(_TAG_SECTION1_MCQ5)) {
+                    _section1MCQ5 = loadBlock(_TAG_SECTION1_MCQ5, qLines);
+                    _section1 += _TAG_SECTION1_MCQ5 + "\n";
+                } else if (line.contains(_TAG_SECTION1_MCQ4)) {
+                    _section1MCQ4 = loadBlock(_TAG_SECTION1_MCQ4, qLines);
+                    _section1 += _TAG_SECTION1_MCQ4 + "\n";
                 } else if (line.contains(_TAG_SECTION1_MCB)) {
                     _section1MCB = loadBlock(_TAG_SECTION1_MCB, qLines);
                     _section1 += _TAG_SECTION1_MCB + "\n";
@@ -203,11 +208,11 @@ public class WebDoc {
             .replace("#QNUM#", "" + tMeta.getMCQCount())
             .replace("#QPCT#", tMeta.getMCQPct());
 
-        int iMCQ = s1Html.indexOf(_TAG_SECTION1_MCQ);
+        int iMCQ = s1Html.indexOf(_TAG_SECTION1_MCQ5);
         bw.write(s1Html.substring(0, iMCQ));
         bw.newLine();       
-        int nPages = tMeta.genMCQHtml(bw, _section1MCB, _section1MCQ, answers);
-        bw.write(s1Html.substring(iMCQ + _TAG_SECTION1_MCQ.length()));
+        int nPages = tMeta.genMCQHtml(bw, _section1MCB, _section1MCQ5, _section1MCQ4, answers);
+        bw.write(s1Html.substring(iMCQ + _TAG_SECTION1_MCQ5.length()));
         return 1 + nPages;
     }
 

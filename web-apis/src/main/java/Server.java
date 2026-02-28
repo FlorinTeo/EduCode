@@ -4,7 +4,7 @@ import jakarta.servlet.annotation.WebListener;
 
 @WebListener
 public class Server implements ServletContextListener {
-     /**
+    /**
      * Code executed when the server is starting, before all servlets are activated.
      */
     @Override

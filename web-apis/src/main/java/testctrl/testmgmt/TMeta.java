@@ -304,7 +304,7 @@ public class TMeta {
         bw.close();
     }
 
-    public int genMCQHtml(BufferedWriter bw, String formatMCB, String formatMCQ, boolean answers) throws IOException {
+    public int genMCQHtml(BufferedWriter bw, String formatMCB, String formatMCQ5, String formatMCQ4, boolean answers) throws IOException {
         int pxSum = 0;
         int nPages = 1;
         int i = 0;
@@ -318,7 +318,11 @@ public class TMeta {
                 q.prependBundle(mcQuestions);
             } else if (q.getType().equalsIgnoreCase(Question._MCQ)) {
                 String qMetaLine = _display.get(qDisplayID);
-                hSection1Q = q.editMCQHtml(formatMCQ, qDisplayID, qMetaLine, answers);
+                hSection1Q = q.editMCQHtml(
+                    (q.getMeta().choices.size() > 4) ? formatMCQ5 : formatMCQ4,
+                    qDisplayID,
+                    qMetaLine,
+                    answers);
                 i++;
             }
             int pxHeight = answers ? q.getPxHeightA() : q.getPxHeightQ();
@@ -358,7 +362,8 @@ public class TMeta {
             String hAppendix = q.editApxHtml(format, qID);
             bw.write(hAppendix);
             bw.newLine();
-            nPages++;
+            // the appendix question has as many web pages as textPages (png files)
+            nPages += q.getMeta().textPages.size();
         }
         return nPages;
     }
@@ -404,6 +409,10 @@ public class TMeta {
                     String[] vParts = variant.split(" "); // ["ap2.Q1", "adebc"]
                     String vqID = ver + ".Q" + mapQNums.get(vParts[0]); // "v1.Q2"
                     String vqAns = String.join("\t", vParts[1].toUpperCase().split("")); // "C   A   D   ..."
+                    // A 4 questions MCQ will fill in "X" as the artificial 5th entry
+                    if (vParts[1].length() == 4) {
+                        vqAns += "\tX";
+                    }
                     sb.append(String.format("%s\t%s\t%d\t%d\n", vqID, vqAns, vCount, tCount));
                 }
             }
