@@ -196,7 +196,7 @@ public class TMeta {
         // 100% if no free response questions, 40% otherwise
         return getFRQCount() == 0 
             ? "100%" 
-            : "40%";
+            : "50%";
     }
 
     public Map<String, Question> getMCQuestions(boolean unbundled) {
@@ -227,7 +227,7 @@ public class TMeta {
         // 100% if no multiple choice questions, 60% otherwise
         return getMCQCount() == 0 
             ? "100%" 
-            : "60%";
+            : "50%";
     }
     
     public List<Question> getFRQuestions() {
