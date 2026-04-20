@@ -1,4 +1,4 @@
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import edu.ftdev.STL.STLPrism;
 import edu.ftdev.STL.STLModel;

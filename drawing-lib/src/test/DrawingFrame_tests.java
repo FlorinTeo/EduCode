@@ -1,7 +1,7 @@
 import java.awt.image.BufferedImage;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import edu.ftdev.Drawing;
 import edu.ftdev.DrawingFrame;
