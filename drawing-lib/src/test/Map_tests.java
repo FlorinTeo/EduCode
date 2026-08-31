@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import edu.ftdev.KeyInterceptor.KeyHook;
 import edu.ftdev.Map.MapCanvas;
