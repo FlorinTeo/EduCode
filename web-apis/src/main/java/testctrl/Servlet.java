@@ -32,6 +32,11 @@ public class Servlet extends HttpServlet{
         }
     }
 
+    public static boolean isDefaultPort(String scheme, int port) {
+        return (scheme.equalsIgnoreCase("http") && port == 80)
+            || (scheme.equalsIgnoreCase("https") && port == 443);
+    }
+
     public static String paramsToLog(Map<String, String[]> params) {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String[]> entry : params.entrySet()) {
@@ -124,9 +129,16 @@ public class Servlet extends HttpServlet{
         httpSession.setAttribute("oauth_state", state);
         httpSession.setAttribute("oauth_ghHandle", user.username);
 
-        // build the github authorization URL, which includes the redirect command. When GitHub auth is done, its going to call back with cmd=oauth!
+        // extract the origin of the request URL, such that we can use the same for the redirect URL ()
+        String requestScheme = request.getScheme();
+        String requestHost = request.getServerName();
+        String requestPort = isDefaultPort(requestScheme, request.getServerPort()) ? "" : ":" + request.getServerPort();
+        String redirectUri = String.format("%s://%s%s%s", requestScheme, requestHost, requestPort, _context.getConfig().github_redirect_uri);
+        httpSession.setAttribute("oauth_redirect_uri", redirectUri);
+
+        // build the github authorization URL, which includes the redirect command. When GitHub auth is done, browser is going to use the redirectURL to call back with cmd=oauth!
         // Note: we do not give GitHub any indication of which handle/user to login!
-        String redirectUrl = _githubOAuthClient.buildAuthorizeUrl(name, state);
+        String authorizeUrl = _githubOAuthClient.buildAuthorizeUrl(redirectUri, state);
         // redirectUrl = "https://github.com/login/oauth/authorize
         //                ?client_id=Ov23liug3HoGm26w66n2 // OAuth client_id as registered in GitHub for TestCtrl app
         //                &redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fweb-apis%2Ftestctrl%3Fcmd%3Doauth // "http://localhost:8080/web-apis/testctrl?cmd=oauth"
@@ -134,7 +146,7 @@ public class Servlet extends HttpServlet{
         //                &state=4ce58cdc-fd48-46b6-b123-c1a8fdca38ac" // random UUID, handshake w/ GitHub
 
         // the answer contains the redirect URL which is going to be executed by the frontend
-        return new Answer().new Redirect(redirectUrl, "Redirecting to GitHub OAuth...");
+        return new Answer().new Redirect(authorizeUrl, "Redirecting to GitHub OAuth...");
     }
 
     @SuppressWarnings("null")
@@ -155,7 +167,8 @@ public class Servlet extends HttpServlet{
             HttpSession httpSession = request.getSession();
             String expectedState = (String) httpSession.getAttribute("oauth_state");
             expectedHandle = (String) httpSession.getAttribute("oauth_ghHandle");
-            checkTrue(expectedState != null && expectedHandle != null, oauthErr = "Invalid Oauth session!");
+            String redirectUrl = (String) httpSession.getAttribute("oauth_redirect_uri");
+            checkTrue(expectedState != null && expectedHandle != null && redirectUrl != null, oauthErr = "Invalid Oauth session!");
 
             // check the handshake_uuid with the frontend matches what we saved previously
             String state = params.get("state")[0];
@@ -163,7 +176,7 @@ public class Servlet extends HttpServlet{
 
             // check the GitHub login that got authenticated matches the expected handle
             String code = params.get("code")[0];
-            String githubLogin = _githubOAuthClient.getGitHubLogin(code, state);
+            String githubLogin = _githubOAuthClient.getGitHubLogin(redirectUrl, code, state);
             checkTrue(githubLogin != null && !githubLogin.isEmpty(), oauthErr = "GitHub OAuth failed!");
             checkTrue(githubLogin.equalsIgnoreCase(expectedHandle), oauthErr = "GitHub handle mismatch!");
 

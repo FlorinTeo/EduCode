@@ -20,19 +20,19 @@ public class GitHubOAuthClient {
         _httpClient = HttpClient.newBuilder().build();
     }
 
-    public String buildAuthorizeUrl(String ghHandle, String state) {
+    public String buildAuthorizeUrl(String redirectUri, String state) {
         Context.Config config = _context.getConfig();
         return String.format(
             "%s?client_id=%s&redirect_uri=%s&scope=%s&state=%s",
             config.github_oauth_authorize_url,
             urlEncode(config.github_client_id),
-            urlEncode(config.github_redirect_uri),
+            urlEncode(redirectUri),
             urlEncode("read:user"),
             urlEncode(state)
         );
     }
 
-    public String buildTokenRequestBody(String code, String state) {
+    private String buildTokenRequestBody(String redirectUri, String code, String state) {
         Context.Config config = _context.getConfig();
         return String.format(
                     "client_id=%s&client_secret=%s&code=%s&state=%s&redirect_uri=%s",
@@ -40,16 +40,16 @@ public class GitHubOAuthClient {
                     urlEncode(config.github_client_secret),
                     urlEncode(code),
                     urlEncode(state),
-                    urlEncode(config.github_redirect_uri)
+                    urlEncode(redirectUri)
                 );
     }
 
-    public String getGitHubLogin(String code, String state) {
+    public String getGitHubLogin(String redirectUri, String code, String state) {
         Context.Config config = _context.getConfig();
 
         // request an access token from GitHub backend
         String accessToken = null;
-        String tokenRequestBody = buildTokenRequestBody(code, state);
+        String tokenRequestBody = buildTokenRequestBody(redirectUri, code, state);
         HttpRequest tokenRequest = HttpRequest.newBuilder()
             .uri(URI.create(config.github_oauth_token_url))
             .header("Accept", "application/json")
