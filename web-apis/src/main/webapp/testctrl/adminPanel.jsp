@@ -48,7 +48,9 @@
                     <tr><td><input id="btnUserMgmt" value="User Management" type="submit"></td>
                         <td>User management operations, such as:
                             <ul style="margin-top: 0; padding-left: 16px;">
-                            <li>Update user password.</li>
+                            <li>Display a list of all configured users.</li>
+                            <li>Inspect all attributes of a user.</li>
+                            <li>Edit writeable attributes of a user.</li>
                             </ul>
                     </tr>
                 </table>

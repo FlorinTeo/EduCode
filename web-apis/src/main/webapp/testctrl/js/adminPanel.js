@@ -3,7 +3,7 @@ const sid = (new URLSearchParams(window.location.search)).get("sid");
 const username = (new URLSearchParams(window.location.search)).get("name");
 const urlAPI = window.location.origin + "/web-apis/testctrl";
 const urlLoginJSP = window.location.origin + "/web-apis/testctrl/login.jsp";
-const actVer = "2.5";
+const actVer = "3.0";
 // #endregion: page parameters
 
 const txtTitleSid = document.getElementById("titleSid");
@@ -155,8 +155,9 @@ async function selectAction(actName) {
         }
     } else {
         // the action was previously loaded so its div and handlers are available
-        // just need to display the div
-        actMap[actName].div.style.display = 'block';
+        // just need to display the div; keep the action-specific layout (for example
+        // flex centering in actUserMgmt.jsp) instead of reverting to a block element.
+        actMap[actName].div.style.display = 'flex';
     }
 }
 
@@ -234,11 +235,11 @@ async function onActTestPublisher(e) {
 async function onActUserMgmt(e) {
     e.preventDefault();
     await selectAction("actUserMgmt");
-    dlgAction.style.width = '';
-    dlgAction.style.height = '';
-    dlgAction.style.minWidth = '';
-    dlgAction.style.minHeight = '';
-    dlgAction.style.resize = 'none';
+    dlgAction.style.width = '480px';
+    dlgAction.style.height = '320px';
+    dlgAction.style.minWidth = '400px';
+    dlgAction.style.minHeight = '240px';
+    dlgAction.style.resize = 'both';
     dlgActionTitle.innerHTML = 'User Management';
     dlgActionApply.style.display = 'block';
     dlgAction.showModal();
