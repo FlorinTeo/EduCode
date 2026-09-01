@@ -152,21 +152,7 @@ public class Context extends TimerTask {
     // #endregion: [Public] Configuration management methods
 
     public User getUser(String username) {
-        return _config.users.stream().filter(u -> u.username.equals(username)).findFirst().orElse(null);
-    }
-
-    public User getUserByHandle(String ghHandle) {
-        if (ghHandle == null) {
-            return null;
-        }
-        String handle = ghHandle.trim();
-        if (handle.isEmpty()) {
-            return null;
-        }
-        return _config.users.stream().filter(u ->
-            (u.gh_handle != null && u.gh_handle.equalsIgnoreCase(handle)) ||
-            (u.username != null && u.username.equalsIgnoreCase(handle))
-        ).findFirst().orElse(null);
+        return _config.users.stream().filter(u -> u.username.equalsIgnoreCase(username)).findFirst().orElse(null);
     }
 
     public void closing() {

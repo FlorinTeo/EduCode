@@ -67,7 +67,7 @@ public class Servlet extends HttpServlet{
             String cmd = params.get("cmd")[0];
             switch(cmd.toLowerCase()) {
                 case "login":
-                    // http://localhost:8080/web-apis/testctrl?cmd=login&name=<name>&pwd=<password>]
+                    // http://localhost:8080/web-apis/testctrl?cmd=login&name=<name>
                     answer = executeCmdLogin(request, params);
                     break;
                 case "oauth":
@@ -83,7 +83,6 @@ public class Servlet extends HttpServlet{
                     answer = executeCmdStatus(httpSession, params);
                     break;
                 case "set":
-                    // http://localhost:8080/web-apis/testctrl?cmd=set&op=setusr&name=<name>&pwd=<password>
                     // http://localhost:8080/web-apis/testctrl?cmd=set&op=vtest&name=<test-name>&args=<qid1,qid2,...>
                     answer = executeCmdSet(httpSession, params);
                     break;
@@ -117,13 +116,13 @@ public class Servlet extends HttpServlet{
         HttpSession httpSession = request.getSession();
         checkTrue(params.containsKey("name"), "Missing 'name' parameter!");
         String name = params.get("name")[0].trim();
-        User user = _context.getUserByHandle(name);
+        User user = _context.getUser(name);
         checkTrue(user != null && user.hasRole("admin","teacher"), "Invalid name, role or GitHub handle!");
 
         // save into the session a handshake_uuid for frontend and the expect GitHub handle to authenticate!
         String state = UUID.randomUUID().toString();
         httpSession.setAttribute("oauth_state", state);
-        httpSession.setAttribute("oauth_ghHandle", user.gh_handle);
+        httpSession.setAttribute("oauth_ghHandle", user.username);
 
         // build the github authorization URL, which includes the redirect command. When GitHub auth is done, its going to call back with cmd=oauth!
         // Note: we do not give GitHub any indication of which handle/user to login!
@@ -164,7 +163,7 @@ public class Servlet extends HttpServlet{
         checkTrue(githubLogin.equalsIgnoreCase(expectedHandle), "GitHub handle mismatch!");
 
         // check the User for this login exists and is valid
-        User user = _context.getUserByHandle(githubLogin);
+        User user = _context.getUser(githubLogin);
         checkTrue(user != null && user.hasRole("admin","teacher"), "Invalid GitHub handle or role!");
 
         // finally create a session for this user
@@ -209,35 +208,6 @@ public class Servlet extends HttpServlet{
         checkTrue(params.containsKey("op"), "Missing 'op' parameter!");
         String op = params.get("op")[0];
         switch(op) {
-            case "setusr":
-                // http://localhost:8080/web-apis/testctrl?cmd=set&op=setusr&name=<name>&pwd=<password>
-                checkTrue(params.containsKey("name"), "Missing 'name' parameter!");
-                checkTrue(params.containsKey("pwd"), "Missing 'pwd' parameter!");
-                String name = params.get("name")[0];
-                String pwd = params.get("pwd")[0];
-                User targetUser = _context.getUser(name);
-                checkTrue(targetUser != null, "Invalid user!");
-                if (session.getUser().hasRole("admin","teacher")) {
-                    // admins and teachers are allowed to change password for any user
-                    checkTrue(targetUser.setPwd(pwd), "Failed to change password!");
-                    checkTrue(_context.saveConfig(), "Failed to save configuration!");
-                    Answer.Msg msgAnswer = new Answer().new Msg(session.getId(),
-                        "User '%s' changed password for user '%s'!",
-                        session.getUser().username,
-                        targetUser.username);
-                    _context.Log(new LogEntry(msgAnswer._message));
-                    return msgAnswer;
-                } else {
-                    checkTrue(targetUser.equals(session.getUser()), "Invalid non-self user!");
-                    // non-admins/teachers are only allowed to change only their own password
-                    checkTrue(targetUser.setPwd(pwd), "Failed to change password!");
-                    checkTrue(_context.saveConfig(), "Failed to save configuration!");
-                    Answer.Msg msgAnswer = new Answer().new Msg(session.getId(),
-                        "User '%s' changed own password!",
-                        session.getUser().username);
-                    _context.Log(new LogEntry(msgAnswer._message));
-                    return msgAnswer;
-                }
             case "vtest":
                 // http://localhost:8080/web-apis/testctrl?cmd=set&op=vtest&name=<testName>&qlist=<test1,test2,...>
                 checkTrue(params.containsKey("name"), "Missing 'name' parameter!");

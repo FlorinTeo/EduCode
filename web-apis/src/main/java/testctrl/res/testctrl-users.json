@@ -1,38 +1,30 @@
 [
 	{
-		"username": "c-fteodorescu",
-		"gh_handle": "C-FlorinTeo",
+		"username": "C-FlorinTeo",
 		"first_name": "Florin",
 		"last_name": "Teodorescu",
 		"aka_name": "Mr. Teo",
-		"pwd_hash": "8a8c734ea36ea5f2d8f4270aa3f3d48f",
 		"roles": "teacher|admin"
 	},
 	{
-		"username": "tstave",
-		"gh_handle": "tstavelwsd",
+		"username": "tstavelwsd",
 		"first_name": "Timothy",
 		"last_name": "Stave",
 		"aka_name": "Mr. Stave",
-		"pwd_hash": "9e3f0607127b028f4061f60247fc7b03",
 		"roles": "teacher"
 	},
 	{
-		"username": "jdobrev",
-		"gh_handle": "jivkodobrev",
+		"username": "jivkodobrev",
 		"first_name": "Jivko",
 		"last_name": "Dobrev",
 		"aka_name": "Mr. Dobrev",
-		"pwd_hash": "d10cd06604abfecd3dcf5d85d0bb1220",
 		"roles": "teacher"
 	},
 	{
 		"username": "s-student",
-		"gh_handle": "s-student",
 		"first_name": "Jonathan",
 		"last_name": "Doe",
 		"aka_name": "Joe",
-		"pwd_hash": "4f7f59115d6a51550829da61845b760f",
 		"roles": "student",
 		"tags": "ds|p1"
 	}
