@@ -13,6 +13,7 @@ public class Word implements Comparable<Word> {
     private Double _occurrence;
     private Integer _day;
 
+    @SuppressWarnings("null")
     public Word(String csvLine) {
         // each line is expected to contain 3 fields!
         String[] csvParts = csvLine.split(",");
