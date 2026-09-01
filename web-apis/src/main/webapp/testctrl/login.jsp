@@ -23,7 +23,7 @@
                 </td>
                 <td><input id="edtName" type="text"></td>
             </tr>
-            <tr><td></td><td><input id="btnLogin" type="submit" value="Login" ></td></tr>
+            <tr><td></td><td><input id="btnLogin" type="submit" value="GitHub Login" ></td></tr>
         </table>
         <p>
         <!--  Output area -->

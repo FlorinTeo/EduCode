@@ -1,5 +1,6 @@
 // #region: page parameters
 const username = (new URLSearchParams(window.location.search)).get("name");
+const initErr = decodeURIComponent((new URLSearchParams(window.location.search)).get("err") ?? "");
 // #endregion: page parameters
 
 const edtName = document.getElementById("edtName");
@@ -16,6 +17,9 @@ btnLogin.addEventListener("click", onClickLogin);
 // #region: page load handler
 function onPageLoad() {
     edtName.value = username ?? "";
+    if (initErr != null && initErr != "") {
+        txtOutput.innerHTML = initErr;
+    }
 }
 // #endregion: page load handler
 

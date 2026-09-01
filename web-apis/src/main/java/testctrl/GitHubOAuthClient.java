@@ -87,7 +87,7 @@ public class GitHubOAuthClient {
         return ghLogin;
     }
 
-    private String urlEncode(String value) {
+    public static String urlEncode(String value) {
         return URLEncoder.encode(value == null ? "" : value, StandardCharsets.UTF_8);
     }
 }

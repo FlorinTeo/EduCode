@@ -139,44 +139,51 @@ public class Servlet extends HttpServlet{
 
     @SuppressWarnings("null")
     public void executeCmdOAuth(HttpServletRequest request, HttpServletResponse response, Map<String, String[]> params) throws ServletException, IOException, NoSuchAlgorithmException {
-        // check the context is valid
-        checkTrue(_context.isValid(), "Backend configuration corrupted or invalid!");
+        String targetUrl = "";
+        String expectedHandle = "";
+        String oauthErr = "";
 
-        // check expected parameters exist
-        checkTrue(params.containsKey("code"), "Missing 'code' parameter!");
-        checkTrue(params.containsKey("state"), "Missing 'state' parameter!");
+        try {
+            // check the context is valid
+            checkTrue(_context.isValid(), oauthErr = "Backend configuration corrupted or invalid!");
 
-        // check the session is valid
-        HttpSession httpSession = request.getSession();
-        String expectedState = (String) httpSession.getAttribute("oauth_state");
-        String expectedHandle = (String) httpSession.getAttribute("oauth_ghHandle");
-        checkTrue(expectedState != null && expectedHandle != null, "Invalid Oauth session!");
+            // check expected parameters exist
+            checkTrue(params.containsKey("code"), oauthErr = "Missing 'code' parameter!");
+            checkTrue(params.containsKey("state"), oauthErr = "Missing 'state' parameter!");
 
-        // check the handshake_uuid with the frontend matches what we saved previously
-        String state = params.get("state")[0];
-        checkTrue(expectedState.equals(state), "Invalid OAuth state!");
+            // check the session is valid
+            HttpSession httpSession = request.getSession();
+            String expectedState = (String) httpSession.getAttribute("oauth_state");
+            expectedHandle = (String) httpSession.getAttribute("oauth_ghHandle");
+            checkTrue(expectedState != null && expectedHandle != null, oauthErr = "Invalid Oauth session!");
 
-        // check the GitHub login that got authenticated matches the expected handle
-        String code = params.get("code")[0];
-        String githubLogin = _githubOAuthClient.getGitHubLogin(code, state);
-        checkTrue(githubLogin != null && !githubLogin.isEmpty(), "GitHub OAuth failed!");
-        checkTrue(githubLogin.equalsIgnoreCase(expectedHandle), "GitHub handle mismatch!");
+            // check the handshake_uuid with the frontend matches what we saved previously
+            String state = params.get("state")[0];
+            checkTrue(expectedState.equals(state), oauthErr = "Invalid OAuth state!");
 
-        // check the User for this login exists and is valid
-        User user = _context.getUser(githubLogin);
-        checkTrue(user != null && user.hasRole("admin","teacher"), "Invalid GitHub handle or role!");
+            // check the GitHub login that got authenticated matches the expected handle
+            String code = params.get("code")[0];
+            String githubLogin = _githubOAuthClient.getGitHubLogin(code, state);
+            checkTrue(githubLogin != null && !githubLogin.isEmpty(), oauthErr = "GitHub OAuth failed!");
+            checkTrue(githubLogin.equalsIgnoreCase(expectedHandle), oauthErr = "GitHub handle mismatch!");
 
-        // finally create a session for this user
-        String rootUrl = String.format("%s://%s:%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath());
-        Session session = _context.newSession(user, httpSession, rootUrl);
-        _context.Log(new LogEntry("User '%s' logged in via GitHub OAuth session [%s]", user.username, session.getId()));
+            // check the User for this login exists and is valid
+            User user = _context.getUser(githubLogin);
+            checkTrue(user != null && user.hasRole("admin","teacher"), oauthErr = "Unrecognized GitHub handle or invalid role!");
 
-        // cleanup and return the redirect to the main portal
-        httpSession.removeAttribute("oauth_state");
-        httpSession.removeAttribute("oauth_ghHandle");
-        // Note: the redirect may be different in the future, based on the role of this user
-        String targetUrl = String.format("%s/testctrl/adminPanel.jsp?sid=%s&name=%s&ver=2.1", request.getContextPath(), session.getId(), user.username);
+            // finally create a session for this user
+            String rootUrl = String.format("%s://%s:%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath());
+            Session session = _context.newSession(user, httpSession, rootUrl);
+            _context.Log(new LogEntry("User '%s' logged in via GitHub OAuth session [%s]", user.username, session.getId()));
 
+            // cleanup and return the redirect to the main portal
+            httpSession.removeAttribute("oauth_state");
+            httpSession.removeAttribute("oauth_ghHandle");
+            // Note: the redirect may be different in the future, based on the role of this user
+            targetUrl = String.format("%s/testctrl/adminPanel.jsp?sid=%s&name=%s&ver=2.1", request.getContextPath(), session.getId(), user.username);
+        } catch (Exception e) {
+            targetUrl = String.format("%s/testctrl/login.jsp?name=%s&err=%s&ver=2.1", request.getContextPath(), expectedHandle, GitHubOAuthClient.urlEncode(oauthErr));
+        }
         response.sendRedirect(targetUrl);
     }
 

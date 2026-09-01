@@ -45,5 +45,6 @@ body {
 }
 
 .err-div {
+    margin-left: 12px;
     color: red
 }
