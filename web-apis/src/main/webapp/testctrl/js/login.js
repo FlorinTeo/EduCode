@@ -41,9 +41,9 @@ function onClickLogin(e) {
 
 function onLoginResponse() {
     var jsonResponse = JSON.parse(this.response);
-    if (this.status == 200) {
-        // when successful or user already logged in, redirect to the AdminPanel page
-        window.location.href = `${urlAdminPanelJSP}?sid=${jsonResponse._sid}&name=${edtName.value}&ver=${urlAdminPanelVer}`;
+    if (this.status == 200 && jsonResponse._redirect) {
+        // when successful the backend gives the uri for the portal
+        window.location.href = jsonResponse._redirect;
     } else {
         // otherwise display the response on the login page.
         txtOutput.innerHTML = `[${this.status}] ${jsonResponse._error}`;

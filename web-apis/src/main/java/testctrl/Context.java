@@ -44,6 +44,12 @@ public class Context extends TimerTask {
     public class Config {
         public String tests_root;
         public String users_path;
+        public String github_client_id;
+        public String github_client_secret;
+        public String github_redirect_uri;
+        public String github_oauth_authorize_url;
+        public String github_oauth_token_url;
+        public String github_user_api_url;
         public List<User> users;
     };
     // #endregion: [Public] Enum & Class definitions pertaining to TestCtrl context.
@@ -79,6 +85,15 @@ public class Context extends TimerTask {
     }
 
     // #region: [Public] Life-cycle methods
+    public boolean isValid() {
+        return _config.github_client_id != null
+            && _config.github_client_secret != null
+            && _config.github_oauth_authorize_url != null
+            && _config.github_oauth_token_url != null
+            && _config.github_redirect_uri != null
+            && _config.github_user_api_url != null;
+    }
+
     public boolean isReady() {
         synchronized(_state) {
             return _state == State.READY;
@@ -138,6 +153,20 @@ public class Context extends TimerTask {
 
     public User getUser(String username) {
         return _config.users.stream().filter(u -> u.username.equals(username)).findFirst().orElse(null);
+    }
+
+    public User getUserByHandle(String ghHandle) {
+        if (ghHandle == null) {
+            return null;
+        }
+        String handle = ghHandle.trim();
+        if (handle.isEmpty()) {
+            return null;
+        }
+        return _config.users.stream().filter(u ->
+            (u.gh_handle != null && u.gh_handle.equalsIgnoreCase(handle)) ||
+            (u.username != null && u.username.equalsIgnoreCase(handle))
+        ).findFirst().orElse(null);
     }
 
     public void closing() {

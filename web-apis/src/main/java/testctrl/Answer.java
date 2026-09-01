@@ -29,6 +29,16 @@ public class Answer {
         }
     }
 
+    public class Redirect extends Answer {
+        public String _redirect;
+        public String _message;
+
+        public Redirect(String redirectUrl, String format, Object... args) {
+            _redirect = redirectUrl;
+            _message = String.format(format, args);
+        }
+    }
+
     public class Logs extends Answer {
         public LogEntry[] _logs;
 

@@ -10,7 +10,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public class User implements Comparable<User> {
     public String username;
-    public String firt_name;
+    public String gh_handle;
+    public String first_name;
     public String last_name;
     public String aka_name;
     public String pwd_hash;

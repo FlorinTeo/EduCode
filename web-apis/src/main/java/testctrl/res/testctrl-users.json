@@ -1,6 +1,7 @@
 [
 	{
 		"username": "c-fteodorescu",
+		"gh_handle": "C-FlorinTeo",
 		"first_name": "Florin",
 		"last_name": "Teodorescu",
 		"aka_name": "Mr. Teo",
@@ -9,6 +10,7 @@
 	},
 	{
 		"username": "tstave",
+		"gh_handle": "tstavelwsd",
 		"first_name": "Timothy",
 		"last_name": "Stave",
 		"aka_name": "Mr. Stave",
@@ -17,6 +19,7 @@
 	},
 	{
 		"username": "jdobrev",
+		"gh_handle": "jivkodobrev",
 		"first_name": "Jivko",
 		"last_name": "Dobrev",
 		"aka_name": "Mr. Dobrev",
@@ -25,6 +28,7 @@
 	},
 	{
 		"username": "s-student",
+		"gh_handle": "s-student",
 		"first_name": "Jonathan",
 		"last_name": "Doe",
 		"aka_name": "Joe",
