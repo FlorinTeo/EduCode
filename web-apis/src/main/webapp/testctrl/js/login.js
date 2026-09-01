@@ -3,13 +3,10 @@ const username = (new URLSearchParams(window.location.search)).get("name");
 // #endregion: page parameters
 
 const edtName = document.getElementById("edtName");
-const edtPwd = document.getElementById("edtPwd");
 const btnLogin = document.getElementById("btnLogin");
 const txtOutput = document.getElementById("txtOutput");
 
 const urlAPI = window.location.origin + "/web-apis/testctrl";
-const urlAdminPanelJSP = window.location.origin + "/web-apis/testctrl/adminPanel.jsp";
-const urlAdminPanelVer = "2.1";
 
 // #region: event listeners
 document.addEventListener("DOMContentLoaded", onPageLoad);
@@ -25,13 +22,12 @@ function onPageLoad() {
 // #region: login event handlers
 function onClickLogin(e) {
     e.preventDefault();
-    var name = edtName.value;
-    var pwd = edtPwd.value;
+    const name = edtName.value;
     if(name == null || name == "") {
         alert("Error: Need a name!");
     } else {
-        var request = new  XMLHttpRequest();
-        request.open("GET", `${urlAPI}?cmd=login&name=${name}&pwd=${pwd}`, true);
+        const request = new XMLHttpRequest();
+        request.open("GET", `${urlAPI}?cmd=login&name=${encodeURIComponent(name)}`, true);
         request.timeout = 2000;
         request.onload = onLoginResponse;
         request.withCredentials = true;
@@ -40,14 +36,14 @@ function onClickLogin(e) {
 }
 
 function onLoginResponse() {
-    var jsonResponse = JSON.parse(this.response);
+    const jsonResponse = JSON.parse(this.response);
     if (this.status == 200 && jsonResponse._redirect) {
         // when successful the backend gives the uri for the portal
         window.location.href = jsonResponse._redirect;
     } else {
         // otherwise display the response on the login page.
         txtOutput.innerHTML = `[${this.status}] ${jsonResponse._error}`;
-        txtOutput.classList.add('err-div');
+        txtOutput.classList.add("err-div");
     }
 }
 // #endregion: login event handlers

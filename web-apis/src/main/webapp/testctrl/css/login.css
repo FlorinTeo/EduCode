@@ -25,13 +25,24 @@ body {
     /* border: 1px solid black; */
     border: none;
     border-collapse: collapse;
-    width: 100%;
+    width: auto;
+    margin-left: 24px;
     text-align: left;
 }
 .login-table td:nth-child(1) { width: 110px; text-align: right; }
 .login-table td:nth-child(2) { text-align: left; }
-.login-table input[type="text"], .login-table input[type="password"] { width: 200px; height: 20px; }
+.login-table input[type="text"] { width: 200px; height: 20px; }
 .login-table input[type="submit"] { height: 20px; width: 100px; }
+.login-user-label {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+}
+.login-user-logo {
+    width: 40px;
+    height: 40px;
+}
 
 .err-div {
     color: red
