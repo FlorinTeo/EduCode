@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import testctrl.testmgmt.QHeader;
 import testctrl.testmgmt.THeader;
 import testctrl.testmgmt.TMeta;
+import testctrl.testmgmt.UHeader;
 
 public class Answer {
 
@@ -55,14 +56,6 @@ public class Answer {
         }
     }
 
-    public class TList extends Answer {
-        public THeader[] _tList;
-
-        public TList(Collection<THeader> tRecs) {
-            _tList = tRecs.toArray(new THeader[0]);
-        }
-    }
-
     public class QData extends Answer {
         public QHeader _qHeader;
         public String _qDiv;
@@ -70,6 +63,14 @@ public class Answer {
         public QData(QHeader qHeader, String qDiv) {
             _qHeader = qHeader;
             _qDiv = qDiv;
+        }
+    }
+
+    public class TList extends Answer {
+        public THeader[] _tList;
+
+        public TList(Collection<THeader> tRecs) {
+            _tList = tRecs.toArray(new THeader[0]);
         }
     }
 
@@ -89,6 +90,14 @@ public class Answer {
                 variants.add(vtHeader);
             }
             _variants = variants.toArray(new THeader[0]);
+        }
+    }
+
+    public class UList extends Answer {
+        public UHeader[] _uList;
+
+        public UList(Collection<UHeader> uRecs) {
+            _uList = uRecs.toArray(new UHeader[0]);
         }
     }
 

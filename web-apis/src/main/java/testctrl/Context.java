@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import testctrl.testmgmt.Generator;
 import testctrl.testmgmt.TestsDb;
+import testctrl.testmgmt.UHeader;
 import testctrl.testmgmt.WebDiv;
 
 public class Context extends TimerTask {
@@ -305,6 +307,16 @@ public class Context extends TimerTask {
 
     public WebDiv getWebDiv() {
         return _webDiv;
+    }
+
+    public Collection<UHeader> getUHeaders() {
+        synchronized(_state) {
+            List<UHeader> uRecs = new LinkedList<UHeader>();
+            for(User user : _config.users) {
+                uRecs.add(user.getUHeader());
+            }
+            return uRecs;
+        }
     }
     // #endregion: [Public] Question-set methods
 

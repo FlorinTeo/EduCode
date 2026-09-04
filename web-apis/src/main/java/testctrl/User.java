@@ -1,5 +1,7 @@
 package testctrl;
 
+import testctrl.testmgmt.UHeader;
+
 /**
  * Class representing a user in the system.
  */
@@ -22,6 +24,10 @@ public class User implements Comparable<User> {
             }
         }
         return false;
+    }
+
+    public UHeader getUHeader() {
+        return new UHeader(username, first_name, last_name, roles, tags);
     }
 
     // #region: Comparable overrides

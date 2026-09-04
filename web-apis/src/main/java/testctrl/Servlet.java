@@ -18,6 +18,7 @@ import testctrl.testmgmt.Question;
 import testctrl.testmgmt.THeader;
 import testctrl.testmgmt.TMeta;
 import testctrl.testmgmt.TestsDb;
+import testctrl.testmgmt.UHeader;
 import testctrl.testmgmt.WebDiv;
 
 @WebServlet("/testctrl")
@@ -97,6 +98,8 @@ public class Servlet extends HttpServlet{
                     // http://localhost:8080/web-apis/testctrl?cmd=query&op=question&qid=<name>
                     // http://localhost:8080/web-apis/testctrl?cmd=query&op=answer&qid=<name>
                     // http://localhost:8080/web-apis/testctrl?cmd=query&op=test&tid=<name>
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&op=uset
+                    // http://localhost:8080/web-apis/testctrl?cmd=query&op=user&uid=<name>
                     answer = executeCmdQuery(httpSession, params);
                     break;
                 default:
@@ -267,11 +270,6 @@ public class Servlet extends HttpServlet{
                 Collection<QHeader> qRecs = gen.getQRecs();
                 _context.Log(new LogEntry("[query:qset] Returning %d question records", qRecs.size()));
                 return new Answer().new QList(qRecs);
-            case "tset":
-                // http://localhost:8080/web-apis/testctrl?cmd=query&op=tset
-                Collection<THeader> tRecs = testsDb.getTHeaders();
-                _context.Log(new LogEntry("[query:tset] Returning %d test records", tRecs.size()));
-                return new Answer().new TList(tRecs);
             case "question":
                 // http://localhost:8080/web-apis/testctrl?cmd=query&op=question&qid=<question>
             case "answer":
@@ -282,6 +280,11 @@ public class Servlet extends HttpServlet{
                 return (q != null)
                     ? new Answer().new QData(q.getQHeader(), webDiv.getDiv(q, isAnswer))
                     : new Answer().new Err("Unknown question '%s'", qID);
+            case "tset":
+                // http://localhost:8080/web-apis/testctrl?cmd=query&op=tset
+                Collection<THeader> tRecs = testsDb.getTHeaders();
+                _context.Log(new LogEntry("[query:tset] Returning %d test records", tRecs.size()));
+                return new Answer().new TList(tRecs);
             case "test":
                 // http://localhost:8080/web-apis/testctrl?cmd=query&op=test&tid=<name>
                 String tID = params.get("tid")[0];
@@ -290,6 +293,13 @@ public class Servlet extends HttpServlet{
                 return (t != null)
                     ? new Answer().new TData(t, testPath)
                     : new Answer().new Err("Unknown test '%s'", tID);
+            case "uset":
+                // http://localhost:8080/web-apis/testctrl?cmd=query&op=uset
+                Collection<UHeader> uRecs = _context.getUHeaders();
+                _context.Log(new LogEntry("[query:uset] Returning %d user records", uRecs.size()));
+                return new Answer().new UList(uRecs);
+            case "user":
+                return new Answer().new Err("Unsupported 'user' operation!");
             default:
                 return new Answer().new Err("Unknown query operation!");
         }
