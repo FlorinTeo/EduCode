@@ -28,6 +28,7 @@ public class User implements Comparable<User> {
 
     public UHeader getUHeader() {
         return new UHeader(
+            username,
             first_name,
             last_name,
             aka_name,
