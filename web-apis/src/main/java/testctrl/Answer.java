@@ -101,6 +101,20 @@ public class Answer {
         }
     }
 
+    public class UData extends Answer {
+        public UHeader _uHeader;
+        public String _first_name;
+        public String _last_name;
+        public String _aka_name;
+
+        public UData(User user) {
+            _uHeader = user.getUHeader();
+            _first_name = user.first_name;
+            _last_name = user.last_name;
+            _aka_name = user.aka_name;
+        }
+    }
+
     @Override
     public String toString() {
         Gson gson = new Gson();

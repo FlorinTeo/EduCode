@@ -299,7 +299,12 @@ public class Servlet extends HttpServlet{
                 _context.Log(new LogEntry("[query:uset] Returning %d user records", uRecs.size()));
                 return new Answer().new UList(uRecs);
             case "user":
-                return new Answer().new Err("Unsupported 'user' operation!");
+                // http://localhost:8080/web-apis/testctrl?cmd=query&op=user&uid=<name>
+                String uID = params.get("uid")[0];
+                User u = _context.getUser(uID);
+                return (u != null)
+                    ? new Answer().new UData(u)
+                    : new Answer().new Err("Unknown user '%s'", uID);
             default:
                 return new Answer().new Err("Unknown query operation!");
         }
