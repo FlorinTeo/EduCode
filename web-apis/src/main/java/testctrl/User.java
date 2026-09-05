@@ -27,7 +27,12 @@ public class User implements Comparable<User> {
     }
 
     public UHeader getUHeader() {
-        return new UHeader(username, first_name, last_name, roles, tags);
+        return new UHeader(
+            first_name,
+            last_name,
+            aka_name,
+            roles,
+            tags);
     }
 
     // #region: Comparable overrides
